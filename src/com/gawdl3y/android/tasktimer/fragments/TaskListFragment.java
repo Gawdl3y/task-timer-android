@@ -1,0 +1,72 @@
+package com.gawdl3y.android.tasktimer.fragments;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.adapters.TaskAdapter;
+import com.gawdl3y.android.tasktimer.classes.Group;
+
+public class TaskListFragment extends SherlockListFragment {
+	private static final String TAG = "TaskListFragment";
+	
+	private TaskAdapter adapter;
+	
+	public Group group;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
+		if(savedInstanceState != null) {
+			group = (Group) savedInstanceState.getSerializable("group");
+		} else {
+			if(getArguments() != null) {
+				group = (Group) getArguments().getSerializable("group");
+			} else {
+				group = new Group();
+			}
+		}
+		
+		Log.v(TAG, "Fragment created");
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.fragment_task_list, container, false);
+		view.setTag(group.getPosition());
+		
+		adapter = new TaskAdapter(inflater.getContext(), group.getTasks(), group.getPosition());
+		setListAdapter(adapter);
+		
+		Log.v(TAG, "View created");
+		return view;
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		// TODO Do stuff on click
+		Toast.makeText(getActivity(), getListView().getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+	}
+	
+	@Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("group", group);
+    }
+	
+	public static TaskListFragment newInstance(Group group) {
+		TaskListFragment fragment = new TaskListFragment();
+		Bundle args = new Bundle();
+		args.putSerializable("group", group);
+		fragment.setArguments(args);
+
+		return fragment;
+	}
+}

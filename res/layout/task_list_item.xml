@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:padding="5dp" >
+	
+    <TextView
+        android:id="@+id/task_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/task_name"
+        android:textSize="20sp"
+        android:typeface="sans" />
+
+    <ProgressBar
+        android:id="@+id/task_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/task_name" />
+
+    <TextView
+        android:id="@+id/task_goal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="false"
+        android:layout_below="@id/task_progress"
+        android:text="@string/task_goal" />
+
+    <TextView
+        android:id="@+id/task_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="false"
+        android:layout_below="@id/task_progress"
+        android:text="@string/task_time" />
+
+    <ImageView
+        android:id="@+id/task_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:src="?attr/ic_start"
+        android:contentDescription="@string/task_start"
+        android:onClick="onTaskButtonClick" />
+    
+</RelativeLayout>

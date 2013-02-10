@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:key="pref_generalSettings"
+        android:title="@string/pref_generalSettings"
+        android:order="1">
+        
+        <ListPreference
+	        android:key="pref_theme"
+	        android:title="@string/pref_theme"
+	        android:dialogTitle="@string/pref_theme"
+	        android:entries="@array/pref_theme_entries"
+	        android:entryValues="@array/pref_theme_values"
+	        android:defaultValue="@string/pref_theme_default"
+	        android:order="1" />
+        <ListPreference
+	        android:key="pref_timeFormat"
+	        android:title="@string/pref_timeFormat"
+	        android:dialogTitle="@string/pref_timeFormat"
+	        android:entries="@array/pref_timeFormat_entries"
+	        android:entryValues="@array/pref_timeFormat_values"
+	        android:defaultValue="@string/pref_timeFormat_default"
+	        android:order="2" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="pref_taskSettings"
+        android:title="@string/pref_taskSettings"
+        android:order="2">
+    	
+        <CheckBoxPreference
+            android:key="pref_history"
+            android:title="@string/pref_history_title"
+            android:summaryOn="@string/pref_history_summary_on"
+            android:summaryOff="@string/pref_history_summary_off"
+            android:defaultValue="@string/pref_history_default"
+            android:order="1" />
+        <CheckBoxPreference
+            android:key="pref_overtime"
+            android:title="@string/pref_overtime_title"
+            android:summaryOn="@string/pref_overtime_summary_on"
+            android:summaryOff="@string/pref_overtime_summary_off"
+            android:defaultValue="@string/pref_overtime_default"
+            android:order="2" />
+        <CheckBoxPreference
+            android:key="pref_autoPause"
+            android:dependency="pref_overtime"
+            android:title="@string/pref_autoPause_title"
+            android:summaryOn="@string/pref_autoPause_summary_on"
+            android:summaryOff="@string/pref_autoPause_summary_off"
+            android:defaultValue="@string/pref_autoPause_default"
+            android:order="3" />
+        <CheckBoxPreference
+            android:key="pref_multipleRunning"
+            android:title="@string/pref_multipleRunning_title"
+            android:summaryOn="@string/pref_multipleRunning_summary_on"
+            android:summaryOff="@string/pref_multipleRunning_summary_off"
+            android:defaultValue="@string/pref_multipleRunning_default"
+            android:order="4" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="pref_performanceSettings"
+        android:title="@string/pref_performanceSettings"
+        android:order="3">
+        
+        <ListPreference
+	        android:key="pref_foregroundRate"
+	        android:title="@string/pref_foregroundRate"
+	        android:dialogTitle="@string/pref_foregroundRate"
+	        android:entries="@array/pref_foregroundRate_entries"
+	        android:entryValues="@array/pref_foregroundRate_values"
+	        android:defaultValue="@string/pref_foregroundRate_default"
+	        android:order="1" />
+        <ListPreference
+	        android:key="pref_backgroundRate"
+	        android:title="@string/pref_backgroundRate"
+	        android:dialogTitle="@string/pref_backgroundRate"
+	        android:entries="@array/pref_backgroundRate_entries"
+	        android:entryValues="@array/pref_backgroundRate_values"
+	        android:defaultValue="@string/pref_backgroundRate_default"
+	        android:order="2" />
+    </PreferenceCategory>
+</PreferenceScreen>
