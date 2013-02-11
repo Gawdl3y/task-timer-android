@@ -1,5 +1,6 @@
 package com.gawdl3y.android.tasktimer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -127,14 +128,11 @@ public class TaskService extends Service {
 			switch(msg.what) {
 			case MSG_GET_TASKS:
 				// Send the response message
-				response = Message.obtain(null, MSG_GET_TASKS);
-				contents = new Bundle();
-				contents.putSerializable("tasks", tasks);
-				response.setData(contents);
-				sendMessageToActivity(response);
+				sendObjectToActivity(MSG_GET_TASKS, "tasks", tasks);
 				break;
 			case MSG_ADD_TASK:
 				// TODO SQL
+				groups.get(msg.arg1).getTasks().add((Task) msg.getData().getSerializable("task"));
 				break;
 			case MSG_DELETE_TASK:
 				// TODO SQL
@@ -154,7 +152,12 @@ public class TaskService extends Service {
 				sendMessageToActivity(response);
 				break;
 			case MSG_ADD_GROUP:
-				// TODO SQL
+				// Add the group TODO SQL
+				Group group = (Group) msg.getData().getSerializable("group");
+				group.setId(10);
+				group.setPosition(groups.size());
+				groups.add(group);
+				sendObjectToActivity(MSG_GET_GROUPS, "groups", groups);
 				break;
 			case MSG_DELETE_GROUP:
 				// TODO SQL
@@ -197,6 +200,14 @@ public class TaskService extends Service {
 		
 		// Return the message to the global pool
 		msg.recycle();
+	}
+	
+	public void sendObjectToActivity(int msgType, String key, Object o) {
+		Message msg = Message.obtain(null, msgType);
+		Bundle contents = new Bundle();
+		contents.putSerializable(key, (Serializable) o);
+		msg.setData(contents);
+		sendMessageToActivity(msg);
 	}
 	
 	public ArrayList<Group> getGroups() {

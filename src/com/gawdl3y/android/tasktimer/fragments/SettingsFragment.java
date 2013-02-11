@@ -1,13 +1,13 @@
 package com.gawdl3y.android.tasktimer.fragments;
 
-import com.gawdl3y.android.tasktimer.R;
-import com.gawdl3y.android.tasktimer.SettingsActivity;
-
 import android.annotation.TargetApi;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+
+import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.SettingsActivity;
 
 /**
  * @author Schuyler Cebulskie

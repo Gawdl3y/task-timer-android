@@ -16,9 +16,9 @@ import com.gawdl3y.android.tasktimer.adapters.TaskListFragmentAdapter;
 public class MainFragment extends SherlockFragment {
 	private static final String TAG = "MainFragment";
 	
-	private View view;
-	private TaskListFragmentAdapter adapter;
-	private ViewPager pager;
+	public View view;
+	public TaskListFragmentAdapter adapter;
+	public ViewPager pager;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
