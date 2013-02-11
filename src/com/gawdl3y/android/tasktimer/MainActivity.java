@@ -147,9 +147,9 @@ public class MainActivity extends SherlockFragmentActivity {
 	        	
 				// Add or replace
 	        	if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-					transaction.add(android.R.id.content, fragment);
+					transaction.add(R.id.activity_main, fragment);
 	        	} else {
-					transaction.replace(android.R.id.content, fragment);
+					transaction.replace(R.id.activity_main, fragment);
 	        	}
 	        	
 	        	// Add to back stack and commit
