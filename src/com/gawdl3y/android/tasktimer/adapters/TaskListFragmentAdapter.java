@@ -12,7 +12,7 @@ import com.gawdl3y.android.tasktimer.fragments.TaskListFragment;
 public class TaskListFragmentAdapter extends FragmentPagerAdapter {
 	private static final String TAG = "TaskListFragmentAdapter";
 	
-	private ArrayList<Group> groups;
+	public ArrayList<Group> groups;
 
 	public TaskListFragmentAdapter(FragmentManager fm, ArrayList<Group> groups) {
 		super(fm);

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +14,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
@@ -26,10 +26,13 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.classes.Task;
+import com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment;
+import com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment.GroupEditDialogListener;
 import com.gawdl3y.android.tasktimer.fragments.MainFragment;
-import com.gawdl3y.android.tasktimer.fragments.TaskEditFragment;
+import com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment;
+import com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment.TaskEditDialogListener;
 
-public class MainActivity extends SherlockFragmentActivity {
+public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener {
 	public static String PACKAGE = null;
 	public static String TAG = "MainActivity";
 	public static int THEME = R.style.Theme_Dark;
@@ -39,7 +42,8 @@ public class MainActivity extends SherlockFragmentActivity {
 	public static ArrayList<Group> groups = new ArrayList<Group>();
 	public static ArrayList<Task> tasks = new ArrayList<Task>();
 	
-	//private TaskService service;
+	private MainFragment mainFragment;
+	
 	private Messenger messenger = new Messenger(new IncomingHandler()), serviceMessenger;
 	private boolean connected = false;
 	
@@ -48,7 +52,6 @@ public class MainActivity extends SherlockFragmentActivity {
 			Log.v(TAG, "Service connected: " + name);
 			
 			// Set the service messenger and connected status
-			//TaskListActivity.this.service = ((TaskService.ServiceBinder) service).getService();
 			MainActivity.this.serviceMessenger = new Messenger(service);
 			MainActivity.this.connected = true;
 			
@@ -61,7 +64,6 @@ public class MainActivity extends SherlockFragmentActivity {
 			Log.v(TAG, "Service disconnected: " + name);
 			
 			// Reset the service messenger and connection status
-			//MainActivity.this.service = null;
 			MainActivity.this.serviceMessenger = null;
 			MainActivity.this.connected = false;
 		}
@@ -138,23 +140,18 @@ public class MainActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
+		FragmentManager fm;
 		
 	    switch(item.getItemId()) {
 	        case R.id.menu_new_task:
-	        	// Create new fragment and transaction
-	        	TaskEditFragment fragment = new TaskEditFragment();
-				FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-	        	
-				// Add or replace
-	        	if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-					transaction.add(R.id.activity_main, fragment);
-	        	} else {
-					transaction.replace(R.id.activity_main, fragment);
-	        	}
-	        	
-	        	// Add to back stack and commit
-	        	transaction.addToBackStack(null);
-	        	transaction.commit();
+				fm = getSupportFragmentManager();
+				TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(null);
+				taskEditDialog.show(fm, "fragment_task_edit");
+	        	return true;
+	        case R.id.menu_new_group:
+	        	fm = getSupportFragmentManager();
+				GroupEditDialogFragment groupEditDialog = GroupEditDialogFragment.newInstance(null);
+				groupEditDialog.show(fm, "fragment_group_edit");
 	        	return true;
 	        case R.id.menu_settings:
 	        	intent = new Intent(this, SettingsActivity.class);
@@ -164,9 +161,28 @@ public class MainActivity extends SherlockFragmentActivity {
 	        	Message msg = Message.obtain(null, TaskService.MSG_EXIT);
 	        	sendMessageToService(msg);
 	        	finish();
+	        	return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	@Override
+	public void onFinishEditDialog(Group group) {
+		Message msg = Message.obtain(null, TaskService.MSG_ADD_GROUP);
+		Bundle contents = new Bundle();
+		contents.putSerializable("group", group);
+		msg.setData(contents);
+		sendMessageToService(msg);
+	}
+	
+	@Override
+	public void onFinishEditDialog(Task task) {
+		Message msg = Message.obtain(null, TaskService.MSG_ADD_TASK);
+		Bundle contents = new Bundle();
+		contents.putSerializable("task", task);
+		msg.setData(contents);
+		sendMessageToService(msg);
 	}
 	
 	public void onTaskButtonClick(View view) {
@@ -200,9 +216,11 @@ public class MainActivity extends SherlockFragmentActivity {
 			switch(msg.what) {
 			case TaskService.MSG_GET_TASKS:
 				tasks = (ArrayList<Task>) msg.getData().getSerializable("tasks");
+				buildList();
 				break;
 			case TaskService.MSG_GET_GROUPS:
 				groups = (ArrayList<Group>) msg.getData().getSerializable("groups");
+				buildList();
 				break;
 			case TaskService.MSG_GET_ALL:
 				// Set the objects
@@ -211,8 +229,9 @@ public class MainActivity extends SherlockFragmentActivity {
 				tasks = (ArrayList<Task>) data.getSerializable("tasks");
 				
 				// Add the main fragment to the activity
+				mainFragment = new MainFragment();
 				FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-				transaction.add(R.id.activity_main, new MainFragment());
+				transaction.add(R.id.activity_main, mainFragment);
 				transaction.commit();
 				
 				// Hide the loading indicator
@@ -242,5 +261,10 @@ public class MainActivity extends SherlockFragmentActivity {
 		
 		// Return the message to the global pool
 		msg.recycle();
+	}
+	
+	private void buildList() {
+		mainFragment.adapter.groups = groups;
+		mainFragment.adapter.notifyDataSetChanged();
 	}
 }

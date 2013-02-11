@@ -127,6 +127,18 @@
     <string name="task_start">Start</string>
     <string name="task_pause">Pause</string>
     
+    <string name="task_new">New Task</string>
+    <string name="task_add">Add Task</string>
+    <string name="task_edit">Edit Task</string>
+    
+    
+    <!-- Group strings -->
+    <string name="group_name">Name</string>
+    
+    <string name="group_new">New Group</string>
+    <string name="group_add">Add Group</string>
+    <string name="group_edit">Edit Group</string>
+    
     
     <!-- General strings -->
     <string name="no_tasks">No tasks</string>
