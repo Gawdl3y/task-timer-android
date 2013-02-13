@@ -65,13 +65,21 @@
         android:order="3">
         
         <ListPreference
+	        android:key="pref_autosaveRate"
+	        android:title="@string/pref_autosaveRate"
+	        android:dialogTitle="@string/pref_autosaveRate"
+	        android:entries="@array/pref_autosaveRate_entries"
+	        android:entryValues="@array/pref_autosaveRate_values"
+	        android:defaultValue="@string/pref_autosaveRate_default"
+	        android:order="1" />
+        <ListPreference
 	        android:key="pref_foregroundRate"
 	        android:title="@string/pref_foregroundRate"
 	        android:dialogTitle="@string/pref_foregroundRate"
 	        android:entries="@array/pref_foregroundRate_entries"
 	        android:entryValues="@array/pref_foregroundRate_values"
 	        android:defaultValue="@string/pref_foregroundRate_default"
-	        android:order="1" />
+	        android:order="2" />
         <ListPreference
 	        android:key="pref_backgroundRate"
 	        android:title="@string/pref_backgroundRate"
@@ -79,6 +87,6 @@
 	        android:entries="@array/pref_backgroundRate_entries"
 	        android:entryValues="@array/pref_backgroundRate_values"
 	        android:defaultValue="@string/pref_backgroundRate_default"
-	        android:order="2" />
+	        android:order="3" />
     </PreferenceCategory>
 </PreferenceScreen>
