@@ -215,19 +215,20 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		public void handleMessage(Message msg) {
 			Log.d(TAG, "Received message: " + msg);
 			
+			Bundle data = msg.getData();
+			data.setClassLoader(getClassLoader());
+			
 			switch(msg.what) {
 			case TaskService.MSG_GET_TASKS:
-				tasks = msg.getData().getParcelableArrayList("tasks");
+				tasks = data.getParcelableArrayList("tasks");
 				buildList();
 				break;
 			case TaskService.MSG_GET_GROUPS:
-				groups = msg.getData().getParcelableArrayList("groups");
+				groups = data.getParcelableArrayList("groups");
 				if(msg.arg1 != -1) buildList(msg.arg1); else buildList();
 				break;
 			case TaskService.MSG_GET_ALL:
 				// Set the objects
-				Bundle data = msg.getData();
-				data.setClassLoader(getClassLoader());
 				groups = data.getParcelableArrayList("groups");
 				tasks = data.getParcelableArrayList("tasks");
 				
