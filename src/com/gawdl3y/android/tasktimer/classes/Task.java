@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import android.content.res.TypedArray;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -16,7 +18,7 @@ import com.gawdl3y.android.tasktimer.R;
  * @author Schuyler Cebulskie
  * A class that contains a time, goal time, and task-related properties
  */
-public class Task implements Serializable {
+public class Task implements Serializable, Parcelable {
 	private static final long serialVersionUID = -5638162774940783076L;
 	
 	private String name, description;
@@ -58,6 +60,13 @@ public class Task implements Serializable {
 		this.group = group;
 	}
 	
+	/**
+	 * Parcel constructor
+	 * @param parcel The parcel to read from
+	 */
+	public Task(Parcel parcel) {
+		readFromParcel(parcel);
+	}
 	
 
 	/**
@@ -212,7 +221,7 @@ public class Task implements Serializable {
 	
 
 	/**
-	 * Gets the category of the Task
+	 * Gets the group of the Task
 	 * @return The category of the Task
 	 */
 	public int getGroup() {
@@ -220,7 +229,7 @@ public class Task implements Serializable {
 	}
 
 	/**
-	 * Sets the category of the Task
+	 * Sets the group of the Task
 	 * @param category The category of the Task
 	 */
 	public void setGroup(int category) {
@@ -333,11 +342,73 @@ public class Task implements Serializable {
 		toggleView.setTag(task.getPosition());
 	}
 	
+	
+	/* (non-Javadoc)
+	 * Describe the contents for the parcel
+	 * @see android.os.Parcelable#describeContents()
+	 */
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * Write the Task to a parcel
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+	 */
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(name);
+		dest.writeString(description);
+		dest.writeParcelable(time, flags);
+		dest.writeParcelable(goal, flags);
+		dest.writeByte((byte) (indefinite ? 1 : 0));
+		dest.writeByte((byte) (complete ? 1 : 0));
+		dest.writeByte((byte) (running ? 1 : 0));
+		dest.writeByte((byte) (stopAtGoal ? 1 : 0));
+		dest.writeInt(id);
+		dest.writeInt(position);
+		dest.writeInt(group);
+	}
+	
+	/**
+	 * Fills the Task from a parcel
+	 * @param in The parcel to read from
+	 */
+	private void readFromParcel(Parcel in) {
+		name = in.readString();
+		description = in.readString();
+		time = (Time) in.readParcelable(Time.class.getClassLoader());
+		goal = (Time) in.readParcelable(Time.class.getClassLoader());
+		indefinite = in.readByte() == 1 ? true : false;
+		complete = in.readByte() == 1 ? true : false;
+		running = in.readByte() == 1 ? true : false;
+		stopAtGoal = in.readByte() == 1 ? true : false;
+		id = in.readInt();
+		position = in.readInt();
+		group = in.readInt();
+	}
+	
+	
+	/**
+	 * The Parcel creator used to create new instances of the Task from a parcel
+	 */
+	public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
+		public Task createFromParcel(Parcel in) {
+			return new Task(in);
+		}
+
+		public Task[] newArray(int size) {
+			return new Task[size];
+		}
+	};
+	
+	
 	/**
 	 * @author Schuyler Cebulskie
 	 * A simple time class used to keep track of Tasks' times
 	 */
-	public static final class Time implements Serializable, Comparable<Time> {
+	public static final class Time implements Serializable, Parcelable, Comparable<Time> {
 		private static final long serialVersionUID = -2489624821453413799L;
 		
 		private int hours;
@@ -361,6 +432,15 @@ public class Task implements Serializable {
 			this.mins = (short) mins;
 			this.secs = (short) secs;
 		}
+		
+		/**
+		 * Parcel constructor
+		 * @param parcel The parcel to read from
+		 */
+		public Time(Parcel parcel) {
+			this(parcel.readInt(), parcel.readInt(), parcel.readInt());
+		}
+		
 		
 		/**
 		 * Gets the hours
@@ -457,6 +537,28 @@ public class Task implements Serializable {
 			}
 		}
 		
+		
+		/* (non-Javadoc)
+		 * Describes the contents for the parcel
+		 * @see android.os.Parcelable#describeContents()
+		 */
+		@Override
+		public int describeContents() {
+			return 0;
+		}
+
+		/* (non-Javadoc)
+		 * Writes the time to a parcel
+		 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+		 */
+		@Override
+		public void writeToParcel(Parcel dest, int flags) {
+			dest.writeInt(hours);
+			dest.writeInt(mins);
+			dest.writeInt(secs);
+		}
+		
+		
 		/* (non-Javadoc)
 		 * Compares the time to another time
 		 * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -475,7 +577,22 @@ public class Task implements Serializable {
 		public String toString() {
 			return hours + ":" + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
 		}
+		
+		
+		/**
+		 * The Parcel creator used to create new instances of the Time from a parcel
+		 */
+		public static final Parcelable.Creator<Time> CREATOR = new Parcelable.Creator<Time>() {
+			public Time createFromParcel(Parcel in) {
+				return new Time(in);
+			}
+
+			public Time[] newArray(int size) {
+				return new Time[size];
+			}
+		};
 	}
+	
 	
 	/**
 	 * @author Schuyler Cebulskie
@@ -503,7 +620,7 @@ public class Task implements Serializable {
 	
 	/**
 	 * @author Schuyler Cebulskie
-	 * The comparator for comparing Group IDs
+	 * The comparator for comparing Task IDs
 	 */
 	public static final class IDComparator implements Comparator<Task> {
 		@Override

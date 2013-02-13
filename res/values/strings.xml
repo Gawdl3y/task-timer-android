@@ -134,10 +134,17 @@
     
     <!-- Group strings -->
     <string name="group_name">Name</string>
+    <string name="group_position">Position</string>
     
     <string name="group_new">New Group</string>
     <string name="group_add">Add Group</string>
     <string name="group_edit">Edit Group</string>
+    
+    
+    <!-- Position strings -->
+    <string name="position_before">Before \"%1$s\"</string>
+    <string name="position_after">After \"%1$s\"</string>
+    <string name="position_end">End of the list</string>
     
     
     <!-- General strings -->

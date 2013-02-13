@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -123,16 +124,21 @@ public class TaskService extends Service {
 			Log.d(TAG, "Received message: " + msg);
 			
 			Message response;
-			Bundle contents;
+			Bundle contents = new Bundle();
+			Bundle data = msg.getData();
+			data.setClassLoader(getClassLoader());
 			
 			switch(msg.what) {
 			case MSG_GET_TASKS:
 				// Send the response message
-				sendObjectToActivity(MSG_GET_TASKS, "tasks", tasks);
+				response = Message.obtain(null, MSG_GET_TASKS);
+				contents.putParcelableArrayList("tasks", tasks);
+				response.setData(contents);
+				sendMessageToActivity(response);
 				break;
 			case MSG_ADD_TASK:
 				// TODO SQL
-				groups.get(msg.arg1).getTasks().add((Task) msg.getData().getSerializable("task"));
+				groups.get(msg.arg1).getTasks().add((Task) data.getParcelable("task"));
 				break;
 			case MSG_DELETE_TASK:
 				// TODO SQL
@@ -140,24 +146,29 @@ public class TaskService extends Service {
 				break;
 			case MSG_UPDATE_TASK:
 				// TODO SQL
-				groups.get(msg.arg1).getTasks().set(msg.arg2, (Task) msg.getData().getSerializable("task"));
+				groups.get(msg.arg1).getTasks().set(msg.arg2, (Task) data.getParcelable("task"));
 				break;
 				
 			case MSG_GET_GROUPS:
 				// Send the response message
 				response = Message.obtain(null, MSG_GET_GROUPS);
-				contents = new Bundle();
-				contents.putSerializable("groups", groups);
+				contents.putParcelableArrayList("groups", groups);
 				response.setData(contents);
 				sendMessageToActivity(response);
 				break;
 			case MSG_ADD_GROUP:
 				// Add the group TODO SQL
-				Group group = (Group) msg.getData().getSerializable("group");
+				Group group = (Group) data.getParcelable("group");
 				group.setId(10);
-				group.setPosition(groups.size());
-				groups.add(group);
-				sendObjectToActivity(MSG_GET_GROUPS, "groups", groups);
+				groups.add(msg.arg1, group);
+				reorder(groups);
+				
+				// Send the groups back to the activity
+				response = Message.obtain(null, MSG_GET_GROUPS);
+				contents.putParcelableArrayList("groups", groups);
+				response.setData(contents);
+				response.arg1 = group.getPosition();
+				sendMessageToActivity(response);
 				break;
 			case MSG_DELETE_GROUP:
 				// TODO SQL
@@ -169,9 +180,9 @@ public class TaskService extends Service {
 			case MSG_GET_ALL:
 				// Send the response message
 				response = Message.obtain(null, MSG_GET_ALL);
-				contents = new Bundle();
-				contents.putSerializable("groups", groups);
-				contents.putSerializable("tasks", tasks);
+				Log.d(TAG, groups.toArray().toString());
+				contents.putParcelableArrayList("groups", groups);
+				contents.putParcelableArrayList("tasks", tasks);
 				response.setData(contents);
 				sendMessageToActivity(response);
 				break;
@@ -205,9 +216,32 @@ public class TaskService extends Service {
 	public void sendObjectToActivity(int msgType, String key, Object o) {
 		Message msg = Message.obtain(null, msgType);
 		Bundle contents = new Bundle();
-		contents.putSerializable(key, (Serializable) o);
+		contents.putParcelable(key, (Parcelable) o);
 		msg.setData(contents);
 		sendMessageToActivity(msg);
+	}
+	
+	public void sendObjectToActivity(int msgType, String key, Object o, int arg1) {
+		Message msg = Message.obtain(null, msgType);
+		Bundle contents = new Bundle();
+		contents.putParcelable(key, (Parcelable) o);
+		msg.setData(contents);
+		msg.arg1 = arg1;
+		sendMessageToActivity(msg);
+	}
+	
+	public void reorder(ArrayList<?> arr) {
+		for(int i = 0; i < arr.size(); i++) {
+			Object thing = arr.get(i);
+			
+			if(thing instanceof Task) {
+				((Task) thing).setPosition(i);
+			} else if(thing instanceof Group) {
+				((Group) thing).setPosition(i);
+			}  else {
+				return;
+			}
+		}
 	}
 	
 	public ArrayList<Group> getGroups() {

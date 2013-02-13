@@ -4,11 +4,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import com.gawdl3y.android.tasktimer.MainActivity;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author Schuyler Cebulskie
  * A simple class for grouping together Tasks
  */
-public class Group implements Serializable {
+public class Group implements Serializable, Parcelable {
 	private static final long serialVersionUID = -8667036902807578578L;
 	
 	private String name;
@@ -33,6 +38,15 @@ public class Group implements Serializable {
 		this.position = position;
 		this.id = id;
 	}
+	
+	/**
+	 * Parcel constructor
+	 * @param parcel The parcel to read from
+	 */
+	public Group(Parcel parcel) {
+		readFromParcel(parcel);
+	}
+	
 	
 	/**
 	 * Gets the name of the Group
@@ -98,6 +112,55 @@ public class Group implements Serializable {
 		this.id = id;
 	}
 	
+	
+	/* (non-Javadoc)
+	 * Describes the contents for the parcel
+	 * @see android.os.Parcelable#describeContents()
+	 */
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * Writes the group to a parcel
+	 * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+	 */
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(name);
+		dest.writeTypedList(tasks);
+		dest.writeInt(position);
+		dest.writeInt(id);
+	}
+	
+	/**
+	 * Fills the Group from a parcel
+	 * @param in The parcel to read from
+	 */
+	private void readFromParcel(Parcel in) {
+		name = in.readString();
+		tasks = in.createTypedArrayList(Task.CREATOR);
+		position = in.readInt();
+		id = in.readInt();
+	}
+	
+	
+	/**
+	 * The Parcel creator used to create new instances of the Group from a parcel
+	 */
+	public static final Parcelable.Creator<Group> CREATOR = new Parcelable.Creator<Group>() {
+		public Group createFromParcel(Parcel in) {
+			return new Group(in);
+		}
+
+		public Group[] newArray(int size) {
+			return new Group[size];
+		}
+	};
+	
+	
 	/**
 	 * @author Schuyler Cebulskie
 	 * The comparator for comparing Group names
@@ -134,5 +197,4 @@ public class Group implements Serializable {
 			return 0;
 		}
 	}
-	
 }

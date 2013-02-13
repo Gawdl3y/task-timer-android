@@ -1,6 +1,7 @@
 package com.gawdl3y.android.tasktimer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -150,7 +151,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	        	return true;
 	        case R.id.menu_new_group:
 	        	fm = getSupportFragmentManager();
-				GroupEditDialogFragment groupEditDialog = GroupEditDialogFragment.newInstance(null);
+				GroupEditDialogFragment groupEditDialog = GroupEditDialogFragment.newInstance(null, 0);
 				groupEditDialog.show(fm, "fragment_group_edit");
 	        	return true;
 	        case R.id.menu_settings:
@@ -168,11 +169,12 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	}
 	
 	@Override
-	public void onFinishEditDialog(Group group) {
+	public void onFinishEditDialog(Group group, int position) {
 		Message msg = Message.obtain(null, TaskService.MSG_ADD_GROUP);
 		Bundle contents = new Bundle();
-		contents.putSerializable("group", group);
+		contents.putParcelable("group", group);
 		msg.setData(contents);
+		msg.arg1 = position;
 		sendMessageToService(msg);
 	}
 	
@@ -180,7 +182,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	public void onFinishEditDialog(Task task) {
 		Message msg = Message.obtain(null, TaskService.MSG_ADD_TASK);
 		Bundle contents = new Bundle();
-		contents.putSerializable("task", task);
+		contents.putParcelable("task", task);
 		msg.setData(contents);
 		sendMessageToService(msg);
 	}
@@ -198,7 +200,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			msg = Message.obtain(null, TaskService.MSG_UPDATE_TASK);
 			msg.arg1 = (Integer) parent.getTag(R.id.tag_group);
 			msg.arg2 = (Integer) parent.getTag(R.id.tag_task);
-			contents.putSerializable("task", task);
+			contents.putParcelable("task", task);
 			msg.setData(contents);
 			sendMessageToService(msg);
 		}
@@ -215,18 +217,19 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			
 			switch(msg.what) {
 			case TaskService.MSG_GET_TASKS:
-				tasks = (ArrayList<Task>) msg.getData().getSerializable("tasks");
+				tasks = msg.getData().getParcelableArrayList("tasks");
 				buildList();
 				break;
 			case TaskService.MSG_GET_GROUPS:
-				groups = (ArrayList<Group>) msg.getData().getSerializable("groups");
-				buildList();
+				groups = msg.getData().getParcelableArrayList("groups");
+				if(msg.arg1 != -1) buildList(msg.arg1); else buildList();
 				break;
 			case TaskService.MSG_GET_ALL:
 				// Set the objects
 				Bundle data = msg.getData();
-				groups = (ArrayList<Group>) data.getSerializable("groups");
-				tasks = (ArrayList<Task>) data.getSerializable("tasks");
+				data.setClassLoader(getClassLoader());
+				groups = data.getParcelableArrayList("groups");
+				tasks = data.getParcelableArrayList("tasks");
 				
 				// Add the main fragment to the activity
 				mainFragment = new MainFragment();
@@ -266,5 +269,10 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	private void buildList() {
 		mainFragment.adapter.groups = groups;
 		mainFragment.adapter.notifyDataSetChanged();
+	}
+	
+	private void buildList(int position) {
+		buildList();
+		mainFragment.pager.setCurrentItem(position);
 	}
 }
