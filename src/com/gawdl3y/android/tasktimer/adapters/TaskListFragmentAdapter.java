@@ -2,10 +2,8 @@ package com.gawdl3y.android.tasktimer.adapters;
 
 import java.util.ArrayList;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
 import com.gawdl3y.android.tasktimer.classes.Group;

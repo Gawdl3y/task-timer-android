@@ -1,6 +1,5 @@
 package com.gawdl3y.android.tasktimer;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 

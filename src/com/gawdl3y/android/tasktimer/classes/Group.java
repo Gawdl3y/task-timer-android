@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import com.gawdl3y.android.tasktimer.MainActivity;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 

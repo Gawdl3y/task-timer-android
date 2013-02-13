@@ -1,7 +1,6 @@
 package com.gawdl3y.android.tasktimer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import android.content.ComponentName;
 import android.content.Context;
