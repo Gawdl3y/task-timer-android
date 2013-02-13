@@ -14,8 +14,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity android:name=".MainActivity" android:label="@string/app_name">
-            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
-        </activity><activity android:name=".SettingsActivity" android:label="@string/menu_settings"></activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".SettingsActivity" android:label="@string/menu_settings"></activity>
         
         <service android:description="@string/service_description" android:name=".TaskService" android:label="@string/service_label" android:process=":TaskService"></service>
         
