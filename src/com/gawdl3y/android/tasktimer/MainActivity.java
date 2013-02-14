@@ -39,8 +39,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	public static Resources RES = null;
 	public static SharedPreferences PREFS = null;
 	
-	public static ArrayList<Group> groups = new ArrayList<Group>();
-	public static ArrayList<Task> tasks = new ArrayList<Task>();
+	public static ArrayList<Group> groups;
+	public static ArrayList<Task> tasks;
 	
 	private MainFragment mainFragment;
 	
@@ -83,9 +83,6 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		PREFS = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		// Request window features
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		
 		// Switch theme
 		String theme = PREFS.getString("pref_theme", "0");
 		THEME = theme.equals("2") ? R.style.Theme_Light_DarkActionBar : (theme.equals("1") ? R.style.Theme_Light : R.style.Theme_Dark);
@@ -94,9 +91,15 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		// Call the superclass' method (we do this after setting the theme so that the theme properly applies to pre-honeycomb devices)
 		super.onCreate(savedInstanceState);
 		
+		// Request window features
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		
 		// Display
-		setSupportProgressBarIndeterminateVisibility(true);
 		setContentView(R.layout.activity_main);
+		
+		// Initialise
+		groups = new ArrayList<Group>();
+		tasks = new ArrayList<Task>();
 		
 		// Start and bind the service
 		Intent intent = new Intent(this, TaskService.class);
@@ -107,6 +110,14 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			Toast.makeText(this, "Task Service couldn't be bound", Toast.LENGTH_SHORT).show();
 			finish();
 		}
+	}
+	
+	protected void onStart() {
+		super.onStart();
+		
+		// Show the loading indicator if we don't have the groups or tasks yet
+		if(groups.size() == 0 && tasks.size() == 0) setSupportProgressBarIndeterminateVisibility(true);
+		Log.d(TAG, groups.size() + " " + tasks.size());
 	}
 	
 	/* (non-Javadoc)
@@ -167,6 +178,10 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	    }
 	}
 	
+	/* (non-Javadoc)
+	 * The add group dialog is finished
+	 * @see com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment.GroupEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.classes.Group, int)
+	 */
 	@Override
 	public void onFinishEditDialog(Group group, int position) {
 		Message msg = Message.obtain(null, TaskService.MSG_ADD_GROUP);
@@ -177,6 +192,10 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		sendMessageToService(msg);
 	}
 	
+	/* (non-Javadoc)
+	 * The add task dialog is finished
+	 * @see com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment.TaskEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.classes.Task)
+	 */
 	@Override
 	public void onFinishEditDialog(Task task) {
 		Message msg = Message.obtain(null, TaskService.MSG_ADD_TASK);
@@ -186,6 +205,10 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		sendMessageToService(msg);
 	}
 	
+	/**
+	 * A task button is clicked
+	 * @param view The view of the button that was clicked
+	 */
 	public void onTaskButtonClick(View view) {
 		View parent = (View) view.getParent();
 		Task task = groups.get((Integer) parent.getTag(R.id.tag_group)).getTasks().get((Integer) parent.getTag(R.id.tag_task));
@@ -266,11 +289,18 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		msg.recycle();
 	}
 	
+	/**
+	 * Builds the list of groups and tasks
+	 */
 	private void buildList() {
 		mainFragment.adapter.groups = groups;
 		mainFragment.adapter.notifyDataSetChanged();
 	}
 	
+	/**
+	 * Builds the list of groups and tasks, then switches to a group
+	 * @param position The position of the group to switch to
+	 */
 	private void buildList(int position) {
 		buildList();
 		mainFragment.pager.setCurrentItem(position);

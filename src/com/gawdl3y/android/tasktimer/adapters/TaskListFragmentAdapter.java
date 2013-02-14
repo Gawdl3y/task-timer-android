@@ -39,8 +39,10 @@ public class TaskListFragmentAdapter extends FragmentPagerAdapter {
 		int position = groups.indexOf(item.group);
 		
 		if(position >= 0) {
+			Log.v(TAG, "Item found at index " + position + ": " + item.group.toString());
 			return position;
 		} else {
+			Log.v(TAG, "Item not found");
 			return POSITION_NONE;
 		}
 	}

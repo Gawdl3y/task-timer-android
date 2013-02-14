@@ -179,7 +179,6 @@ public class TaskService extends Service {
 			case MSG_GET_ALL:
 				// Send the response message
 				response = Message.obtain(null, MSG_GET_ALL);
-				Log.d(TAG, groups.toArray().toString());
 				contents.putParcelableArrayList("groups", groups);
 				contents.putParcelableArrayList("tasks", tasks);
 				response.setData(contents);
