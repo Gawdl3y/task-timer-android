@@ -156,7 +156,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	    switch(item.getItemId()) {
 	        case R.id.menu_new_task:
 				fm = getSupportFragmentManager();
-				TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(null);
+				TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(null, mainFragment.pager.getCurrentItem());
 				taskEditDialog.show(fm, "fragment_task_edit");
 	        	return true;
 	        case R.id.menu_new_group:
@@ -183,12 +183,12 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	 * @see com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment.GroupEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.classes.Group, int)
 	 */
 	@Override
-	public void onFinishEditDialog(Group group, int position) {
+	public void onFinishEditDialog(Group group) {
 		Message msg = Message.obtain(null, TaskService.MSG_ADD_GROUP);
 		Bundle contents = new Bundle();
 		contents.putParcelable("group", group);
 		msg.setData(contents);
-		msg.arg1 = position;
+		msg.arg1 = group.getPosition();
 		sendMessageToService(msg);
 	}
 	
@@ -197,11 +197,12 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	 * @see com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment.TaskEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.classes.Task)
 	 */
 	@Override
-	public void onFinishEditDialog(Task task) {
+	public void onFinishEditDialog(Task task, int group) {
 		Message msg = Message.obtain(null, TaskService.MSG_ADD_TASK);
 		Bundle contents = new Bundle();
 		contents.putParcelable("task", task);
 		msg.setData(contents);
+		msg.arg1 = group;
 		sendMessageToService(msg);
 	}
 	

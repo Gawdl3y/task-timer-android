@@ -25,7 +25,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 	private Spinner positionView;
 	
 	public interface GroupEditDialogListener {
-		void onFinishEditDialog(Group group, int position);
+		void onFinishEditDialog(Group group);
 	}
 	
 	public GroupEditDialogFragment() {}
@@ -34,15 +34,15 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		// Load from saved instance state
-		if(savedInstanceState != null) {
-			group = (Group) savedInstanceState.getSerializable("group");
-		}
-		
 		// Load from arguments
 		if(getArguments() != null) {
 			Bundle args = getArguments();
 			group = (Group) args.getSerializable("group");
+		}
+		
+		// Load from saved instance state
+		if(savedInstanceState != null) {
+			group = (Group) savedInstanceState.getSerializable("group");
 		}
 	}
 	
@@ -54,18 +54,6 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		nameView = (EditText) view.findViewById(R.id.group_edit_name);
 		positionView = (Spinner) view.findViewById(R.id.group_edit_position);
 		
-		// Load from saved instance state
-		if(savedInstanceState != null) {
-			nameView.setText(savedInstanceState.getString("name"));
-			positionView.setSelection(savedInstanceState.getInt("position"));
-		}
-		
-		// Load from arguments
-		if(getArguments() != null) {
-			Bundle args = getArguments();
-			positionView.setSelection(args.getInt("position") == -1 ? 0 : args.getInt("position"));
-		}
-		
 		// Add the possible positions to the spinner
 		String[] opts = new String[MainActivity.groups.size() + 1];
 		opts[MainActivity.groups.size()] = MainActivity.RES.getString(R.string.position_end);
@@ -74,6 +62,18 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		positionView.setAdapter(adapter);
+		
+		// Load from arguments
+		if(getArguments() != null) {
+			Bundle args = getArguments();
+			positionView.setSelection(args.getInt("position") == -1 ? 0 : args.getInt("position"));
+		}
+		
+		// Load from saved instance state
+		if(savedInstanceState != null) {
+			nameView.setText(savedInstanceState.getString("name"));
+			positionView.setSelection(savedInstanceState.getInt("position"));
+		}
 		
 		// Create the dialog
 		return new AlertDialog.Builder(getActivity())
@@ -100,10 +100,11 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 			// Create the Group
 			if(group == null) group = new Group();
 			group.setName(nameView.getText().toString());
+			group.setPosition(positionView.getSelectedItemPosition());
 			
 			// Return group to activity
 			GroupEditDialogListener activity = (GroupEditDialogListener) getActivity();
-			activity.onFinishEditDialog(group, positionView.getSelectedItemPosition());
+			activity.onFinishEditDialog(group);
 			dismiss();
 			return true;
 		}
@@ -115,7 +116,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
 		
-		// Save the instance
+		// Save the data to the saved instance state
 		if(group != null) savedInstanceState.putSerializable("group", group);
 		savedInstanceState.putString("name", nameView.getText().toString());
 		savedInstanceState.putInt("position", positionView.getSelectedItemPosition());
@@ -125,7 +126,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		// Create a new fragment
 		GroupEditDialogFragment fragment = new GroupEditDialogFragment();
 		
-		// Set the arguments of the fragment
+		// Set the arguments on the fragment
 		Bundle args = new Bundle();
 		if(group != null) args.putSerializable("group", group);
 		args.putInt("position", position);
