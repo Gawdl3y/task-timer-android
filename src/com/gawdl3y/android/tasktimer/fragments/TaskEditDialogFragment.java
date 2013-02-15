@@ -21,7 +21,7 @@ import com.gawdl3y.android.tasktimer.classes.Task;
 
 public class TaskEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
 	private Task task;
-	private EditText nameView;
+	private EditText nameView, descriptionView;
 	private Spinner groupView, positionView;
 	
 	public interface TaskEditDialogListener {
@@ -54,6 +54,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		nameView = (EditText) view.findViewById(R.id.task_edit_name);
 		groupView = (Spinner) view.findViewById(R.id.task_edit_group);
 		positionView = (Spinner) view.findViewById(R.id.task_edit_position);
+		descriptionView = (EditText) view.findViewById(R.id.task_edit_description);
 		
 		// Add the possible groups to the group spinner
 		String[] opts = new String[MainActivity.groups.size()];
@@ -83,6 +84,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 			nameView.setText(savedInstanceState.getString("name"));
 			groupView.setSelection(savedInstanceState.getInt("group"));
 			positionView.setSelection(savedInstanceState.getInt("position"));
+			descriptionView.setText(savedInstanceState.getString("description"));
 		}
 		
 		// Create the dialog
@@ -111,6 +113,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 			if(task == null) task = new Task();
 			task.setName(nameView.getText().toString());
 			task.setPosition(positionView.getSelectedItemPosition());
+			task.setDescription(descriptionView.getText().toString());
 			
 			// Return task to activity
 			TaskEditDialogListener activity = (TaskEditDialogListener) getActivity();
@@ -131,6 +134,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		savedInstanceState.putString("name", nameView.getText().toString());
 		savedInstanceState.putInt("group", groupView.getSelectedItemPosition());
 		savedInstanceState.putInt("position", positionView.getSelectedItemPosition());
+		savedInstanceState.putString("description", descriptionView.getText().toString());
 	}
 	
 	public static final TaskEditDialogFragment newInstance(Task task, int group) {

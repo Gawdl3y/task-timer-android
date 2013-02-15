@@ -142,6 +142,7 @@
     <string name="task_progress">Progress</string>
     <string name="task_group">Group</string>
     <string name="task_position">Position</string>
+    <string name="task_description">Description</string>
     
     <string name="task_start">Start</string>
     <string name="task_pause">Pause</string>
