@@ -16,7 +16,7 @@ import com.gawdl3y.android.tasktimer.classes.Group;
 public class TaskListFragment extends SherlockListFragment {
 	private static final String TAG = "TaskListFragment";
 	
-	private TaskAdapter adapter;
+	public TaskAdapter adapter;
 	
 	public Group group;
 	
@@ -25,10 +25,10 @@ public class TaskListFragment extends SherlockListFragment {
 		super.onCreate(savedInstanceState);
 		
 		if(savedInstanceState != null) {
-			group = (Group) savedInstanceState.getSerializable("group");
+			group = (Group) savedInstanceState.getParcelable("group");
 		} else {
 			if(getArguments() != null) {
-				group = (Group) getArguments().getSerializable("group");
+				group = (Group) getArguments().getParcelable("group");
 			} else {
 				group = new Group();
 			}
@@ -58,13 +58,13 @@ public class TaskListFragment extends SherlockListFragment {
 	@Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("group", group);
+        outState.putParcelable("group", group);
     }
 	
 	public static TaskListFragment newInstance(Group group) {
 		TaskListFragment fragment = new TaskListFragment();
 		Bundle args = new Bundle();
-		args.putSerializable("group", group);
+		args.putParcelable("group", group);
 		fragment.setArguments(args);
 
 		return fragment;

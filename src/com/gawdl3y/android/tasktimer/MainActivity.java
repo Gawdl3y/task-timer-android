@@ -18,12 +18,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
+import com.gawdl3y.android.tasktimer.adapters.TaskAdapter;
 import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.classes.Task;
 import com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment;
@@ -31,6 +34,7 @@ import com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment.GroupEdit
 import com.gawdl3y.android.tasktimer.fragments.MainFragment;
 import com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment;
 import com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment.TaskEditDialogListener;
+import com.gawdl3y.android.tasktimer.fragments.TaskListFragment;
 
 public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener {
 	public static String PACKAGE = null;
@@ -247,7 +251,19 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				buildList();
 				break;
 			case TaskService.MSG_ADD_TASK:
+				Task task = data.getParcelable("task");
+				Group group = groups.get(msg.arg1);
+				group.getTasks().add(task);
 				
+				// Update the task list fragment for the group
+				TaskListFragment fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
+				fragment.group = group;
+				fragment.adapter.group = msg.arg1;
+				fragment.adapter.notifyDataSetChanged();
+				
+				// Update the main adapter
+				mainFragment.adapter.groups.set(msg.arg1, group);
+				mainFragment.adapter.notifyDataSetChanged();
 				break;
 			case TaskService.MSG_GET_GROUPS:
 				groups = data.getParcelableArrayList("groups");

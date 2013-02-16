@@ -18,7 +18,7 @@ import com.gawdl3y.android.tasktimer.classes.Task;
 public class TaskAdapter extends ArrayAdapter<Task> {
 	private static final String TAG = "TaskAdapter";
 	
-	private int group;
+	public int group;
 	
 	public TaskAdapter(Context context, ArrayList<Task> tasks, int group) {
 		super(context, R.layout.task_list_item, R.id.task_name, tasks);
