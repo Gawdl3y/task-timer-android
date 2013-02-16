@@ -92,7 +92,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 				.setTitle(task == null ? R.string.task_new : R.string.task_edit)
 				.setView(view)
 				.setCancelable(true)
-				.setPositiveButton(R.string.group_add, new DialogInterface.OnClickListener() {
+				.setPositiveButton(R.string.task_add, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						onEditorAction(null, EditorInfo.IME_ACTION_DONE, null);

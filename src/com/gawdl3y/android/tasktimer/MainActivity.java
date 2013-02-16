@@ -98,8 +98,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		setContentView(R.layout.activity_main);
 		
 		// Initialise
-		groups = new ArrayList<Group>();
-		tasks = new ArrayList<Task>();
+		if(groups == null) groups = new ArrayList<Group>();
+		if(tasks == null) tasks = new ArrayList<Task>();
 		
 		// Start and bind the service
 		Intent intent = new Intent(this, TaskService.class);
@@ -245,6 +245,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			case TaskService.MSG_GET_TASKS:
 				tasks = data.getParcelableArrayList("tasks");
 				buildList();
+				break;
+			case TaskService.MSG_ADD_TASK:
+				
 				break;
 			case TaskService.MSG_GET_GROUPS:
 				groups = data.getParcelableArrayList("groups");
