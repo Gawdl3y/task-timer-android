@@ -264,6 +264,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				// Update the main adapter
 				mainFragment.adapter.groups.set(msg.arg1, group);
 				mainFragment.adapter.notifyDataSetChanged();
+				
+				// Scroll to the group that the task was added to
+				mainFragment.pager.setCurrentItem(msg.arg1);
 				break;
 			case TaskService.MSG_GET_GROUPS:
 				groups = data.getParcelableArrayList("groups");
