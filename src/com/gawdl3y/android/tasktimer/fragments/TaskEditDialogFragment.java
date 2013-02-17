@@ -52,9 +52,9 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		LayoutInflater inflater = LayoutInflater.from(getActivity());
 		View view = inflater.inflate(R.layout.fragment_task_edit, null);
 		nameView = (EditText) view.findViewById(R.id.task_edit_name);
+		descriptionView = (EditText) view.findViewById(R.id.task_edit_description);
 		groupView = (Spinner) view.findViewById(R.id.task_edit_group);
 		positionView = (Spinner) view.findViewById(R.id.task_edit_position);
-		descriptionView = (EditText) view.findViewById(R.id.task_edit_description);
 		
 		// Add the possible groups to the group spinner
 		String[] opts = new String[MainActivity.groups.size()];
@@ -92,7 +92,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 				.setTitle(task == null ? R.string.task_new : R.string.task_edit)
 				.setView(view)
 				.setCancelable(true)
-				.setPositiveButton(R.string.task_add, new DialogInterface.OnClickListener() {
+				.setPositiveButton(task == null ? R.string.task_add : R.string.task_save, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						onEditorAction(null, EditorInfo.IME_ACTION_DONE, null);
@@ -130,7 +130,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		super.onSaveInstanceState(savedInstanceState);
 		
 		// Save the data to the saved instance state
-		if(task != null) savedInstanceState.putSerializable("task", task);
+		if(task != null) savedInstanceState.putParcelable("task", task);
 		savedInstanceState.putString("name", nameView.getText().toString());
 		savedInstanceState.putInt("group", groupView.getSelectedItemPosition());
 		savedInstanceState.putInt("position", positionView.getSelectedItemPosition());
@@ -143,7 +143,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		
 		// Set the arguments on the fragment
 		Bundle args = new Bundle();
-		if(task != null) args.putSerializable("task", task);
+		if(task != null) args.putParcelable("task", task);
 		args.putInt("group", group);
 		args.putInt("position", 0);
 		fragment.setArguments(args);

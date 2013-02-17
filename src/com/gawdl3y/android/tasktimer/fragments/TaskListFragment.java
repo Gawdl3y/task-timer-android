@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,7 +19,6 @@ public class TaskListFragment extends SherlockListFragment {
 	private static final String TAG = "TaskListFragment";
 	
 	public TaskAdapter adapter;
-	
 	public Group group;
 	
 	@Override
@@ -47,6 +48,18 @@ public class TaskListFragment extends SherlockListFragment {
 		
 		Log.v(TAG, "View created");
 		return view;
+	}
+	
+	public void onActivityCreated(Bundle savedState) {
+		super.onActivityCreated(savedState);
+
+		getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				Toast.makeText(getActivity(), "Long press", Toast.LENGTH_SHORT).show();
+				return true;
+			}
+		});
 	}
 
 	@Override

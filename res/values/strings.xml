@@ -150,6 +150,7 @@
     <string name="task_new">New Task</string>
     <string name="task_add">Add Task</string>
     <string name="task_edit">Edit Task</string>
+    <string name="task_save">Save Task</string>
     
     
     <!-- Group strings -->
@@ -159,6 +160,7 @@
     <string name="group_new">New Group</string>
     <string name="group_add">Add Group</string>
     <string name="group_edit">Edit Group</string>
+    <string name="group_save">Save Group</string>
     
     
     <!-- Position strings -->

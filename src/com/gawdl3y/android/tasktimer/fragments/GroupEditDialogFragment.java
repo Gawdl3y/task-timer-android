@@ -37,12 +37,12 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		// Load from arguments
 		if(getArguments() != null) {
 			Bundle args = getArguments();
-			group = (Group) args.getSerializable("group");
+			group = (Group) args.getParcelable("group");
 		}
 		
 		// Load from saved instance state
 		if(savedInstanceState != null) {
-			group = (Group) savedInstanceState.getSerializable("group");
+			group = (Group) savedInstanceState.getParcelable("group");
 		}
 	}
 	
@@ -80,7 +80,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 				.setTitle(group == null ? R.string.group_new : R.string.group_edit)
 				.setView(view)
 				.setCancelable(true)
-				.setPositiveButton(R.string.group_add, new DialogInterface.OnClickListener() {
+				.setPositiveButton(group == null ? R.string.group_add : R.string.group_save, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						onEditorAction(null, EditorInfo.IME_ACTION_DONE, null);
@@ -117,7 +117,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		super.onSaveInstanceState(savedInstanceState);
 		
 		// Save the data to the saved instance state
-		if(group != null) savedInstanceState.putSerializable("group", group);
+		if(group != null) savedInstanceState.putParcelable("group", group);
 		savedInstanceState.putString("name", nameView.getText().toString());
 		savedInstanceState.putInt("position", positionView.getSelectedItemPosition());
 	}
@@ -128,7 +128,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		
 		// Set the arguments on the fragment
 		Bundle args = new Bundle();
-		if(group != null) args.putSerializable("group", group);
+		if(group != null) args.putParcelable("group", group);
 		args.putInt("position", position);
 		fragment.setArguments(args);
 		
