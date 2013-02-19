@@ -112,12 +112,14 @@ public class Group implements Serializable, Parcelable {
 	
 	
 	/**
-	 * Tests to see if the provided Group has the same ID as this one
-	 * @param group The Group to compare to
-	 * @return Whether or not the IDs are the same
+	 * Tests to see if the provided object is the same Group as this one (using IDs)
+	 * @param obj The object to compare to
+	 * @return Whether or not the object is the same
 	 */
-	public boolean equals(Group group) {
-		return id == group.getId();
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) return false;
+		return id == ((Group) obj).getId();
 	}
 	
 	

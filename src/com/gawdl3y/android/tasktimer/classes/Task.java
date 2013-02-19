@@ -344,12 +344,14 @@ public class Task implements Serializable, Parcelable {
 	
 	
 	/**
-	 * Tests to see if the provided Task has the same ID as this one
-	 * @param task The Task to compare to
-	 * @return Whether or not the IDs are the same
+	 * Tests to see if the provided object is the same Task as this one (using IDs)
+	 * @param obj The object to compare to
+	 * @return Whether or not the object is the same
 	 */
-	public boolean equals(Task task) {
-		return id == task.getId();
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == null) return false;
+		return id == ((Task) obj).getId();
 	}
 	
 	

@@ -30,7 +30,7 @@ public class TaskListFragmentAdapter extends FragmentPagerAdapter {
 	 */
 	@Override
 	public TaskListFragment getItem(int position) {
-		Log.v(TAG, "Getting item");
+		Log.v(TAG, "Getting item " + position);
 		return TaskListFragment.newInstance(groups.get(position));
 	}
 	
