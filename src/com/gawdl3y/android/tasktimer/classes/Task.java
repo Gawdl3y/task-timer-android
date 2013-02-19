@@ -418,7 +418,7 @@ public class Task implements Serializable, Parcelable {
 	 * @author Schuyler Cebulskie
 	 * A simple time class used to keep track of Tasks' times
 	 */
-	public static final class Time implements Serializable, Parcelable, Comparable<Time>, Comparator<Time> {
+	public static final class Time implements Serializable, Parcelable, Comparable<Time> {
 		private static final long serialVersionUID = -2489624821453413799L;
 		
 		private int hours;
@@ -580,19 +580,6 @@ public class Task implements Serializable, Parcelable {
 		}
 		
 		
-		
-		/* (non-Javadoc)
-		 * Compares two Times
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
-		@Override
-		public int compare(Time t1, Time t2) {
-			double a = t1.toDouble(), b = t2.toDouble();
-			if(a < b) return -1;
-			if(a > b) return 1;
-			return 0;
-		}
-		
 		/* (non-Javadoc)
 		 * Compares the time to another time
 		 * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -619,6 +606,19 @@ public class Task implements Serializable, Parcelable {
 			return hours + (mins / 60.0) + (secs / 3600.0);
 		}
 		
+		
+		/**
+		 * Compares two times
+		 * @param t1 First time to compare
+		 * @param t2 Second time to compare
+		 * @return 1 if the first is greater, -1 if the second is greater, or 0 if they are equal
+		 */
+		public static int compare(Time t1, Time t2) {
+			double a = t1.toDouble(), b = t2.toDouble();
+			if(a < b) return -1;
+			if(a > b) return 1;
+			return 0;
+		}
 		
 		/**
 		 * Returns a new Time object from the double-form time
