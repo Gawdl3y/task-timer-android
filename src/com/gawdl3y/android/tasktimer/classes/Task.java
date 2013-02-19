@@ -316,7 +316,7 @@ public class Task implements Serializable, Parcelable {
 	 * @param task The Task to update the view of
 	 * @param view The view of the task
 	 */
-	public static final void updateView(Task task, View view) {
+	public static void updateView(Task task, View view) {
 		TextView nameView = (TextView) view.findViewById(R.id.task_name);
 		TextView timeView = (TextView) view.findViewById(R.id.task_time);
 		TextView goalView = (TextView) view.findViewById(R.id.task_goal);
@@ -418,7 +418,7 @@ public class Task implements Serializable, Parcelable {
 	 * @author Schuyler Cebulskie
 	 * A simple time class used to keep track of Tasks' times
 	 */
-	public static final class Time implements Serializable, Parcelable, Comparable<Time> {
+	public static final class Time implements Serializable, Parcelable, Comparable<Time>, Comparator<Time> {
 		private static final long serialVersionUID = -2489624821453413799L;
 		
 		private int hours;
@@ -580,14 +580,26 @@ public class Task implements Serializable, Parcelable {
 		}
 		
 		
+		
+		/* (non-Javadoc)
+		 * Compares two Times
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
+		@Override
+		public int compare(Time t1, Time t2) {
+			double a = t1.toDouble(), b = t2.toDouble();
+			if(a < b) return -1;
+			if(a > b) return 1;
+			return 0;
+		}
+		
 		/* (non-Javadoc)
 		 * Compares the time to another time
 		 * @see java.lang.Comparable#compareTo(java.lang.Object)
 		 */
 		@Override
 		public int compareTo(Time another) {
-			// TODO Implement time comparing
-			return 0;
+			return compare(this, another);
 		}
 		
 		/* (non-Javadoc)
