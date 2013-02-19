@@ -42,6 +42,7 @@ public class TaskService extends Service {
 	private Notification notification;
 	private ArrayList<Task> tasks = new ArrayList<Task>();
 	private ArrayList<Group> groups = new ArrayList<Group>();
+	private int groupID, taskID;
 	
 	@Override
 	public void onCreate() {
@@ -67,7 +68,7 @@ public class TaskService extends Service {
 		// Use these until database is implemented
 		ArrayList<Task> tasks1 = new ArrayList<Task>(), tasks2 = new ArrayList<Task>(), tasks3 = new ArrayList<Task>();
 		tasks1.add(new Task("Bob Malooga", "", new Task.Time(1, 2, 3), new Task.Time(), true, false, false, false, 22, 1, 42));
-		tasks1.add(new Task("Ermahgerd a tersk", "", new Task.Time(1, 59, 42), new Task.Time(2, 0, 0), false, false, false, false, 0, 5, 42));
+		tasks1.add(new Task("Ermahgerd a tersk", "", new Task.Time(1, 59, 42), new Task.Time(2, 0, 0), false, false, false, false, 4, 5, 42));
 		tasks2.add(new Task("It's a task!", "", new Task.Time(), new Task.Time(2.54321), false, false, false, true, 0, 1, 43));
 		
 		Collections.sort(tasks1, new Task.PositionComparator());
@@ -83,6 +84,9 @@ public class TaskService extends Service {
 		groups.add(new Group("zomg", tasks3, 1, 2));
 		
 		Collections.sort(groups, new Group.PositionComparator());
+		
+		groupID = 43;
+		taskID = 22;
 		
 		Log.v(TAG, "Started");
 	}
@@ -137,8 +141,9 @@ public class TaskService extends Service {
 				break;
 			case MSG_ADD_TASK:
 				// Add the task TODO SQL
+				taskID++;
 				Task task = (Task) data.getParcelable("task");
-				task.setId(10);
+				task.setId(taskID);
 				task.setGroup(groups.get(msg.arg1).getId());
 				tasks.add(task);
 				groups.get(msg.arg1).getTasks().add(task);
@@ -169,8 +174,9 @@ public class TaskService extends Service {
 				break;
 			case MSG_ADD_GROUP:
 				// Add the group TODO SQL
+				groupID++;
 				Group group = (Group) data.getParcelable("group");
-				group.setId(10);
+				group.setId(groupID);
 				groups.add(msg.arg1, group);
 				reorder(groups);
 				
