@@ -68,7 +68,7 @@ public class TaskService extends Service {
 		ArrayList<Task> tasks1 = new ArrayList<Task>(), tasks2 = new ArrayList<Task>(), tasks3 = new ArrayList<Task>();
 		tasks1.add(new Task("Bob Malooga", "", new Task.Time(1, 2, 3), new Task.Time(), true, false, false, false, 22, 1, 42));
 		tasks1.add(new Task("Ermahgerd a tersk", "", new Task.Time(1, 59, 42), new Task.Time(2, 0, 0), false, false, false, false, 0, 5, 42));
-		tasks2.add(new Task("It's a task!", "", new Task.Time(), new Task.Time(), false, false, false, true, 0, 1, 43));
+		tasks2.add(new Task("It's a task!", "", new Task.Time(), new Task.Time(2.54321), false, false, false, true, 0, 1, 43));
 		
 		Collections.sort(tasks1, new Task.PositionComparator());
 		Collections.sort(tasks2, new Task.PositionComparator());

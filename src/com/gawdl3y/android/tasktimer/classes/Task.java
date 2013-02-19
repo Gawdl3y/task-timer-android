@@ -275,7 +275,7 @@ public class Task implements Serializable, Parcelable {
 	public int getProgress() {
 		if(indefinite) return 0;
 		try {
-			return (int) Math.floor((time.getHours() + (time.getMins() / 60.0) + (time.getSecs() / 3600.0)) / ((goal.getHours() + (goal.getMins() / 60.0))) * 100);
+			return (int) Math.floor(time.toDouble() / goal.toDouble() * 100);
 		} catch(ArithmeticException e) {
 			return 100;
 		}
@@ -444,6 +444,17 @@ public class Task implements Serializable, Parcelable {
 		}
 		
 		/**
+		 * Fill constructor (double)
+		 * @param d The double (hours) to create from
+		 */
+		public Time(double d) {
+			Time time = fromDouble(d);
+			this.hours = time.getHours();
+			this.mins = (short) time.getMins();
+			this.secs = (short) time.getSecs();
+		}
+		
+		/**
 		 * Parcel constructor
 		 * @param parcel The parcel to read from
 		 */
@@ -586,6 +597,28 @@ public class Task implements Serializable, Parcelable {
 		@Override
 		public String toString() {
 			return hours + ":" + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
+		}
+		
+		/**
+		 * Converts the Time to a double
+		 * @return Double form of Time
+		 */
+		public double toDouble() {
+			return hours + (mins / 60.0) + (secs / 3600.0);
+		}
+		
+		
+		/**
+		 * Returns a new Time object from the double-form time
+		 * @param d The double to convert to a Time
+		 * @return A new Time
+		 */
+		public static Time fromDouble(double d) {
+			Time time = new Time();
+			time.setHours((int) d);
+			time.setMins((int) ((d - time.getHours()) * 60.0));
+			time.setSecs((int) Math.round((d - time.getHours() - time.getMins() / 60.0) * 3600.0));
+			return time;
 		}
 		
 		

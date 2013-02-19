@@ -121,7 +121,6 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		
 		// Show the loading indicator if we don't have the groups or tasks yet
 		if(groups.size() == 0 && tasks.size() == 0) setSupportProgressBarIndeterminateVisibility(true);
-		Log.d(TAG, groups.size() + " " + tasks.size());
 	}
 	
 	/* (non-Javadoc)
