@@ -28,8 +28,15 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		void onFinishEditDialog(Task task, int group);
 	}
 	
+	/**
+	 * Default constructor
+	 */
 	public TaskEditDialogFragment() {}
 	
+	/* (non-Javadoc)
+	 * The fragment is being created
+	 * @see android.support.v4.app.DialogFragment#onCreate(android.os.Bundle)
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,6 +53,10 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * The dialog is being created
+	 * @see android.support.v4.app.DialogFragment#onCreateDialog(android.os.Bundle)
+	 */
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Define the views
@@ -106,8 +117,13 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 				}).create();
 	}
 	
+	/* (non-Javadoc)
+	 * An action is triggered by the user
+	 * @see android.widget.TextView.OnEditorActionListener#onEditorAction(android.widget.TextView, int, android.view.KeyEvent)
+	 */
 	@Override
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+		// Finished editing
 		if(actionId == EditorInfo.IME_ACTION_DONE) {
 			// Create the task
 			if(task == null) task = new Task();
@@ -125,6 +141,10 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * The instance is being saved
+	 * @see android.support.v4.app.DialogFragment#onSaveInstanceState(android.os.Bundle)
+	 */
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
@@ -137,6 +157,12 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		savedInstanceState.putString("description", descriptionView.getText().toString());
 	}
 	
+	/**
+	 * Creates a new instance of the fragment
+	 * @param task The already-existing task, if any
+	 * @param group The position of the group that the task is being edited in
+	 * @return A new instance of the fragment
+	 */
 	public static final TaskEditDialogFragment newInstance(Task task, int group) {
 		// Create a new fragment
 		TaskEditDialogFragment fragment = new TaskEditDialogFragment();

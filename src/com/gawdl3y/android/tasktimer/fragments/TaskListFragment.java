@@ -21,6 +21,10 @@ public class TaskListFragment extends SherlockListFragment {
 	public TaskAdapter adapter;
 	public Group group;
 	
+	/* (non-Javadoc)
+	 * The fragment is being created
+	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,6 +42,10 @@ public class TaskListFragment extends SherlockListFragment {
 		Log.v(TAG, "Fragment created");
 	}
 
+	/* (non-Javadoc)
+	 * The view for the fragment is being created
+	 * @see android.support.v4.app.ListFragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_task_list, container, false);
@@ -50,6 +58,10 @@ public class TaskListFragment extends SherlockListFragment {
 		return view;
 	}
 	
+	/* (non-Javadoc)
+	 * The fragment is attached to the activity
+	 * @see android.support.v4.app.Fragment#onActivityCreated(android.os.Bundle)
+	 */
 	public void onActivityCreated(Bundle savedState) {
 		super.onActivityCreated(savedState);
 
@@ -62,18 +74,31 @@ public class TaskListFragment extends SherlockListFragment {
 		});
 	}
 
+	/* (non-Javadoc)
+	 * A list item was clicked
+	 * @see android.support.v4.app.ListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
+	 */
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		// TODO Do stuff on click
 		Toast.makeText(getActivity(), getListView().getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
 	}
 	
+	/* (non-Javadoc)
+	 * The instance is being saved
+	 * @see android.support.v4.app.Fragment#onSaveInstanceState(android.os.Bundle)
+	 */
 	@Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("group", group);
     }
 	
+	/**
+	 * Creates a new instance of the fragment
+	 * @param group The group the fragment is for
+	 * @return A new instance of the fragment
+	 */
 	public static TaskListFragment newInstance(Group group) {
 		TaskListFragment fragment = new TaskListFragment();
 		Bundle args = new Bundle();

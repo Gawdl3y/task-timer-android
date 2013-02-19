@@ -28,8 +28,15 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		void onFinishEditDialog(Group group);
 	}
 	
+	/**
+	 * Default constructor
+	 */
 	public GroupEditDialogFragment() {}
 	
+	/* (non-Javadoc)
+	 * The fragment is being created
+	 * @see android.support.v4.app.DialogFragment#onCreate(android.os.Bundle)
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,6 +53,10 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * The dialog is being created
+	 * @see android.support.v4.app.DialogFragment#onCreateDialog(android.os.Bundle)
+	 */
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Define the views
@@ -94,6 +105,10 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 				}).create();
 	}
 	
+	/* (non-Javadoc)
+	 * An action is triggered by the user
+	 * @see android.widget.TextView.OnEditorActionListener#onEditorAction(android.widget.TextView, int, android.view.KeyEvent)
+	 */
 	@Override
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		if(actionId == EditorInfo.IME_ACTION_DONE) {
@@ -112,6 +127,10 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * The instance is being saved
+	 * @see android.support.v4.app.DialogFragment#onSaveInstanceState(android.os.Bundle)
+	 */
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
@@ -122,6 +141,12 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		savedInstanceState.putInt("position", positionView.getSelectedItemPosition());
 	}
 	
+	/**
+	 * Creates a new instance of the fragment
+	 * @param group The already-existing group, if any
+	 * @param position The initial position for the position spinner
+	 * @return A new instance of the fragment
+	 */
 	public static final GroupEditDialogFragment newInstance(Group group, int position) {
 		// Create a new fragment
 		GroupEditDialogFragment fragment = new GroupEditDialogFragment();

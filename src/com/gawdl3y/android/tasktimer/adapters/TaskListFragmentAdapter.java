@@ -14,6 +14,11 @@ public class TaskListFragmentAdapter extends FragmentPagerAdapter {
 	
 	public ArrayList<Group> groups;
 
+	/**
+	 * Fill constructor
+	 * @param fm The FragmentManager to use
+	 * @param groups The groups to display
+	 */
 	public TaskListFragmentAdapter(FragmentManager fm, ArrayList<Group> groups) {
 		super(fm);
 		this.groups = groups;

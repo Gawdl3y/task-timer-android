@@ -20,6 +20,10 @@ public class MainFragment extends SherlockFragment {
 	public TaskListFragmentAdapter adapter;
 	public ViewPager pager;
 	
+	/* (non-Javadoc)
+	 * The view for the fragment is being created
+	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.fragment_main, container, false);
@@ -32,6 +36,10 @@ public class MainFragment extends SherlockFragment {
 		return view;
 	}
 
+	/**
+	 * @author Schuyler
+	 * Sets the adapter of the ViewPager
+	 */
 	private class SetAdapterTask extends AsyncTask<Void, Void, Void> {
 		protected Void doInBackground(Void... params) {
 			return null;
