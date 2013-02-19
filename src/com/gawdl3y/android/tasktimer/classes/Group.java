@@ -111,6 +111,16 @@ public class Group implements Serializable, Parcelable {
 	}
 	
 	
+	/**
+	 * Tests to see if the provided Group has the same ID as this one
+	 * @param group The Group to compare to
+	 * @return Whether or not the IDs are the same
+	 */
+	public boolean equals(Group group) {
+		return id == group.getId();
+	}
+	
+	
 	/* (non-Javadoc)
 	 * Describes the contents for the parcel
 	 * @see android.os.Parcelable#describeContents()

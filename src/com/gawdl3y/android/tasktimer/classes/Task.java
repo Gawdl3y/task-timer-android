@@ -343,6 +343,16 @@ public class Task implements Serializable, Parcelable {
 	}
 	
 	
+	/**
+	 * Tests to see if the provided Task has the same ID as this one
+	 * @param task The Task to compare to
+	 * @return Whether or not the IDs are the same
+	 */
+	public boolean equals(Task task) {
+		return id == task.getId();
+	}
+	
+	
 	/* (non-Javadoc)
 	 * Describe the contents for the parcel
 	 * @see android.os.Parcelable#describeContents()
