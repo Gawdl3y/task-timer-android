@@ -252,12 +252,11 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			case TaskService.MSG_ADD_TASK:
 				Task task = data.getParcelable("task");
 				Group group = groups.get(msg.arg1);
-				group.getTasks().add(task);
+				group.getTasks().add(/*task.getPosition(),*/ task);
 				
 				// Update the task list fragment for the group
 				TaskListFragment fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
 				fragment.group = group;
-				fragment.adapter.group = msg.arg1;
 				fragment.adapter.notifyDataSetChanged();
 				
 				// Update the main adapter
@@ -292,6 +291,24 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	}
 	
 	/**
+	 * Builds the list of groups and tasks
+	 */
+	private void buildList() {
+		mainFragment.adapter.groups = groups;
+		mainFragment.adapter.notifyDataSetChanged();
+		mainFragment.pager.invalidate();
+	}
+	
+	/**
+	 * Builds the list of groups and tasks, then switches to a group
+	 * @param position The position of the group to switch to
+	 */
+	private void buildList(int position) {
+		buildList();
+		mainFragment.pager.setCurrentItem(position);
+	}
+	
+	/**
 	 * Sends a message to the service
 	 * @param msg The message to send
 	 */
@@ -309,22 +326,5 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		
 		// Return the message to the global pool
 		msg.recycle();
-	}
-	
-	/**
-	 * Builds the list of groups and tasks
-	 */
-	private void buildList() {
-		mainFragment.adapter.groups = groups;
-		mainFragment.adapter.notifyDataSetChanged();
-	}
-	
-	/**
-	 * Builds the list of groups and tasks, then switches to a group
-	 * @param position The position of the group to switch to
-	 */
-	private void buildList(int position) {
-		buildList();
-		mainFragment.pager.setCurrentItem(position);
 	}
 }

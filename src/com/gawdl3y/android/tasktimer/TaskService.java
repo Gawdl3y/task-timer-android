@@ -36,7 +36,7 @@ public class TaskService extends Service {
 	public static final int MSG_GET_ALL = 9;
 	public static final int MSG_EXIT = 10;
 	
-	public final Messenger messenger = new Messenger(new IncomingHandler());
+	private final Messenger messenger = new Messenger(new IncomingHandler());
 	private Messenger activityMessenger;
 	
 	private Notification notification;
@@ -146,7 +146,7 @@ public class TaskService extends Service {
 				task.setId(taskID);
 				task.setGroup(groups.get(msg.arg1).getId());
 				tasks.add(task);
-				groups.get(msg.arg1).getTasks().add(task);
+				groups.get(msg.arg1).getTasks().add(/*task.getPosition(),*/ task);
 				reorder(groups.get(msg.arg1).getTasks());
 				
 				// Send the task back to the activity
@@ -258,13 +258,5 @@ public class TaskService extends Service {
 				return;
 			}
 		}
-	}
-	
-	public ArrayList<Group> getGroups() {
-		return groups;
-	}
-	
-	public ArrayList<Task> getTasks() {
-		return tasks;
 	}
 }
