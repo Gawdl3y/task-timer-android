@@ -252,8 +252,10 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				
 				// Update the task list fragment for the group
 				TaskListFragment fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
-				fragment.group = group;
-				fragment.adapter.notifyDataSetChanged();
+				if(fragment != null) {
+					fragment.group = group;
+					fragment.adapter.notifyDataSetChanged();
+				}
 				
 				// Update the main adapter
 				mainFragment.adapter.groups.set(msg.arg1, group);
