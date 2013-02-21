@@ -181,7 +181,7 @@ public abstract class NewFragmentStatePagerAdapter extends PagerAdapter {
         }
         fragment.setMenuVisibility(false);
         mFragments.set(position, fragment);
-        mCurTransaction.add(container.getId(), fragment);
+        mCurTransaction.add(container.getId(), fragment, "android:switcher:" + container.getId() + ":" + position);
         
         return fragment;
     }
