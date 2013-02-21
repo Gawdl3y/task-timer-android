@@ -25,12 +25,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.classes.Task;
-import com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment;
-import com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment.GroupEditDialogListener;
-import com.gawdl3y.android.tasktimer.fragments.MainFragment;
-import com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment;
-import com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment.TaskEditDialogListener;
-import com.gawdl3y.android.tasktimer.fragments.TaskListFragment;
+import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment;
+import com.gawdl3y.android.tasktimer.layout.MainFragment;
+import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
+import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
+import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener;
+import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener;
 
 public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener {
 	public static final String TAG = "MainActivity";

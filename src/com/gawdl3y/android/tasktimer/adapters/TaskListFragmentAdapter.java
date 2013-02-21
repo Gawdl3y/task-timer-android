@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.gawdl3y.android.tasktimer.MainActivity;
 import com.gawdl3y.android.tasktimer.classes.Group;
-import com.gawdl3y.android.tasktimer.fragments.TaskListFragment;
+import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 
 public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 	private static final String TAG = "TaskListFragmentAdapter";

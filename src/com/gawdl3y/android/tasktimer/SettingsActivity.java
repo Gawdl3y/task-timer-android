@@ -16,7 +16,7 @@ import android.preference.PreferenceManager;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
-import com.gawdl3y.android.tasktimer.fragments.SettingsFragment;
+import com.gawdl3y.android.tasktimer.layout.SettingsFragment;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 	public static SharedPreferences prefs;

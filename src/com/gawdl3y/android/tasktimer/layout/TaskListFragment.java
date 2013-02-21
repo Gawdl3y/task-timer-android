@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer.fragments;
+package com.gawdl3y.android.tasktimer.layout;
 
 import android.os.Bundle;
 import android.util.Log;
