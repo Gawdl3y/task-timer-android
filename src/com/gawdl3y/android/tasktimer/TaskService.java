@@ -23,7 +23,7 @@ import com.gawdl3y.android.tasktimer.classes.Task;
 import com.gawdl3y.android.tasktimer.classes.Utilities;
 
 public class TaskService extends Service {
-	public static String TAG = "TaskService";
+	public static final String TAG = "TaskService";
 	
 	public static final int MSG_GET_TASKS = 1;
 	public static final int MSG_ADD_TASK = 2;
@@ -88,7 +88,7 @@ public class TaskService extends Service {
 		groupID = 43;
 		taskID = 22;
 		
-		Log.v(TAG, "Started");
+		if(MainActivity.DEBUG) Log.v(TAG, "Started");
 	}
 	
 	@Override
@@ -98,19 +98,19 @@ public class TaskService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.v(TAG, "Bound to activity");
+		if(MainActivity.DEBUG) Log.v(TAG, "Bound to activity");
 		return messenger.getBinder();
 	}
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
-		Log.v(TAG, "Unbound from activity");
+		if(MainActivity.DEBUG) Log.v(TAG, "Unbound from activity");
 		return super.onUnbind(intent);
 	}
 
 	@Override
 	public void onDestroy() {
-		Log.v(TAG, "Destroyed");
+		if(MainActivity.DEBUG) Log.v(TAG, "Destroyed");
 		super.onDestroy();
 	}
 
@@ -124,7 +124,7 @@ public class TaskService extends Service {
 		@Override
 		public void handleMessage(Message msg) {
 			activityMessenger = msg.replyTo;
-			Log.d(TAG, "Received message: " + msg);
+			if(MainActivity.DEBUG) Log.d(TAG, "Received message: " + msg);
 			
 			Message response;
 			Bundle contents = new Bundle();
@@ -220,9 +220,9 @@ public class TaskService extends Service {
 		// Send the message
 		try {
 			activityMessenger.send(msg);
-			Log.d(TAG, "Sent message: " + msg);
+			if(MainActivity.DEBUG) Log.d(TAG, "Sent message: " + msg);
 		} catch(android.os.RemoteException e) {
-			Log.d(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
+			if(MainActivity.DEBUG) Log.d(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
 		}
 		
 		// Return the message to the global pool

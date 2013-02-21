@@ -32,7 +32,7 @@ public class MainFragment extends SherlockFragment {
 		
         new SetAdapterTask().execute();
         
-        Log.v(TAG, "View created");
+        if(MainActivity.DEBUG) Log.v(TAG, "View created");
 		return view;
 	}
 
@@ -48,7 +48,7 @@ public class MainFragment extends SherlockFragment {
 		@Override
 		protected void onPostExecute(Void result) {
 			pager.setAdapter(adapter);
-			Log.v(TAG, "Set ViewPager adapter");
+			if(MainActivity.DEBUG) Log.v(TAG, "Set ViewPager adapter");
 		}
 	}
 }

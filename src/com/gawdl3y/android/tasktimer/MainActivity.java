@@ -18,15 +18,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
-import com.gawdl3y.android.tasktimer.adapters.TaskAdapter;
 import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.classes.Task;
 import com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment;
@@ -37,8 +33,9 @@ import com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment.TaskEditDi
 import com.gawdl3y.android.tasktimer.fragments.TaskListFragment;
 
 public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener {
+	public static final String TAG = "MainActivity";
+	public static final boolean DEBUG = true;
 	public static String PACKAGE = null;
-	public static String TAG = "MainActivity";
 	public static int THEME = R.style.Theme_Dark;
 	public static Resources RES = null;
 	public static SharedPreferences PREFS = null;
@@ -65,7 +62,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		}
 
 		public void onServiceDisconnected(ComponentName name) {
-			Log.v(TAG, "Service disconnected: " + name);
+			if(DEBUG) Log.v(TAG, "Service disconnected: " + name);
 			
 			// Reset the service messenger and connection status
 			MainActivity.this.serviceMessenger = null;
@@ -109,10 +106,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		Intent intent = new Intent(this, TaskService.class);
 		startService(intent);
 		if(bindService(intent, serviceConnection, Context.BIND_ABOVE_CLIENT | Context.BIND_ADJUST_WITH_ACTIVITY)) {
-			Log.v(TAG, "Service bound");
+			if(DEBUG) Log.v(TAG, "Service bound");
 		} else {
-			Toast.makeText(this, "Task Service couldn't be bound", Toast.LENGTH_SHORT).show();
-			finish();
+			Log.w(TAG, "Service couldn't be bound");
 		}
 	}
 	
@@ -133,7 +129,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		
 		// Unbind service
 		unbindService(serviceConnection);
-		Log.v(TAG, "Service unbound");
+		if(DEBUG) Log.v(TAG, "Service unbound");
 	}
 	
 	/* (non-Javadoc)
@@ -239,7 +235,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	private final class IncomingHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
-			Log.d(TAG, "Received message: " + msg);
+			if(DEBUG) Log.d(TAG, "Received message: " + msg);
 			
 			Bundle data = msg.getData();
 			data.setClassLoader(getClassLoader());
@@ -319,9 +315,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		// Send the message
 		try {
 			serviceMessenger.send(msg);
-			Log.d(TAG, "Sent message: " + msg);
+			if(DEBUG) Log.d(TAG, "Sent message: " + msg);
 		} catch(android.os.RemoteException e) {
-			Log.d(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
+			if(DEBUG) Log.d(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
 		}
 		
 		// Return the message to the global pool

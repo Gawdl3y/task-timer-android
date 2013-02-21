@@ -651,6 +651,16 @@ public class Task implements Serializable, Parcelable {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * Gets a string representation of the object
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Task[name: \"" + name + "\", id: " + id + "]";
+	}
+	
+	
 	/**
 	 * @author Schuyler Cebulskie
 	 * The comparator for comparing Task names

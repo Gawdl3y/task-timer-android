@@ -2,14 +2,16 @@ package com.gawdl3y.android.tasktimer.adapters;
 
 import java.util.ArrayList;
 
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
+import com.gawdl3y.android.tasktimer.MainActivity;
 import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.fragments.TaskListFragment;
 
-public class TaskListFragmentAdapter extends FragmentPagerAdapter {
+public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 	private static final String TAG = "TaskListFragmentAdapter";
 	
 	public ArrayList<Group> groups;
@@ -23,6 +25,24 @@ public class TaskListFragmentAdapter extends FragmentPagerAdapter {
 		super(fm);
 		this.groups = groups;
 	}
+	
+	/* (non-Javadoc)
+	 * Gets the count of fragments
+	 * @see android.support.v4.view.PagerAdapter#getCount()
+	 */
+	@Override
+	public int getCount() {
+		return groups != null ? groups.size() : 0;
+	}
+	
+	/* (non-Javadoc)
+	 * Gets the title of a fragment
+	 * @see android.support.v4.view.PagerAdapter#getPageTitle(int)
+	 */
+	@Override
+	public CharSequence getPageTitle(int position) {
+		return groups.get(position).getName();
+	}
 
 	/* (non-Javadoc)
 	 * Gets the fragment at position
@@ -30,8 +50,17 @@ public class TaskListFragmentAdapter extends FragmentPagerAdapter {
 	 */
 	@Override
 	public TaskListFragment getItem(int position) {
-		Log.v(TAG, "Getting item " + position);
+		if(MainActivity.DEBUG) Log.v(TAG, "Getting item #" + position);
 		return TaskListFragment.newInstance(groups.get(position));
+	}
+	
+	/* (non-Javadoc)
+	 * Get a unique ID for a fragment
+	 * @see com.gawdl3y.android.tasktimer.adapters.NewFragmentStatePagerAdapter#getItemId(int)
+	 */
+	@Override
+	public int getItemId(int position) {
+		return groups.get(position).getId();
 	}
 	
 	/* (non-Javadoc)
@@ -44,29 +73,32 @@ public class TaskListFragmentAdapter extends FragmentPagerAdapter {
 		int position = groups.indexOf(item.group);
 		
 		if(position >= 0) {
-			Log.v(TAG, "Item found at index " + position + ": " + item.group.toString());
+			if(MainActivity.DEBUG) Log.v(TAG, "Item found at index " + position + ": " + item.group.toString());
 			return position;
 		} else {
-			Log.v(TAG, "Item not found");
+			if(MainActivity.DEBUG) Log.v(TAG, "Item not found");
 			return POSITION_NONE;
 		}
 	}
-
+	
 	/* (non-Javadoc)
-	 * Gets the count of fragments
-	 * @see android.support.v4.view.PagerAdapter#getCount()
+	 * Saves the state
+	 * @see com.gawdl3y.android.tasktimer.adapters.NewFragmentStatePagerAdapter#saveState()
 	 */
 	@Override
-	public int getCount() {
-		return groups.size();
+	public Parcelable saveState() {
+		Bundle bundle = (Bundle) super.saveState();
+		bundle.putParcelableArrayList("groups", groups);
+		return bundle;
 	}
-
+	
 	/* (non-Javadoc)
-	 * Gets the title of a fragment
-	 * @see android.support.v4.view.PagerAdapter#getPageTitle(int)
+	 * Restores the state
+	 * @see com.gawdl3y.android.tasktimer.adapters.NewFragmentStatePagerAdapter#restoreState(android.os.Parcelable, java.lang.ClassLoader)
 	 */
 	@Override
-	public CharSequence getPageTitle(int position) {
-		return groups.get(position).getName();
+	public void restoreState(Parcelable state, ClassLoader loader) {
+		super.restoreState(state, loader);
+		groups = ((Bundle) state).getParcelableArrayList("groups");
 	}
 }

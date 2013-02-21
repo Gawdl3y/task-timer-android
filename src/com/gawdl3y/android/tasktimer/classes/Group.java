@@ -171,6 +171,16 @@ public class Group implements Serializable, Parcelable {
 	};
 	
 	
+	/* (non-Javadoc)
+	 * Gets a string representation of the object
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Group[name: \"" + name + "\", id: " + id + "]";
+	}
+	
+	
 	/**
 	 * @author Schuyler Cebulskie
 	 * The comparator for comparing Group names

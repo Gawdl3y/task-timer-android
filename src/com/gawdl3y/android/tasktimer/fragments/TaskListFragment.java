@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListFragment;
+import com.gawdl3y.android.tasktimer.MainActivity;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.adapters.TaskAdapter;
 import com.gawdl3y.android.tasktimer.classes.Group;
@@ -39,7 +40,7 @@ public class TaskListFragment extends SherlockListFragment {
 			}
 		}
 		
-		Log.v(TAG, "Fragment created");
+		if(MainActivity.DEBUG) Log.v(TAG, "Fragment created");
 	}
 
 	/* (non-Javadoc)
@@ -54,7 +55,7 @@ public class TaskListFragment extends SherlockListFragment {
 		adapter = new TaskAdapter(inflater.getContext(), group.getTasks(), group.getPosition());
 		setListAdapter(adapter);
 		
-		Log.v(TAG, "View created");
+		if(MainActivity.DEBUG) Log.v(TAG, "View created");
 		return view;
 	}
 	
@@ -62,8 +63,8 @@ public class TaskListFragment extends SherlockListFragment {
 	 * The fragment is attached to the activity
 	 * @see android.support.v4.app.Fragment#onActivityCreated(android.os.Bundle)
 	 */
-	public void onActivityCreated(Bundle savedState) {
-		super.onActivityCreated(savedState);
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 
 		getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
