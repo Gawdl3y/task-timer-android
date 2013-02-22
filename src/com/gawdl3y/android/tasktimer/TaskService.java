@@ -40,18 +40,23 @@ public class TaskService extends Service {
 	public static final int MSG_GET_ALL = 10;
 	public static final int MSG_EXIT = 11;
 	
-	private final Messenger messenger = new Messenger(new IncomingHandler());
-	private Messenger activityMessenger;
+	// Messaging things
+	public static boolean connected = false;
+	public static Messenger activityMessenger;
+	public static Messenger messenger;
 	
-	private Notification notification;
-	private ArrayList<Task> tasks = new ArrayList<Task>();
-	private ArrayList<Group> groups = new ArrayList<Group>();
-	private int groupID, taskID;
-	
-	private ArrayList<TaskTimerThread> timers = new ArrayList<TaskTimerThread>();
+	// Data
+	private static Notification notification;
+	public static ArrayList<Task> tasks = new ArrayList<Task>();
+	public static ArrayList<Group> groups = new ArrayList<Group>();
+	private static int groupID, taskID;
+	private static ArrayList<TaskTimerThread> timers = new ArrayList<TaskTimerThread>();
 	
 	@Override
 	public void onCreate() {
+		// Create the messenger
+		messenger = new Messenger(new IncomingHandler());
+		
 		// Create the intent to launch the app
 		Intent intent = new Intent(this, MainActivity.class);
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -105,12 +110,14 @@ public class TaskService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		if(MainActivity.DEBUG) Log.v(TAG, "Bound to activity");
+		connected = true;
 		return messenger.getBinder();
 	}
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
 		if(MainActivity.DEBUG) Log.v(TAG, "Unbound from activity");
+		connected = false;
 		return super.onUnbind(intent);
 	}
 
@@ -170,14 +177,18 @@ public class TaskService extends Service {
 			case MSG_UPDATE_TASK:
 				// TODO SQL
 				groups.get(msg.arg1).getTasks().set(msg.arg2, (Task) data.getParcelable("task"));
+				break;
+			case MSG_TOGGLE_TASK:
 				task = groups.get(msg.arg1).getTasks().get(msg.arg2);
+				task.toggle();
 				
+				// Create or destroy the timer thread
 				if(task.isRunning()) {
-					TaskTimerThread timer = new TaskTimerThread(task);
+					TaskTimerThread timer = new TaskTimerThread(task, msg.arg1);
 					timer.start();
 					timers.add(timer);
 				} else {
-					int position = Collections.binarySearch(timers, new TaskTimerThread(task), TaskTimerThread.TaskComparator);
+					int position = Collections.binarySearch(timers, new TaskTimerThread(task, -1), TaskTimerThread.TaskComparator);
 					TaskTimerThread timer = timers.get(position);
 					timer.interrupt();
 					timers.remove(position);
@@ -233,7 +244,7 @@ public class TaskService extends Service {
 		}
 	}
 	
-	public void sendMessageToActivity(Message msg) {
+	public static void sendMessageToActivity(Message msg) {
 		// Set who to reply to
 		msg.replyTo = messenger;
 		
@@ -249,7 +260,7 @@ public class TaskService extends Service {
 		msg.recycle();
 	}
 	
-	public void sendObjectToActivity(int msgType, String key, Object o) {
+	public static void sendObjectToActivity(int msgType, String key, Object o) {
 		Message msg = Message.obtain(null, msgType);
 		Bundle contents = new Bundle();
 		contents.putParcelable(key, (Parcelable) o);
@@ -257,7 +268,7 @@ public class TaskService extends Service {
 		sendMessageToActivity(msg);
 	}
 	
-	public void sendObjectToActivity(int msgType, String key, Object o, int arg1) {
+	public static void sendObjectToActivity(int msgType, String key, Object o, int arg1) {
 		Message msg = Message.obtain(null, msgType);
 		Bundle contents = new Bundle();
 		contents.putParcelable(key, (Parcelable) o);

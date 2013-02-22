@@ -221,11 +221,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			task.toggle();
 			Task.updateView(task, parent);
 			
-			msg = Message.obtain(null, TaskService.MSG_UPDATE_TASK);
+			msg = Message.obtain(null, TaskService.MSG_TOGGLE_TASK);
 			msg.arg1 = (Integer) parent.getTag(R.id.tag_group);
 			msg.arg2 = (Integer) parent.getTag(R.id.tag_task);
-			contents.putParcelable("task", task);
-			msg.setData(contents);
 			sendMessageToService(msg);
 		}
 	}
@@ -241,6 +239,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			
 			Bundle data = msg.getData();
 			data.setClassLoader(getClassLoader());
+			Task task;
 			
 			switch(msg.what) {
 			case TaskService.MSG_GET_TASKS:
@@ -248,7 +247,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				buildList();
 				break;
 			case TaskService.MSG_ADD_TASK:
-				Task task = data.getParcelable("task");
+				task = (Task) data.getParcelable("task");
 				Group group = groups.get(msg.arg1);
 				group.getTasks().add(task.getPosition(), task);
 				
@@ -266,10 +265,24 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				// Scroll to the group that the task was added to
 				mainFragment.pager.setCurrentItem(msg.arg1);
 				break;
+			case TaskService.MSG_UPDATE_TASK:
+				task = (Task) data.getParcelable("task");
+				groups.get(msg.arg1).getTasks().set(task.getPosition(), task);
+				
+				try {
+					fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
+					View view = fragment.getView().findViewWithTag(Integer.valueOf(task.getPosition()));
+					Task.updateView(task, view);
+				} catch(NullPointerException e) {
+					
+				}
+				break;
+			
 			case TaskService.MSG_GET_GROUPS:
 				groups = data.getParcelableArrayList("groups");
 				if(msg.arg1 != -1) buildList(msg.arg1); else buildList();
 				break;
+			
 			case TaskService.MSG_GET_ALL:
 				// Set the objects
 				groups = data.getParcelableArrayList("groups");
