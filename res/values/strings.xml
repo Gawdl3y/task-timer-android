@@ -169,6 +169,13 @@
     <string name="position_end">End of the list</string>
     
     
+    <!-- Time strings -->
+    <string name="time_hours">Hours</string>
+    <string name="time_mins">Minutes</string>
+    <string name="time_secs">Seconds</string>
+    <string name="time_separator">:</string>
+    
+    
     <!-- General strings -->
     <string name="no_tasks">No tasks</string>
     

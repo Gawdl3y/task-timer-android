@@ -20,9 +20,7 @@ public class SettingsFragment extends PreferenceFragment {
 	/**
 	 * Default constructor
 	 */
-	public SettingsFragment() {
-		activity = null;
-	}
+	public SettingsFragment() {}
 
 	/**
 	 * Get a fresh, clean, new instance of SettingsFragment
@@ -59,8 +57,7 @@ public class SettingsFragment extends PreferenceFragment {
 	 */
 	private final SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
 		@Override
-		public void onSharedPreferenceChanged(SharedPreferences prefs,
-				String key) {
+		public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 			activity.onPreferenceChange(findPreference(key));
 		}
 	};

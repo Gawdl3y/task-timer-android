@@ -36,9 +36,10 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	public static final String TAG = "MainActivity";
 	public static final boolean DEBUG = true;
 	public static String PACKAGE = null;
-	public static int THEME = R.style.Theme_Dark;
+	public static Context CONTEXT = null;
 	public static Resources RES = null;
 	public static SharedPreferences PREFS = null;
+	public static int THEME = R.style.Theme_Dark;
 	
 	public static ArrayList<Group> groups;
 	public static ArrayList<Task> tasks;
@@ -77,6 +78,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// Set some global values
+		CONTEXT = this;
 		PACKAGE = getApplicationContext().getPackageName();
 		RES = getResources();
 		
