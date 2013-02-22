@@ -25,8 +25,7 @@ public class TimeAmountPicker extends FrameLayout {
 		TypedValue typedValue = new TypedValue();
 		MainActivity.CONTEXT.getTheme().resolveAttribute(R.attr.timeAmountPickerLayout, typedValue, true);
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		//inflater.inflate(typedValue.resourceId, this, true);
-		inflater.inflate(R.layout.time_amount_picker_holo, this, true);
+		inflater.inflate(typedValue.resourceId, this, true);
 		
 		// Hours picker
 		hoursPicker = (NumberPicker) findViewById(R.id.hours);

@@ -1,59 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:taskTimePicker="http://schemas.android.com/apk/res/com.gawdl3y.android.tasktimer"
-    android:id="@+id/task_edit"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:orientation="vertical" >
+    android:layout_gravity="center">
     
-    <EditText
-        android:id="@+id/task_edit_name"
-        android:hint="@string/task_name"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/task_edit"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="text">
-        
-        <requestFocus />
-    </EditText>
-    
-    <EditText
-        android:id="@+id/task_edit_description"
-        android:hint="@string/task_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine" />
-    
-    <!--<TextView
+        android:layout_gravity="center"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/task_edit_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/task_name"
+            android:inputType="text" >
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/task_edit_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/task_description"
+            android:inputType="textMultiLine" />
+
+        <!--
+        <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/task_group"
-        android:labelFor="@+id/task_edit_group" />-->
-    
-    <Spinner
-        android:id="@+id/task_edit_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dialog"
-        android:prompt="@string/task_group" />
-    
-    <!--<TextView
+        android:labelFor="@+id/task_edit_group" />
+        -->
+
+        <Spinner
+            android:id="@+id/task_edit_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/task_group"
+            android:spinnerMode="dialog" />
+
+        <!--
+        <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/task_position"
-        android:labelFor="@+id/task_edit_position" />-->
-    
-    <Spinner
-        android:id="@+id/task_edit_position"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:spinnerMode="dialog"
-        android:prompt="@string/task_position" />
-    
-    <com.gawdl3y.android.tasktimer.layout.TimeAmountPicker
-        android:id="@+id/task_edit_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        taskTimePicker:hours="0" />
+        android:labelFor="@+id/task_edit_position" />
+        -->
 
-</LinearLayout>
+        <Spinner
+            android:id="@+id/task_edit_position"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/task_position"
+            android:spinnerMode="dialog" />
+
+        <com.gawdl3y.android.tasktimer.layout.TimeAmountPicker
+            android:id="@+id/task_edit_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            taskTimePicker:hours="0" />
+        
+	</LinearLayout>
+</ScrollView>
