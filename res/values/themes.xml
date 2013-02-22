@@ -35,6 +35,6 @@
         <item name="ic_pause">@drawable/ic_av_pause_light</item>
     </style>
     
-    <item name="taskTimePickerLayout" type="layout">@layout/task_time_picker</item>
+    <item name="timeAmountPickerLayout" type="layout">@layout/time_amount_picker</item>
 
 </resources>

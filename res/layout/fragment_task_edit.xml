@@ -50,7 +50,7 @@
         android:spinnerMode="dialog"
         android:prompt="@string/task_position" />
     
-    <com.gawdl3y.android.tasktimer.layout.TaskTimePicker
+    <com.gawdl3y.android.tasktimer.layout.TimeAmountPicker
         android:id="@+id/task_edit_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -3,12 +3,14 @@
     <attr name="tabStrip_text" format="reference" />
     <attr name="tabStrip_background" format="color" />
     
-    <attr name="taskTimePickerLayout" format="reference" />
+    <attr name="timeAmountPickerLayout" format="reference" />
 
-    <declare-styleable name="TaskTimePicker">
+    <declare-styleable name="TimeAmountPicker">
         <attr name="hours" format="integer" />
         <attr name="minutes" format="integer" />
         <attr name="seconds" format="integer" />
+        <attr name="hoursEnabled" format="boolean" />
+        <attr name="secondsEnabled" format="boolean" />
     </declare-styleable>
     
     <attr name="ic_new_task" format="reference" />
