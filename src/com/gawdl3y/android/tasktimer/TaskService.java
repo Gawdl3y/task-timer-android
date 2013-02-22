@@ -147,7 +147,7 @@ public class TaskService extends Service {
 				task.setId(taskID);
 				task.setGroup(groups.get(msg.arg1).getId());
 				tasks.add(task);
-				groups.get(msg.arg1).getTasks().add(/*task.getPosition(),*/ task);
+				groups.get(msg.arg1).getTasks().add(task.getPosition(), task);
 				reorder(groups.get(msg.arg1).getTasks());
 				
 				// Send the task back to the activity

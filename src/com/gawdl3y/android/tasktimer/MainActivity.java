@@ -250,7 +250,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			case TaskService.MSG_ADD_TASK:
 				Task task = data.getParcelable("task");
 				Group group = groups.get(msg.arg1);
-				group.getTasks().add(/*task.getPosition(),*/ task);
+				group.getTasks().add(task.getPosition(), task);
 				
 				// Update the task list fragment for the group
 				TaskListFragment fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);

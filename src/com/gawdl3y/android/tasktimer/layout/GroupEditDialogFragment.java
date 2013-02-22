@@ -70,9 +70,9 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		opts[MainActivity.groups.size()] = MainActivity.RES.getString(R.string.position_end);
 		for(int i  = 0; i < MainActivity.groups.size(); i++)
 			opts[i] = String.format(MainActivity.RES.getString(R.string.position_before), MainActivity.groups.get(i).getName());
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		positionView.setAdapter(adapter);
+		ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
+		positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		positionView.setAdapter(positionAdapter);
 		
 		// Load from arguments
 		if(getArguments() != null) {

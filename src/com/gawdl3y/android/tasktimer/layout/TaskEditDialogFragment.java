@@ -1,5 +1,7 @@
 package com.gawdl3y.android.tasktimer.layout;
 
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -8,6 +10,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -17,12 +21,14 @@ import android.widget.TextView.OnEditorActionListener;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.gawdl3y.android.tasktimer.MainActivity;
 import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.classes.Task;
 
 public class TaskEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
 	private Task task;
 	private EditText nameView, descriptionView;
 	private Spinner groupView, positionView;
+	private ArrayAdapter<String> groupAdapter, positionAdapter;
 	
 	public interface TaskEditDialogListener {
 		void onFinishEditDialog(Task task, int group);
@@ -69,19 +75,37 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		
 		// Add the possible groups to the group spinner
 		String[] opts = new String[MainActivity.groups.size()];
-		for(int i  = 0; i < MainActivity.groups.size(); i++)
-			opts[i] = MainActivity.groups.get(i).getName();
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		groupView.setAdapter(adapter);
+		for(int i  = 0; i < MainActivity.groups.size(); i++) opts[i] = MainActivity.groups.get(i).getName();
+		groupAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
+		groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		groupView.setAdapter(groupAdapter);
 		
-		// Add the possible positions to the position spinner
-		/*String[] opts = new String[MainActivity.groups.size()];
-		for(int i  = 0; i < MainActivity.groups.size(); i++)
-			opts[i] = MainActivity.groups.get(i).getName();
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		positionView.setAdapter(adapter);*/
+		// Add a listener for the group spinner being changed
+		groupView.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+				ArrayList<Task> tasks = MainActivity.groups.get(position).getTasks();
+				String[] opts = new String[tasks.size() + 1];
+				
+				// Set the final item
+				opts[tasks.size()] = MainActivity.RES.getString(R.string.position_end);
+				
+				// Add an item for each task
+				for(int i  = 0; i < tasks.size(); i++)
+					opts[i] = String.format(MainActivity.RES.getString(R.string.position_before), tasks.get(i).getName());
+				
+				// Set the adapter and stuff
+				positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
+				positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				positionView.setAdapter(positionAdapter);
+				positionView.setSelection(opts.length - 1);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+				// Nothing to see here
+			}
+		});
 		
 		// Load from arguments
 		if(getArguments() != null) {
@@ -128,8 +152,8 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 			// Create the task
 			if(task == null) task = new Task();
 			task.setName(nameView.getText().toString());
-			task.setPosition(positionView.getSelectedItemPosition());
 			task.setDescription(descriptionView.getText().toString());
+			task.setPosition(positionView.getSelectedItemPosition());
 			
 			// Return task to activity
 			TaskEditDialogListener activity = (TaskEditDialogListener) getActivity();
