@@ -159,7 +159,7 @@ public class Task implements Serializable, Parcelable {
 	 * Gets whether or not the Task's goal is indefinite
 	 * @return Whether or not the Task's goal is indefinite
 	 */
-	public boolean getIndefinite() {
+	public boolean isIndefinite() {
 		return indefinite;
 	}
 	
@@ -175,7 +175,7 @@ public class Task implements Serializable, Parcelable {
 	 * Gets whether or not the Task is completed
 	 * @return Whether or not the Task is completed
 	 */
-	public boolean getComplete() {
+	public boolean isComplete() {
 		return complete;
 	}
 	
@@ -191,7 +191,7 @@ public class Task implements Serializable, Parcelable {
 	 * Gets whether or not the Task is running
 	 * @return Whether or not the Task is running
 	 */
-	public boolean getRunning() {
+	public boolean isRunning() {
 		return running;
 	}
 	
@@ -326,14 +326,14 @@ public class Task implements Serializable, Parcelable {
 		// Text views
 		nameView.setText(task.getName());
 		timeView.setText(task.getTime().toString());
-		goalView.setText(task.getIndefinite() ? MainActivity.RES.getString(R.string.task_indefinite) : task.getGoal().toString());
+		goalView.setText(task.isIndefinite() ? MainActivity.RES.getString(R.string.task_indefinite) : task.getGoal().toString());
 
 		// Progress bar
-		progressView.setIndeterminate(task.getIndefinite() && task.getRunning());
+		progressView.setIndeterminate(task.isIndefinite() && task.isRunning());
 		progressView.setProgress(task.getProgress());
 
 		// Change the toggle button to the proper image
-		TypedArray ta = view.getContext().obtainStyledAttributes(new int[] { task.getRunning() ? R.attr.ic_pause : R.attr.ic_start });
+		TypedArray ta = view.getContext().obtainStyledAttributes(new int[] { task.isRunning() ? R.attr.ic_pause : R.attr.ic_start });
 		toggleView.setImageDrawable(ta.getDrawable(0));
 		ta.recycle();
 
@@ -427,39 +427,36 @@ public class Task implements Serializable, Parcelable {
 	
 	
 	/**
-	 * @author Schuyler Cebulskie
-	 * The comparator for comparing Task names
+	 * Comparator for comparing task names
 	 */
-	public static final class NameComparator implements Comparator<Task> {
+	public static final Comparator<Task> NameComparator = new Comparator<Task>() {
 		@Override
 		public int compare(Task t1, Task t2) {
 			return t1.getName().compareTo(t2.getName());
 		}
-	}
+	};
 	
 	/**
-	 * @author Schuyler Cebulskie
-	 * The comparator for comparing Task positions
+	 * Comparator for comparing task positions
 	 */
-	public static final class PositionComparator implements Comparator<Task> {
+	public static final Comparator<Task> PositionComparator = new Comparator<Task>() {
 		@Override
 		public int compare(Task t1, Task t2) {
 			if(t1.getPosition() < t2.getPosition()) return -1;
 			if(t1.getPosition() > t2.getPosition()) return 1;
 			return 0;
 		}
-	}
+	};
 	
 	/**
-	 * @author Schuyler Cebulskie
-	 * The comparator for comparing Task IDs
+	 * Comparator for comparing task IDs
 	 */
-	public static final class IDComparator implements Comparator<Task> {
+	public static final Comparator<Task> IDComparator = new Comparator<Task>() {
 		@Override
 		public int compare(Task t1, Task t2) {
 			if(t1.getId() < t2.getId()) return -1;
 			if(t1.getId() > t2.getId()) return 1;
 			return 0;
 		}
-	}
+	};
 }

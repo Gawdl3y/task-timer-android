@@ -20,22 +20,25 @@ import android.util.Log;
 
 import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.classes.Task;
+import com.gawdl3y.android.tasktimer.classes.TaskTimerThread;
 import com.gawdl3y.android.tasktimer.classes.TimeAmount;
 import com.gawdl3y.android.tasktimer.classes.Utilities;
 
 public class TaskService extends Service {
 	public static final String TAG = "TaskService";
 	
+	// Messages
 	public static final int MSG_GET_TASKS = 1;
 	public static final int MSG_ADD_TASK = 2;
 	public static final int MSG_DELETE_TASK = 3;
 	public static final int MSG_UPDATE_TASK = 4;
-	public static final int MSG_GET_GROUPS = 5;
-	public static final int MSG_ADD_GROUP = 6;
-	public static final int MSG_DELETE_GROUP = 7;
-	public static final int MSG_UPDATE_GROUP = 8;
-	public static final int MSG_GET_ALL = 9;
-	public static final int MSG_EXIT = 10;
+	public static final int MSG_TOGGLE_TASK = 5;
+	public static final int MSG_GET_GROUPS = 6;
+	public static final int MSG_ADD_GROUP = 7;
+	public static final int MSG_DELETE_GROUP = 8;
+	public static final int MSG_UPDATE_GROUP = 9;
+	public static final int MSG_GET_ALL = 10;
+	public static final int MSG_EXIT = 11;
 	
 	private final Messenger messenger = new Messenger(new IncomingHandler());
 	private Messenger activityMessenger;
@@ -44,6 +47,8 @@ public class TaskService extends Service {
 	private ArrayList<Task> tasks = new ArrayList<Task>();
 	private ArrayList<Group> groups = new ArrayList<Group>();
 	private int groupID, taskID;
+	
+	private ArrayList<TaskTimerThread> timers = new ArrayList<TaskTimerThread>();
 	
 	@Override
 	public void onCreate() {
@@ -72,9 +77,9 @@ public class TaskService extends Service {
 		tasks1.add(new Task("Ermahgerd a tersk", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, false, 4, 5, 42));
 		tasks2.add(new Task("It's a task!", "", new TimeAmount(), new TimeAmount(2.54321), false, false, false, true, 0, 1, 43));
 		
-		Collections.sort(tasks1, new Task.PositionComparator());
-		Collections.sort(tasks2, new Task.PositionComparator());
-		Collections.sort(tasks3, new Task.PositionComparator());
+		Collections.sort(tasks1, Task.PositionComparator);
+		Collections.sort(tasks2, Task.PositionComparator);
+		Collections.sort(tasks3, Task.PositionComparator);
 		
 		tasks.addAll(tasks1);
 		tasks.addAll(tasks2);
@@ -84,7 +89,7 @@ public class TaskService extends Service {
 		groups.add(new Group("Grouplol", tasks2, 2, 43));
 		groups.add(new Group("zomg", tasks3, 1, 2));
 		
-		Collections.sort(groups, new Group.PositionComparator());
+		Collections.sort(groups, Group.PositionComparator);
 		
 		groupID = 43;
 		taskID = 22;
@@ -129,6 +134,7 @@ public class TaskService extends Service {
 			
 			Message response;
 			Bundle contents = new Bundle();
+			Task task;
 			Bundle data = msg.getData();
 			data.setClassLoader(getClassLoader());
 			
@@ -143,7 +149,7 @@ public class TaskService extends Service {
 			case MSG_ADD_TASK:
 				// Add the task TODO SQL
 				taskID++;
-				Task task = (Task) data.getParcelable("task");
+				task = (Task) data.getParcelable("task");
 				task.setId(taskID);
 				task.setGroup(groups.get(msg.arg1).getId());
 				tasks.add(task);
@@ -164,6 +170,19 @@ public class TaskService extends Service {
 			case MSG_UPDATE_TASK:
 				// TODO SQL
 				groups.get(msg.arg1).getTasks().set(msg.arg2, (Task) data.getParcelable("task"));
+				task = groups.get(msg.arg1).getTasks().get(msg.arg2);
+				
+				if(task.isRunning()) {
+					TaskTimerThread timer = new TaskTimerThread(task);
+					timer.start();
+					timers.add(timer);
+				} else {
+					int position = Collections.binarySearch(timers, new TaskTimerThread(task), TaskTimerThread.TaskComparator);
+					TaskTimerThread timer = timers.get(position);
+					timer.interrupt();
+					timers.remove(position);
+				}
+				
 				break;
 				
 			case MSG_GET_GROUPS:

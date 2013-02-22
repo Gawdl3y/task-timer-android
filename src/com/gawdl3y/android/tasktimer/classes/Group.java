@@ -182,39 +182,36 @@ public class Group implements Serializable, Parcelable {
 	
 	
 	/**
-	 * @author Schuyler Cebulskie
-	 * The comparator for comparing Group names
+	 * Comparator for comparing group names
 	 */
-	public static final class NameComparator implements Comparator<Group> {
+	public static final Comparator<Group> NameComparator = new Comparator<Group>() {
 		@Override
 		public int compare(Group g1, Group g2) {
 			return g1.getName().compareTo(g2.getName());
 		}
-	}
+	};
 	
 	/**
-	 * @author Schuyler Cebulskie
-	 * The comparator for comparing Group positions
+	 * Comparator for comparing group positions
 	 */
-	public static final class PositionComparator implements Comparator<Group> {
+	public static final Comparator<Group> PositionComparator = new Comparator<Group>() {
 		@Override
 		public int compare(Group g1, Group g2) {
 			if(g1.getPosition() < g2.getPosition()) return -1;
 			if(g1.getPosition() > g2.getPosition()) return 1;
 			return 0;
 		}
-	}
+	};
 	
 	/**
-	 * @author Schuyler Cebulskie
-	 * The comparator for comparing Group IDs
+	 * Comparator for comparing group IDs
 	 */
-	public static final class IDComparator implements Comparator<Group> {
+	public static final Comparator<Group> IDComparator = new Comparator<Group>() {
 		@Override
 		public int compare(Group g1, Group g2) {
 			if(g1.getId() < g2.getId()) return -1;
 			if(g1.getId() > g2.getId()) return 1;
 			return 0;
 		}
-	}
+	};
 }
