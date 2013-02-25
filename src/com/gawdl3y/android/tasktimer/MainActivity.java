@@ -215,8 +215,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	}
 	
 	/**
-	 * @author Schuyler Cebulskie
 	 * The handler for the activity to receive messages from the service
+	 * @author Schuyler Cebulskie
 	 */
 	private final class IncomingHandler extends Handler {
 		@Override
@@ -235,7 +235,6 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			case TaskService.MSG_ADD_TASK:
 				task = (Task) data.getParcelable("task");
 				Group group = app.groups.get(msg.arg1);
-				group.getTasks().add(task.getPosition(), task);
 				
 				// Update the task list fragment for the group
 				TaskListFragment fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
@@ -253,7 +252,6 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				break;
 			case TaskService.MSG_UPDATE_TASK:
 				task = (Task) data.getParcelable("task");
-				app.groups.get(msg.arg1).getTasks().set(task.getPosition(), task);
 				
 				try {
 					fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
@@ -265,15 +263,10 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				break;
 			
 			case TaskService.MSG_GET_GROUPS:
-				app.groups = data.getParcelableArrayList("groups");
 				if(msg.arg1 != -1) buildList(msg.arg1); else buildList();
 				break;
 			
 			case TaskService.MSG_GET_ALL:
-				// Set the objects
-				app.groups = data.getParcelableArrayList("groups");
-				app.tasks = data.getParcelableArrayList("tasks");
-				
 				// Add the main fragment to the activity
 				mainFragment = new MainFragment();
 				FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

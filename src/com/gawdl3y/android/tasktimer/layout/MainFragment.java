@@ -19,7 +19,6 @@ public class MainFragment extends SherlockFragment {
 	
 	private TaskTimerApplication app;
 	
-	public View view;
 	public TaskListFragmentAdapter adapter;
 	public ViewPager pager;
 	
@@ -41,7 +40,7 @@ public class MainFragment extends SherlockFragment {
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		view = inflater.inflate(R.layout.fragment_main, container, false);
+		View view = inflater.inflate(R.layout.fragment_main, container, false);
 		adapter = new TaskListFragmentAdapter(getFragmentManager(), app);
         pager = (ViewPager) view.findViewById(R.id.pager);
 		

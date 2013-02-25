@@ -7,8 +7,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 /**
- * @author Schuyler Cebulskie
  * General utilities for Task Timer
+ * @author Schuyler Cebulskie
  */
 public final class Utilities {
 	

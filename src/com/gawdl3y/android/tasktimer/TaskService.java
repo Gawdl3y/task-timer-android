@@ -134,6 +134,10 @@ public class TaskService extends Service {
 		}
 	}
 	
+	/**
+	 * The handler to receive messages from the activity
+	 * @author Schuyler Cebulskie
+	 */
 	private final class IncomingHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
@@ -188,6 +192,7 @@ public class TaskService extends Service {
 					TaskTimerThread timer = new TaskTimerThread(task, msg.arg1);
 					timer.start();
 					timers.add(timer);
+					Collections.sort(timers, TaskTimerThread.TaskComparator);
 				} else {
 					int position = Collections.binarySearch(timers, new TaskTimerThread(task, -1), TaskTimerThread.TaskComparator);
 					TaskTimerThread timer = timers.get(position);
@@ -278,6 +283,10 @@ public class TaskService extends Service {
 		sendMessageToActivity(msg);
 	}
 	
+	/**
+	 * Reorders an ArrayList of tasks or groups by position
+	 * @param arr The ArrayList to reorder
+	 */
 	public void reorder(ArrayList<?> arr) {
 		for(int i = 0; i < arr.size(); i++) {
 			Object thing = arr.get(i);

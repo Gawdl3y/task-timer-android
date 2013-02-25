@@ -15,8 +15,8 @@ import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 
 /**
- * @author Schuyler Cebulskie
  * A class that contains a time, goal time, and task-related properties
+ * @author Schuyler Cebulskie
  */
 public class Task implements Serializable, Parcelable {
 	private static final long serialVersionUID = -5638162774940783076L;

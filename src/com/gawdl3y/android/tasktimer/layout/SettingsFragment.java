@@ -10,8 +10,8 @@ import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.SettingsActivity;
 
 /**
- * @author Schuyler Cebulskie
  * Class used to display the settings on devices that are running Honeycomb or newer
+ * @author Schuyler Cebulskie
  */
 @TargetApi(11)
 public class SettingsFragment extends PreferenceFragment {

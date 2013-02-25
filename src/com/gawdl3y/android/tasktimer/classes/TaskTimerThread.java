@@ -5,8 +5,8 @@ import java.util.Comparator;
 import com.gawdl3y.android.tasktimer.TaskService;
 
 /**
- * @author Schuyler Cebulskie
  * Thread that increments the time of a task
+ * @author Schuyler Cebulskie
  */
 public class TaskTimerThread extends Thread {
 	public final Task task;

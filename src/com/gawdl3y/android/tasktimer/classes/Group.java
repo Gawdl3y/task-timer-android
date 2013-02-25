@@ -8,8 +8,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * @author Schuyler Cebulskie
  * A simple class for grouping together Tasks
+ * @author Schuyler Cebulskie
  */
 public class Group implements Serializable, Parcelable {
 	private static final long serialVersionUID = -8667036902807578578L;

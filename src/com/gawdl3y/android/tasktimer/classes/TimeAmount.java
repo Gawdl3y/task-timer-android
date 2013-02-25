@@ -6,8 +6,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * @author Schuyler Cebulskie
  * A simple class that contains hours, minutes, and seconds
+ * @author Schuyler Cebulskie
  */
 public class TimeAmount implements Serializable, Parcelable, Comparable<TimeAmount> {
 	private static final long serialVersionUID = -2489624821453413799L;
