@@ -221,7 +221,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	private final class IncomingHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
-			if(app.debug) Log.d(TAG, "Received message: " + msg);
+			if(app.debug) Log.v(TAG, "Received message: " + msg);
 			
 			Bundle data = msg.getData();
 			data.setClassLoader(getClassLoader());
@@ -318,9 +318,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		// Send the message
 		try {
 			serviceMessenger.send(msg);
-			if(app.debug) Log.d(TAG, "Sent message: " + msg);
+			if(app.debug) Log.v(TAG, "Sent message: " + msg);
 		} catch(android.os.RemoteException e) {
-			if(app.debug) Log.d(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
+			if(app.debug) Log.w(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
 		}
 		
 		// Return the message to the global pool
