@@ -12,14 +12,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceManager;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.gawdl3y.android.tasktimer.layout.SettingsFragment;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
-	public static SharedPreferences prefs;
+	private TaskTimerApplication app;
 
 	/* (non-Javadoc)
 	 * The activity is created
@@ -29,17 +28,15 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		setTheme(MainActivity.THEME);
+		app = (TaskTimerApplication) getApplication();
+		setTheme(app.theme);
 		super.onCreate(savedInstanceState);
-
-		// Initialize some stuff
-		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 		// Display the settings
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			// Use the old preference activity methods for devices older than Honeycomb
 			addPreferencesFromResource(R.xml.preferences);
-			prefs.registerOnSharedPreferenceChangeListener(changeListener);
+			app.preferences.registerOnSharedPreferenceChangeListener(changeListener);
 			updateSummaries();
 		} else {
 			// Use the fragment for Honeycomb and newer
@@ -48,6 +45,16 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		
 		// Make the action bar use "home as up"
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+	
+	/* (non-Javadoc)
+	 * The activity is stopped
+	 * @see com.actionbarsherlock.app.SherlockPreferenceActivity#onStop()
+	 */
+	@Override
+	public void onStop() {
+		super.onStop();
+		app.preferences.unregisterOnSharedPreferenceChangeListener(changeListener);
 	}
 	
 	/**
@@ -64,11 +71,11 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 			// See if the theme was changed
 			if (key.equals("pref_theme")) {
-				String theme = prefs.getString("pref_theme", "0");
+				String theme = app.preferences.getString("pref_theme", "0");
 				int themeIdent = theme.equals("2") ? R.style.Theme_Light_DarkActionBar : (theme.equals("1") ? R.style.Theme_Light : R.style.Theme_Dark);
 
 				// Make sure the new theme is different
-				if (themeIdent != MainActivity.THEME) {
+				if (themeIdent != app.theme) {
 					// Create a dialog to ask about restarting now or later
 					AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 					dialogBuilder.setTitle(R.string.dialog_restart_title).setMessage(R.string.dialog_restart_message);
@@ -123,7 +130,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	 */
 	@SuppressWarnings("deprecation")
 	public void updateSummaries() {
-		for(Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
+		for(Map.Entry<String, ?> entry : app.preferences.getAll().entrySet()) {
 			Preference pref = findPreference(entry.getKey());
 			if(pref != null) onPreferenceChange(pref);
 		}
@@ -135,14 +142,14 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	 */
 	@TargetApi(11)
 	public void updateSummaries(SettingsFragment fragment) {
-		for(Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
+		for(Map.Entry<String, ?> entry : app.preferences.getAll().entrySet()) {
 			Preference pref = fragment.findPreference(entry.getKey());
 			if(pref != null) onPreferenceChange(pref);
 		}
 	}
 
 	/**
-	 * The change listener for API < 11
+	 * The change listener - API < 11
 	 */
 	@SuppressWarnings("deprecation")
 	private final SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {

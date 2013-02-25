@@ -15,11 +15,13 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.gawdl3y.android.tasktimer.MainActivity;
 import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.classes.Group;
 
 public class GroupEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
+	private TaskTimerApplication app;
+	
 	private Group group;
 	private EditText nameView;
 	private Spinner positionView;
@@ -40,6 +42,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		app = (TaskTimerApplication) getActivity().getApplication();
 		
 		// Load from arguments
 		if(getArguments() != null) {
@@ -66,10 +69,10 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		positionView = (Spinner) view.findViewById(R.id.group_edit_position);
 		
 		// Add the possible positions to the spinner
-		String[] opts = new String[MainActivity.groups.size() + 1];
-		opts[MainActivity.groups.size()] = MainActivity.RES.getString(R.string.position_end);
-		for(int i  = 0; i < MainActivity.groups.size(); i++)
-			opts[i] = String.format(MainActivity.RES.getString(R.string.position_before), MainActivity.groups.get(i).getName());
+		String[] opts = new String[app.groups.size() + 1];
+		opts[app.groups.size()] = app.resources.getString(R.string.position_end);
+		for(int i  = 0; i < app.groups.size(); i++)
+			opts[i] = String.format(app.resources.getString(R.string.position_before), app.groups.get(i).getName());
 		ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
 		positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		positionView.setAdapter(positionAdapter);

@@ -6,14 +6,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -26,29 +23,24 @@ import com.actionbarsherlock.view.Window;
 import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.classes.Task;
 import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment;
+import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener;
 import com.gawdl3y.android.tasktimer.layout.MainFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
-import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
-import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener;
 import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener;
+import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 
 public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener {
-	public static final String TAG = "MainActivity";
-	public static final boolean DEBUG = true;
-	public static String PACKAGE = null;
-	public static Context CONTEXT = null;
-	public static Resources RES = null;
-	public static SharedPreferences PREFS = null;
-	public static int THEME = R.style.Theme_Dark;
+	private static final String TAG = "MainActivity";
 	
-	public static ArrayList<Group> groups;
-	public static ArrayList<Task> tasks;
-	
+	private TaskTimerApplication app;
 	private MainFragment mainFragment;
 	
 	private Messenger messenger = new Messenger(new IncomingHandler()), serviceMessenger;
 	private boolean connected = false;
 	
+	/**
+	 * The service connection
+	 */
 	private ServiceConnection serviceConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			Log.v(TAG, "Service connected: " + name);
@@ -57,13 +49,13 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			MainActivity.this.serviceMessenger = new Messenger(service);
 			MainActivity.this.connected = true;
 			
-			// Send a new message to retrieve ALL THE THINGS
+			// Retrieve ALL THE THINGS
 			Message msg = Message.obtain(null, TaskService.MSG_GET_ALL);
 			sendMessageToService(msg);
 		}
 
 		public void onServiceDisconnected(ComponentName name) {
-			if(DEBUG) Log.v(TAG, "Service disconnected: " + name);
+			if(app.debug) Log.v(TAG, "Service disconnected: " + name);
 			
 			// Reset the service messenger and connection status
 			MainActivity.this.serviceMessenger = null;
@@ -77,21 +69,11 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// Set some global values
-		CONTEXT = this;
-		PACKAGE = getApplicationContext().getPackageName();
-		RES = getResources();
+		// Set app and switch theme (we do this before calling the super method so that the theme properly applies)
+		app = (TaskTimerApplication) getApplication();
+		setTheme(app.theme);
 		
-		// Set the default preferences, and load the preferences
-		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-		PREFS = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		// Switch theme
-		String theme = PREFS.getString("pref_theme", "0");
-		THEME = theme.equals("2") ? R.style.Theme_Light_DarkActionBar : (theme.equals("1") ? R.style.Theme_Light : R.style.Theme_Dark);
-		setTheme(THEME);
-		
-		// Call the superclass' method (we do this after setting the theme so that the theme properly applies to pre-honeycomb devices)
+		// Call the superclass' method
 		super.onCreate(savedInstanceState);
 		
 		// Request window features
@@ -100,25 +82,29 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		// Display
 		setContentView(R.layout.activity_main);
 		
-		// Initialise
-		if(groups == null) groups = new ArrayList<Group>();
-		if(tasks == null) tasks = new ArrayList<Task>();
+		// Initialize
+		if(app.groups == null) app.groups = new ArrayList<Group>();
+		if(app.tasks == null) app.tasks = new ArrayList<Task>();
 		
 		// Start and bind the service
 		Intent intent = new Intent(this, TaskService.class);
 		startService(intent);
 		if(bindService(intent, serviceConnection, Context.BIND_ABOVE_CLIENT | Context.BIND_ADJUST_WITH_ACTIVITY)) {
-			if(DEBUG) Log.v(TAG, "Service bound");
+			if(app.debug) Log.v(TAG, "Service bound");
 		} else {
 			Log.w(TAG, "Service couldn't be bound");
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * The activity is being started
+	 * @see android.support.v4.app.FragmentActivity#onStart()
+	 */
 	protected void onStart() {
 		super.onStart();
 		
 		// Show the loading indicator if we don't have the groups or tasks yet
-		if(groups.size() == 0 && tasks.size() == 0) setSupportProgressBarIndeterminateVisibility(true);
+		if(app.groups.size() == 0 && app.tasks.size() == 0) setSupportProgressBarIndeterminateVisibility(true);
 	}
 	
 	/* (non-Javadoc)
@@ -131,7 +117,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		
 		// Unbind service
 		unbindService(serviceConnection);
-		if(DEBUG) Log.v(TAG, "Service unbound");
+		if(app.debug) Log.v(TAG, "Service unbound");
 	}
 	
 	/* (non-Javadoc)
@@ -213,7 +199,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	 */
 	public void onTaskButtonClick(View view) {
 		View parent = (View) view.getParent();
-		Task task = groups.get((Integer) parent.getTag(R.id.tag_group)).getTasks().get((Integer) parent.getTag(R.id.tag_task));
+		Task task = app.groups.get((Integer) parent.getTag(R.id.tag_group)).getTasks().get((Integer) parent.getTag(R.id.tag_task));
 		Message msg;
 		Bundle contents = new Bundle();
 				
@@ -235,7 +221,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	private final class IncomingHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
-			if(DEBUG) Log.d(TAG, "Received message: " + msg);
+			if(app.debug) Log.d(TAG, "Received message: " + msg);
 			
 			Bundle data = msg.getData();
 			data.setClassLoader(getClassLoader());
@@ -243,12 +229,12 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			
 			switch(msg.what) {
 			case TaskService.MSG_GET_TASKS:
-				tasks = data.getParcelableArrayList("tasks");
+				app.tasks = data.getParcelableArrayList("tasks");
 				buildList();
 				break;
 			case TaskService.MSG_ADD_TASK:
 				task = (Task) data.getParcelable("task");
-				Group group = groups.get(msg.arg1);
+				Group group = app.groups.get(msg.arg1);
 				group.getTasks().add(task.getPosition(), task);
 				
 				// Update the task list fragment for the group
@@ -267,7 +253,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				break;
 			case TaskService.MSG_UPDATE_TASK:
 				task = (Task) data.getParcelable("task");
-				groups.get(msg.arg1).getTasks().set(task.getPosition(), task);
+				app.groups.get(msg.arg1).getTasks().set(task.getPosition(), task);
 				
 				try {
 					fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
@@ -279,14 +265,14 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				break;
 			
 			case TaskService.MSG_GET_GROUPS:
-				groups = data.getParcelableArrayList("groups");
+				app.groups = data.getParcelableArrayList("groups");
 				if(msg.arg1 != -1) buildList(msg.arg1); else buildList();
 				break;
 			
 			case TaskService.MSG_GET_ALL:
 				// Set the objects
-				groups = data.getParcelableArrayList("groups");
-				tasks = data.getParcelableArrayList("tasks");
+				app.groups = data.getParcelableArrayList("groups");
+				app.tasks = data.getParcelableArrayList("tasks");
 				
 				// Add the main fragment to the activity
 				mainFragment = new MainFragment();
@@ -307,7 +293,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	 * Builds the list of groups and tasks
 	 */
 	private void buildList() {
-		mainFragment.adapter.groups = groups;
+		mainFragment.adapter.groups = app.groups;
 		mainFragment.adapter.notifyDataSetChanged();
 		mainFragment.pager.invalidate();
 	}
@@ -332,9 +318,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		// Send the message
 		try {
 			serviceMessenger.send(msg);
-			if(DEBUG) Log.d(TAG, "Sent message: " + msg);
+			if(app.debug) Log.d(TAG, "Sent message: " + msg);
 		} catch(android.os.RemoteException e) {
-			if(DEBUG) Log.d(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
+			if(app.debug) Log.d(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
 		}
 		
 		// Return the message to the global pool

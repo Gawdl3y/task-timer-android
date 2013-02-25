@@ -45,15 +45,16 @@ public class TaskService extends Service {
 	public static Messenger activityMessenger;
 	public static Messenger messenger;
 	
-	// Data
-	private static Notification notification;
-	public static ArrayList<Task> tasks = new ArrayList<Task>();
-	public static ArrayList<Group> groups = new ArrayList<Group>();
-	private static int groupID, taskID;
-	private static ArrayList<TaskTimerThread> timers = new ArrayList<TaskTimerThread>();
+	private TaskTimerApplication app;
+	private Notification notification;
+	private ArrayList<TaskTimerThread> timers = new ArrayList<TaskTimerThread>();
+	private int groupID, taskID;
 	
 	@Override
 	public void onCreate() {
+		// Set the app
+		app = (TaskTimerApplication) getApplication();
+		
 		// Create the messenger
 		messenger = new Messenger(new IncomingHandler());
 		
@@ -78,28 +79,28 @@ public class TaskService extends Service {
 		
 		// Use these until database is implemented
 		ArrayList<Task> tasks1 = new ArrayList<Task>(), tasks2 = new ArrayList<Task>(), tasks3 = new ArrayList<Task>();
-		tasks1.add(new Task("Bob Malooga", "", new TimeAmount(1, 2, 3), new TimeAmount(), true, false, false, false, 22, 1, 42));
-		tasks1.add(new Task("Ermahgerd a tersk", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, false, 4, 5, 42));
+		tasks1.add(new Task("This is a task", "", new TimeAmount(1, 2, 3), new TimeAmount(), true, false, false, false, 22, 1, 42));
+		tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, false, 4, 5, 42));
 		tasks2.add(new Task("It's a task!", "", new TimeAmount(), new TimeAmount(2.54321), false, false, false, true, 0, 1, 43));
 		
 		Collections.sort(tasks1, Task.PositionComparator);
 		Collections.sort(tasks2, Task.PositionComparator);
 		Collections.sort(tasks3, Task.PositionComparator);
 		
-		tasks.addAll(tasks1);
-		tasks.addAll(tasks2);
-		tasks.addAll(tasks3);
+		app.tasks.addAll(tasks1);
+		app.tasks.addAll(tasks2);
+		app.tasks.addAll(tasks3);
 		
-		groups.add(new Group("It's a group!", tasks1, 0, 42));
-		groups.add(new Group("Grouplol", tasks2, 2, 43));
-		groups.add(new Group("zomg", tasks3, 1, 2));
+		app.groups.add(new Group("It's a group!", tasks1, 0, 42));
+		app.groups.add(new Group("Also a group", tasks2, 2, 43));
+		app.groups.add(new Group("no way another group", tasks3, 1, 2));
 		
-		Collections.sort(groups, Group.PositionComparator);
+		Collections.sort(app.groups, Group.PositionComparator);
 		
 		groupID = 43;
 		taskID = 22;
 		
-		if(MainActivity.DEBUG) Log.v(TAG, "Started");
+		if(app.debug) Log.v(TAG, "Started");
 	}
 	
 	@Override
@@ -109,21 +110,21 @@ public class TaskService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		if(MainActivity.DEBUG) Log.v(TAG, "Bound to activity");
+		if(app.debug) Log.v(TAG, "Bound to activity");
 		connected = true;
 		return messenger.getBinder();
 	}
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
-		if(MainActivity.DEBUG) Log.v(TAG, "Unbound from activity");
+		if(app.debug) Log.v(TAG, "Unbound from activity");
 		connected = false;
 		return super.onUnbind(intent);
 	}
 
 	@Override
 	public void onDestroy() {
-		if(MainActivity.DEBUG) Log.v(TAG, "Destroyed");
+		if(app.debug) Log.v(TAG, "Destroyed");
 		super.onDestroy();
 	}
 
@@ -137,7 +138,7 @@ public class TaskService extends Service {
 		@Override
 		public void handleMessage(Message msg) {
 			activityMessenger = msg.replyTo;
-			if(MainActivity.DEBUG) Log.d(TAG, "Received message: " + msg);
+			if(app.debug) Log.d(TAG, "Received message: " + msg);
 			
 			Message response;
 			Bundle contents = new Bundle();
@@ -149,7 +150,7 @@ public class TaskService extends Service {
 			case MSG_GET_TASKS:
 				// Send the response message
 				response = Message.obtain(null, MSG_GET_TASKS);
-				contents.putParcelableArrayList("tasks", tasks);
+				contents.putParcelableArrayList("tasks", app.tasks);
 				response.setData(contents);
 				sendMessageToActivity(response);
 				break;
@@ -158,10 +159,10 @@ public class TaskService extends Service {
 				taskID++;
 				task = (Task) data.getParcelable("task");
 				task.setId(taskID);
-				task.setGroup(groups.get(msg.arg1).getId());
-				tasks.add(task);
-				groups.get(msg.arg1).getTasks().add(task.getPosition(), task);
-				reorder(groups.get(msg.arg1).getTasks());
+				task.setGroup(app.groups.get(msg.arg1).getId());
+				app.tasks.add(task);
+				app.groups.get(msg.arg1).getTasks().add(task.getPosition(), task);
+				reorder(app.groups.get(msg.arg1).getTasks());
 				
 				// Send the task back to the activity
 				response = Message.obtain(null, MSG_ADD_TASK);
@@ -172,14 +173,14 @@ public class TaskService extends Service {
 				break;
 			case MSG_DELETE_TASK:
 				// TODO SQL
-				groups.get(msg.arg1).getTasks().remove(msg.arg2);
+				app.groups.get(msg.arg1).getTasks().remove(msg.arg2);
 				break;
 			case MSG_UPDATE_TASK:
 				// TODO SQL
-				groups.get(msg.arg1).getTasks().set(msg.arg2, (Task) data.getParcelable("task"));
+				app.groups.get(msg.arg1).getTasks().set(msg.arg2, (Task) data.getParcelable("task"));
 				break;
 			case MSG_TOGGLE_TASK:
-				task = groups.get(msg.arg1).getTasks().get(msg.arg2);
+				task = app.groups.get(msg.arg1).getTasks().get(msg.arg2);
 				task.toggle();
 				
 				// Create or destroy the timer thread
@@ -199,7 +200,7 @@ public class TaskService extends Service {
 			case MSG_GET_GROUPS:
 				// Send the response message
 				response = Message.obtain(null, MSG_GET_GROUPS);
-				contents.putParcelableArrayList("groups", groups);
+				contents.putParcelableArrayList("groups", app.groups);
 				response.setData(contents);
 				sendMessageToActivity(response);
 				break;
@@ -208,12 +209,12 @@ public class TaskService extends Service {
 				groupID++;
 				Group group = (Group) data.getParcelable("group");
 				group.setId(groupID);
-				groups.add(msg.arg1, group);
-				reorder(groups);
+				app.groups.add(msg.arg1, group);
+				reorder(app.groups);
 				
 				// Send the groups back to the activity
 				response = Message.obtain(null, MSG_GET_GROUPS);
-				contents.putParcelableArrayList("groups", groups);
+				contents.putParcelableArrayList("groups", app.groups);
 				response.setData(contents);
 				response.arg1 = group.getPosition();
 				sendMessageToActivity(response);
@@ -228,8 +229,8 @@ public class TaskService extends Service {
 			case MSG_GET_ALL:
 				// Send the response message
 				response = Message.obtain(null, MSG_GET_ALL);
-				contents.putParcelableArrayList("groups", groups);
-				contents.putParcelableArrayList("tasks", tasks);
+				contents.putParcelableArrayList("groups", app.groups);
+				contents.putParcelableArrayList("tasks", app.tasks);
 				response.setData(contents);
 				sendMessageToActivity(response);
 				break;
@@ -251,9 +252,9 @@ public class TaskService extends Service {
 		// Send the message
 		try {
 			activityMessenger.send(msg);
-			if(MainActivity.DEBUG) Log.d(TAG, "Sent message: " + msg);
+			if(TaskTimerApplication.DEBUG) Log.d(TAG, "Sent message: " + msg);
 		} catch(android.os.RemoteException e) {
-			if(MainActivity.DEBUG) Log.d(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
+			if(TaskTimerApplication.DEBUG) Log.d(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
 		}
 		
 		// Return the message to the global pool

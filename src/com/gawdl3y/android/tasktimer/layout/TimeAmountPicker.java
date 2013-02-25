@@ -1,15 +1,14 @@
 package com.gawdl3y.android.tasktimer.layout;
 
-import com.gawdl3y.android.tasktimer.MainActivity;
-import com.gawdl3y.android.tasktimer.R;
-import com.michaelnovakjr.numberpicker.NumberPicker;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
+
+import com.gawdl3y.android.tasktimer.R;
+import com.michaelnovakjr.numberpicker.NumberPicker;
 
 public class TimeAmountPicker extends FrameLayout {
 	private final NumberPicker hoursPicker, minsPicker, secsPicker;
@@ -23,7 +22,7 @@ public class TimeAmountPicker extends FrameLayout {
 		
 		// Inflate layout
 		TypedValue typedValue = new TypedValue();
-		MainActivity.CONTEXT.getTheme().resolveAttribute(R.attr.timeAmountPickerLayout, typedValue, true);
+		context.getTheme().resolveAttribute(R.attr.timeAmountPickerLayout, typedValue, true);
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(typedValue.resourceId, this, true);
 		
@@ -45,18 +44,20 @@ public class TimeAmountPicker extends FrameLayout {
 		TypedArray attributesArray = context.obtainStyledAttributes(attrs, R.styleable.TimeAmountPicker, 0, 0);
 		try {
 			// Set values
-			hoursPicker.setCurrent(attributesArray.getInt(R.styleable.TimeAmountPicker_hours, 1));
+			hoursPicker.setCurrent(attributesArray.getInt(R.styleable.TimeAmountPicker_hours, 0));
 			minsPicker.setCurrent(attributesArray.getInt(R.styleable.TimeAmountPicker_minutes, 0));
 			secsPicker.setCurrent(attributesArray.getInt(R.styleable.TimeAmountPicker_seconds, 0));
 			
 			// Disable hours
 			if(!attributesArray.getBoolean(R.styleable.TimeAmountPicker_hoursEnabled, true)) {
 				hoursPicker.setVisibility(GONE);
+				findViewById(R.id.divider1).setVisibility(GONE);
 			}
 			
 			// Disable seconds
 			if(!attributesArray.getBoolean(R.styleable.TimeAmountPicker_secondsEnabled, true)) {
 				secsPicker.setVisibility(GONE);
+				findViewById(R.id.divider2).setVisibility(GONE);
 			}
 		} finally {
 			attributesArray.recycle();

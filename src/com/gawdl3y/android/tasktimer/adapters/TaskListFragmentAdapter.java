@@ -7,13 +7,14 @@ import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
-import com.gawdl3y.android.tasktimer.MainActivity;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 
 public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 	private static final String TAG = "TaskListFragmentAdapter";
 	
+	private TaskTimerApplication app;
 	public ArrayList<Group> groups;
 
 	/**
@@ -21,9 +22,10 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 	 * @param fm The FragmentManager to use
 	 * @param groups The groups to display
 	 */
-	public TaskListFragmentAdapter(FragmentManager fm, ArrayList<Group> groups) {
+	public TaskListFragmentAdapter(FragmentManager fm, TaskTimerApplication app) {
 		super(fm);
-		this.groups = groups;
+		this.app = app;
+		this.groups = app.groups;
 	}
 	
 	/* (non-Javadoc)
@@ -50,7 +52,7 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 	 */
 	@Override
 	public TaskListFragment getItem(int position) {
-		if(MainActivity.DEBUG) Log.v(TAG, "Getting item #" + position);
+		if(app.debug) Log.v(TAG, "Getting item #" + position);
 		return TaskListFragment.newInstance(groups.get(position));
 	}
 	
@@ -73,10 +75,10 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 		int position = groups.indexOf(item.group);
 		
 		if(position >= 0) {
-			if(MainActivity.DEBUG) Log.v(TAG, "Item found at index " + position + ": " + item.group.toString());
+			if(app.debug) Log.v(TAG, "Item found at index " + position + ": " + item.group.toString());
 			return position;
 		} else {
-			if(MainActivity.DEBUG) Log.v(TAG, "Item not found");
+			if(app.debug) Log.v(TAG, "Item not found");
 			return POSITION_NONE;
 		}
 	}

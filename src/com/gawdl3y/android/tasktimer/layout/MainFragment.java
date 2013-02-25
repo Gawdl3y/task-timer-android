@@ -1,5 +1,6 @@
 package com.gawdl3y.android.tasktimer.layout;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -9,16 +10,30 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.gawdl3y.android.tasktimer.MainActivity;
 import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.adapters.TaskListFragmentAdapter;
 
 public class MainFragment extends SherlockFragment {
 	private static final String TAG = "MainFragment";
 	
+	private TaskTimerApplication app;
+	
 	public View view;
 	public TaskListFragmentAdapter adapter;
 	public ViewPager pager;
+	
+	/* (non-Javadoc)
+	 * The fragment is being attached to an activity
+	 * @see com.actionbarsherlock.app.SherlockFragment#onAttach(android.app.Activity)
+	 */
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		app = (TaskTimerApplication) activity.getApplication();
+		
+		if(app.debug) Log.v(TAG, "Attached");
+	}
 	
 	/* (non-Javadoc)
 	 * The view for the fragment is being created
@@ -27,17 +42,17 @@ public class MainFragment extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.fragment_main, container, false);
-		adapter = new TaskListFragmentAdapter(getFragmentManager(), MainActivity.groups);
+		adapter = new TaskListFragmentAdapter(getFragmentManager(), app);
         pager = (ViewPager) view.findViewById(R.id.pager);
 		
         new SetAdapterTask().execute();
         
-        if(MainActivity.DEBUG) Log.v(TAG, "View created");
+        if(app.debug) Log.v(TAG, "View created");
 		return view;
 	}
 
 	/**
-	 * @author Schuyler
+	 * @author Schuyler Cebulskie
 	 * Sets the adapter of the ViewPager
 	 */
 	private class SetAdapterTask extends AsyncTask<Void, Void, Void> {
@@ -48,7 +63,7 @@ public class MainFragment extends SherlockFragment {
 		@Override
 		protected void onPostExecute(Void result) {
 			pager.setAdapter(adapter);
-			if(MainActivity.DEBUG) Log.v(TAG, "Set ViewPager adapter");
+			if(app.debug) Log.v(TAG, "Set ViewPager adapter");
 		}
 	}
 }

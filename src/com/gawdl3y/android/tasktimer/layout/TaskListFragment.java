@@ -11,8 +11,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.gawdl3y.android.tasktimer.MainActivity;
 import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.adapters.TaskAdapter;
 import com.gawdl3y.android.tasktimer.classes.Group;
 
@@ -40,7 +40,7 @@ public class TaskListFragment extends SherlockListFragment {
 			}
 		}
 		
-		if(MainActivity.DEBUG) Log.v(TAG, "Fragment created");
+		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Fragment created");
 	}
 
 	/* (non-Javadoc)
@@ -55,7 +55,7 @@ public class TaskListFragment extends SherlockListFragment {
 		adapter = new TaskAdapter(inflater.getContext(), group.getTasks(), group.getPosition());
 		setListAdapter(adapter);
 		
-		if(MainActivity.DEBUG) Log.v(TAG, "View created");
+		if(TaskTimerApplication.DEBUG) Log.v(TAG, "View created");
 		return view;
 	}
 	

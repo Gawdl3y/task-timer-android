@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.gawdl3y.android.tasktimer.MainActivity;
 import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 
 /**
  * @author Schuyler Cebulskie
@@ -326,7 +326,7 @@ public class Task implements Serializable, Parcelable {
 		// Text views
 		nameView.setText(task.getName());
 		timeView.setText(task.getTime().toString());
-		goalView.setText(task.isIndefinite() ? MainActivity.RES.getString(R.string.task_indefinite) : task.getGoal().toString());
+		goalView.setText(task.isIndefinite() ? TaskTimerApplication.RESOURCES.getString(R.string.task_indefinite) : task.getGoal().toString());
 
 		// Progress bar
 		progressView.setIndeterminate(task.isIndefinite() && task.isRunning());

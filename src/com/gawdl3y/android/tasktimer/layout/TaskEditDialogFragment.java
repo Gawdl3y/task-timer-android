@@ -19,12 +19,13 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.actionbarsherlock.app.SherlockDialogFragment;
-import com.gawdl3y.android.tasktimer.MainActivity;
 import com.gawdl3y.android.tasktimer.R;
-import com.gawdl3y.android.tasktimer.classes.Group;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.classes.Task;
 
 public class TaskEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
+	private TaskTimerApplication app;
+	
 	private Task task;
 	private EditText nameView, descriptionView;
 	private Spinner groupView, positionView;
@@ -46,6 +47,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		app = (TaskTimerApplication) getActivity().getApplication();
 		
 		// Load from arguments
 		if(getArguments() != null) {
@@ -74,8 +76,8 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		positionView = (Spinner) view.findViewById(R.id.task_edit_position);
 		
 		// Add the possible groups to the group spinner
-		String[] opts = new String[MainActivity.groups.size()];
-		for(int i  = 0; i < MainActivity.groups.size(); i++) opts[i] = MainActivity.groups.get(i).getName();
+		String[] opts = new String[app.groups.size()];
+		for(int i  = 0; i < app.groups.size(); i++) opts[i] = app.groups.get(i).getName();
 		groupAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
 		groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		groupView.setAdapter(groupAdapter);
@@ -84,15 +86,15 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		groupView.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-				ArrayList<Task> tasks = MainActivity.groups.get(position).getTasks();
+				ArrayList<Task> tasks = app.groups.get(position).getTasks();
 				String[] opts = new String[tasks.size() + 1];
 				
 				// Set the final item
-				opts[tasks.size()] = MainActivity.RES.getString(R.string.position_end);
+				opts[tasks.size()] = app.resources.getString(R.string.position_end);
 				
 				// Add an item for each task
 				for(int i  = 0; i < tasks.size(); i++)
-					opts[i] = String.format(MainActivity.RES.getString(R.string.position_before), tasks.get(i).getName());
+					opts[i] = String.format(app.resources.getString(R.string.position_before), tasks.get(i).getName());
 				
 				// Set the adapter and stuff
 				positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);

@@ -136,7 +136,7 @@
     
     <!--  Task strings -->
     <string name="task_name">Name</string>
-    <string name="task_time">Time</string>
+    <string name="task_time">Current Time</string>
     <string name="task_goal">Goal</string>
     <string name="task_indefinite">Indefinite</string>
     <string name="task_progress">Progress</string>
@@ -163,17 +163,17 @@
     <string name="group_save">Save Group</string>
     
     
-    <!-- Position strings -->
-    <string name="position_before">Before \"%1$s\"</string>
-    <string name="position_after">After \"%1$s\"</string>
-    <string name="position_end">End of the list</string>
-    
-    
     <!-- Time strings -->
     <string name="time_hours">Hours</string>
     <string name="time_mins">Minutes</string>
     <string name="time_secs">Seconds</string>
     <string name="time_separator">:</string>
+    
+    
+    <!-- Position strings -->
+    <string name="position_before">Before \"%1$s\"</string>
+    <string name="position_after">After \"%1$s\"</string>
+    <string name="position_end">End of the list</string>
     
     
     <!-- General strings -->

@@ -2,13 +2,10 @@ package com.gawdl3y.android.tasktimer.classes;
 
 import java.util.Comparator;
 
-import android.os.Bundle;
-import android.os.Message;
-
 import com.gawdl3y.android.tasktimer.TaskService;
 
 /**
- * @author Schuyler
+ * @author Schuyler Cebulskie
  * Thread that increments the time of a task
  */
 public class TaskTimerThread extends Thread {
@@ -24,7 +21,7 @@ public class TaskTimerThread extends Thread {
 	}
 	
 	/**
-	 * @author Schuyler
+	 * @author Schuyler Cebulskie
 	 * The Runnable for the thread
 	 */
 	public static class TaskTimerRunnable implements Runnable {
