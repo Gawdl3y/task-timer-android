@@ -154,7 +154,11 @@ public class TaskService extends Service {
 
 	/**
 	 * The service binder to use for binding the service to an activity
+<<<<<<< HEAD
 	 * @author Schuyler Cebulskie
+=======
+	 * @author Schuyler
+>>>>>>> 3fd62781a37f208fee216d797a86f07503c1a8c7
 	 */
 	public class ServiceBinder extends Binder {
 		TaskService getService() {
@@ -268,6 +272,38 @@ public class TaskService extends Service {
 				
 				break;
 				
+<<<<<<< HEAD
+=======
+			case MSG_GET_GROUPS:
+				// Send the response message
+				response = Message.obtain(null, MSG_GET_GROUPS);
+				contents.putParcelableArrayList("groups", app.groups);
+				response.setData(contents);
+				sendMessageToActivity(response);
+				break;
+			case MSG_ADD_GROUP:
+				// Add the group TODO SQL
+				groupID++;
+				Group group = (Group) data.getParcelable("group");
+				group.setId(groupID);
+				app.groups.add(msg.arg1, group);
+				Utilities.reorder(app.groups);
+				
+				// Send the groups back to the activity
+				response = Message.obtain(null, MSG_GET_GROUPS);
+				contents.putParcelableArrayList("groups", app.groups);
+				response.setData(contents);
+				response.arg1 = group.getPosition();
+				sendMessageToActivity(response);
+				break;
+			case MSG_DELETE_GROUP:
+				// TODO SQL
+				break;
+			case MSG_UPDATE_GROUP:
+				// TODO SQL
+				break;
+				
+>>>>>>> 3fd62781a37f208fee216d797a86f07503c1a8c7
 			case MSG_GET_ALL:
 				// Get the Groups and Tasks
 				response = Message.obtain(null, MSG_GET_ALL);
@@ -292,7 +328,11 @@ public class TaskService extends Service {
 	 * Sends a message to the activity
 	 * @param msg The message to send
 	 */
+<<<<<<< HEAD
 	public void sendMessageToActivity(Message msg) {
+=======
+	public static void sendMessageToActivity(Message msg) {
+>>>>>>> 3fd62781a37f208fee216d797a86f07503c1a8c7
 		// Set who to reply to
 		msg.replyTo = messenger;
 		
