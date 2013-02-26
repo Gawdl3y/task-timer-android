@@ -16,7 +16,7 @@ import com.gawdl3y.android.tasktimer.classes.Task;
  * @author Schuyler Cebulskie
  */
 public class TaskTimerApplication extends Application {
-	// Globals
+	// Static properties
 	private static final String TAG = "Application";
 	public static final boolean DEBUG = true;
 	public static String PACKAGE;
@@ -32,8 +32,10 @@ public class TaskTimerApplication extends Application {
 	public int theme = THEME;
 	
 	// Data
-	public ArrayList<Task> tasks = new ArrayList<Task>();
-	public ArrayList<Group> groups = new ArrayList<Group>();
+	public static ArrayList<Task> TASKS;
+	public static ArrayList<Group> GROUPS;
+	public ArrayList<Task> tasks = TASKS;
+	public ArrayList<Group> groups = GROUPS;
 	
 	/* (non-Javadoc)
 	 * The application is being created
@@ -43,7 +45,7 @@ public class TaskTimerApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		
-		// Set globals
+		// Set static properties
 		PACKAGE = getPackageName();
 		RESOURCES = getResources();
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -58,6 +60,12 @@ public class TaskTimerApplication extends Application {
 		String themeStr = PREFERENCES.getString("pref_theme", "0");
 		THEME = themeStr.equals("2") ? R.style.Theme_Light_DarkActionBar : (themeStr.equals("1") ? R.style.Theme_Light : R.style.Theme_Dark);
 		theme = THEME;
+		
+		// Set data
+		TASKS = new ArrayList<Task>();
+		GROUPS = new ArrayList<Group>();
+		tasks = TASKS;
+		groups = GROUPS;
 		
 		Log.v(TAG, "Created");
 	}
