@@ -11,6 +11,10 @@ import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 
+/**
+ * The adapter to display a ViewPager of Groups
+ * @author Schuyler Cebulskie
+ */
 public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 	private static final String TAG = "TaskListFragmentAdapter";
 	

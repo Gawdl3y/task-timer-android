@@ -29,6 +29,10 @@ import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener;
 import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 
+/**
+ * The main activity of Task Timer
+ * @author Schuyler Cebulskie
+ */
 public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener {
 	private static final String TAG = "MainActivity";
 	

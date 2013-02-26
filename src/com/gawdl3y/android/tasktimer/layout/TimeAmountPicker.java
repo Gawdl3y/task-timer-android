@@ -10,6 +10,10 @@ import android.widget.FrameLayout;
 import com.gawdl3y.android.tasktimer.R;
 import com.michaelnovakjr.numberpicker.NumberPicker;
 
+/**
+ * A widget for picking a TimeAmount
+ * @author Schuyler Cebulskie
+ */
 public class TimeAmountPicker extends FrameLayout {
 	private final NumberPicker hoursPicker, minsPicker, secsPicker;
 	

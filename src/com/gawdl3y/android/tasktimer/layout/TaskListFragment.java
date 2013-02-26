@@ -16,6 +16,10 @@ import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.adapters.TaskAdapter;
 import com.gawdl3y.android.tasktimer.classes.Group;
 
+/**
+ * The fragment for displaying a list of Tasks
+ * @author Schuyler Cebulskie
+ */
 public class TaskListFragment extends SherlockListFragment {
 	private static final String TAG = "TaskListFragment";
 	
@@ -96,11 +100,11 @@ public class TaskListFragment extends SherlockListFragment {
     }
 	
 	/**
-	 * Creates a new instance of the fragment
+	 * Creates a new instance of TaskListFragment
 	 * @param group The group the fragment is for
 	 * @return A new instance of the fragment
 	 */
-	public static TaskListFragment newInstance(Group group) {
+	public static final TaskListFragment newInstance(Group group) {
 		TaskListFragment fragment = new TaskListFragment();
 		Bundle args = new Bundle();
 		args.putParcelable("group", group);

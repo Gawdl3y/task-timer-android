@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * A simple class for grouping together Tasks
+ * A category for Task objcts; contains an array of Tasks if necessary
  * @author Schuyler Cebulskie
  */
 public class Group implements Serializable, Parcelable {
@@ -177,7 +177,7 @@ public class Group implements Serializable, Parcelable {
 	 */
 	@Override
 	public String toString() {
-		return "Group[name: \"" + name + "\", id: " + id + "]";
+		return "Group[ name=\"" + name + "\" id=" + id + " ]";
 	}
 	
 	

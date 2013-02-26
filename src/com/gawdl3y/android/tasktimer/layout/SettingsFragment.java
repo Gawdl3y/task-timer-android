@@ -10,7 +10,7 @@ import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.SettingsActivity;
 
 /**
- * Class used to display the settings on devices that are running Honeycomb or newer
+ * Fragment used to display the preferences - API >= 11
  * @author Schuyler Cebulskie
  */
 @TargetApi(11)
@@ -23,13 +23,11 @@ public class SettingsFragment extends PreferenceFragment {
 	public SettingsFragment() {}
 
 	/**
-	 * Get a fresh, clean, new instance of SettingsFragment
+	 * Create a new instance of SettingsFragment
 	 * @return a new instance of SettingsFragment
 	 */
 	public static final SettingsFragment newInstance() {
 		SettingsFragment fragment = new SettingsFragment();
-		Bundle bundle = new Bundle();
-		fragment.setArguments(bundle);
 		return fragment;
 	}
 
@@ -53,7 +51,7 @@ public class SettingsFragment extends PreferenceFragment {
 	}
 
 	/**
-	 * The change listener for API >= 11
+	 * The change listener
 	 */
 	private final SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
 		@Override

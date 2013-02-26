@@ -11,6 +11,10 @@ import android.util.Log;
 import com.gawdl3y.android.tasktimer.classes.Group;
 import com.gawdl3y.android.tasktimer.classes.Task;
 
+/**
+ * The base application class for Task Timer
+ * @author Schuyler Cebulskie
+ */
 public class TaskTimerApplication extends Application {
 	// Globals
 	private static final String TAG = "Application";
