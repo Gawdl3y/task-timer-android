@@ -48,11 +48,7 @@ public class TaskTimerThread extends Thread {
 		public void run() {
 			while(task.isRunning()) {
 				task.getTime().increment();
-<<<<<<< HEAD
 				if(service.connected) service.sendObjectToActivity(TaskService.MSG_UPDATE_TASK, "task", task, group);
-=======
-				if(TaskService.connected) service.sendObjectToActivity(TaskService.MSG_UPDATE_TASK, "task", task, group);
->>>>>>> 3fd62781a37f208fee216d797a86f07503c1a8c7
 				System.out.println(task.getTime());
 				
 				try {
