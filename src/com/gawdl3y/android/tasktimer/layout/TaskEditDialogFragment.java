@@ -23,6 +23,10 @@ import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.classes.Task;
 
+/**
+ * The dialog fragment for editing a Task
+ * @author Schuyler Cebulskie
+ */
 public class TaskEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
 	private TaskTimerApplication app;
 	
@@ -31,6 +35,10 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 	private Spinner groupView, positionView;
 	private ArrayAdapter<String> groupAdapter, positionAdapter;
 	
+	/**
+	 * Interface used for listening for the changes to be completed on a Task
+	 * @author Schuyler Cebulskie
+	 */
 	public interface TaskEditDialogListener {
 		void onFinishEditDialog(Task task, int group);
 	}
@@ -184,7 +192,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 	}
 	
 	/**
-	 * Creates a new instance of the fragment
+	 * Creates a new instance of TaskEditDialogFragment
 	 * @param task The already-existing task, if any
 	 * @param group The position of the group that the task is being edited in
 	 * @return A new instance of the fragment

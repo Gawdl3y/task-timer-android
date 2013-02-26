@@ -7,6 +7,9 @@ import android.os.Parcelable;
 
 /**
  * A simple class that contains hours, minutes, and seconds
+ * <p>
+ * This is useful for keeping track of an amount of time, rather than
+ * a specific time relative to the day.
  * @author Schuyler Cebulskie
  */
 public class TimeAmount implements Serializable, Parcelable, Comparable<TimeAmount> {
@@ -229,10 +232,18 @@ public class TimeAmount implements Serializable, Parcelable, Comparable<TimeAmou
 	 * The Parcel creator used to create new instances of the Time from a parcel
 	 */
 	public static final Parcelable.Creator<TimeAmount> CREATOR = new Parcelable.Creator<TimeAmount>() {
+		/* (non-Javadoc)
+		 * Create a Time from a Parcel
+		 * @see android.os.Parcelable.Creator#createFromParcel(android.os.Parcel)
+		 */
 		public TimeAmount createFromParcel(Parcel in) {
 			return new TimeAmount(in);
 		}
 
+		/* (non-Javadoc)
+		 * Create a new Time array from a Parcel
+		 * @see android.os.Parcelable.Creator#newArray(int)
+		 */
 		public TimeAmount[] newArray(int size) {
 			return new TimeAmount[size];
 		}

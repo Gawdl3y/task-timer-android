@@ -15,27 +15,29 @@ public class TaskTimerThread extends Thread {
 	 * Fill constructor
 	 * @param task The task that the timer is for
 	 */
-	public TaskTimerThread(Task task, int group) {
-		super(new TaskTimerRunnable(task, group));
+	public TaskTimerThread(Task task, int group, TaskService service) {
+		super(new TaskTimerRunnable(task, group, service));
 		this.task = task;
 	}
 	
 	/**
-	 * @author Schuyler Cebulskie
 	 * The Runnable for the thread
+	 * @author Schuyler Cebulskie
 	 */
 	public static class TaskTimerRunnable implements Runnable {
 		private final Task task;
 		private final int group;
+		private final TaskService service;
 		
 		/**
 		 * Fill constructor
 		 * @param task The task that the timer is for
 		 */
-		public TaskTimerRunnable(Task task, int group) {
+		public TaskTimerRunnable(Task task, int group, TaskService service) {
 			super();
 			this.task = task;
 			this.group = group;
+			this.service = service;
 		}
 		
 		/* (non-Javadoc)
@@ -46,7 +48,7 @@ public class TaskTimerThread extends Thread {
 		public void run() {
 			while(task.isRunning()) {
 				task.getTime().increment();
-				if(TaskService.connected) TaskService.sendObjectToActivity(TaskService.MSG_UPDATE_TASK, "task", task, group);
+				if(TaskService.connected) service.sendObjectToActivity(TaskService.MSG_UPDATE_TASK, "task", task, group);
 				System.out.println(task.getTime());
 				
 				try {

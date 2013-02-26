@@ -24,6 +24,10 @@ import com.gawdl3y.android.tasktimer.classes.TaskTimerThread;
 import com.gawdl3y.android.tasktimer.classes.TimeAmount;
 import com.gawdl3y.android.tasktimer.classes.Utilities;
 
+/**
+ * The service that handles storing/retrieving data and the timers
+ * @author Schuyler Cebulskie
+ */
 public class TaskService extends Service {
 	public static final String TAG = "TaskService";
 	
@@ -50,6 +54,10 @@ public class TaskService extends Service {
 	private ArrayList<TaskTimerThread> timers = new ArrayList<TaskTimerThread>();
 	private int groupID, taskID;
 	
+	/* (non-Javadoc)
+	 * The service is being created
+	 * @see android.app.Service#onCreate()
+	 */
 	@Override
 	public void onCreate() {
 		// Set the app
@@ -103,11 +111,19 @@ public class TaskService extends Service {
 		if(app.debug) Log.v(TAG, "Started");
 	}
 	
+	/* (non-Javadoc)
+	 * A command is being started on the service
+	 * @see android.app.Service#onStartCommand(android.content.Intent, int, int)
+	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		return START_STICKY;
 	}
 
+	/* (non-Javadoc)
+	 * The service is being bound to the activity
+	 * @see android.app.Service#onBind(android.content.Intent)
+	 */
 	@Override
 	public IBinder onBind(Intent intent) {
 		if(app.debug) Log.v(TAG, "Bound to activity");
@@ -115,6 +131,10 @@ public class TaskService extends Service {
 		return messenger.getBinder();
 	}
 	
+	/* (non-Javadoc)
+	 * The service is being unbound from an activity
+	 * @see android.app.Service#onUnbind(android.content.Intent)
+	 */
 	@Override
 	public boolean onUnbind(Intent intent) {
 		if(app.debug) Log.v(TAG, "Unbound from activity");
@@ -122,12 +142,20 @@ public class TaskService extends Service {
 		return super.onUnbind(intent);
 	}
 
+	/* (non-Javadoc)
+	 * The service is being destroyed
+	 * @see android.app.Service#onDestroy()
+	 */
 	@Override
 	public void onDestroy() {
 		if(app.debug) Log.v(TAG, "Destroyed");
 		super.onDestroy();
 	}
 
+	/**
+	 * The service binder to use for binding the service to an activity
+	 * @author Schuyler
+	 */
 	public class ServiceBinder extends Binder {
 		TaskService getService() {
 			return TaskService.this;
@@ -135,7 +163,7 @@ public class TaskService extends Service {
 	}
 	
 	/**
-	 * The handler to receive messages from the activity
+	 * The Handler to receive messages from the activity
 	 * @author Schuyler Cebulskie
 	 */
 	private final class IncomingHandler extends Handler {
@@ -166,7 +194,7 @@ public class TaskService extends Service {
 				task.setGroup(app.groups.get(msg.arg1).getId());
 				app.tasks.add(task);
 				app.groups.get(msg.arg1).getTasks().add(task.getPosition(), task);
-				reorder(app.groups.get(msg.arg1).getTasks());
+				Utilities.reorder(app.groups.get(msg.arg1).getTasks());
 				
 				// Send the task back to the activity
 				response = Message.obtain(null, MSG_ADD_TASK);
@@ -189,12 +217,12 @@ public class TaskService extends Service {
 				
 				// Create or destroy the timer thread
 				if(task.isRunning()) {
-					TaskTimerThread timer = new TaskTimerThread(task, msg.arg1);
+					TaskTimerThread timer = new TaskTimerThread(task, msg.arg1, TaskService.this);
 					timer.start();
 					timers.add(timer);
 					Collections.sort(timers, TaskTimerThread.TaskComparator);
 				} else {
-					int position = Collections.binarySearch(timers, new TaskTimerThread(task, -1), TaskTimerThread.TaskComparator);
+					int position = Collections.binarySearch(timers, new TaskTimerThread(task, -1, TaskService.this), TaskTimerThread.TaskComparator);
 					TaskTimerThread timer = timers.get(position);
 					timer.interrupt();
 					timers.remove(position);
@@ -215,7 +243,7 @@ public class TaskService extends Service {
 				Group group = (Group) data.getParcelable("group");
 				group.setId(groupID);
 				app.groups.add(msg.arg1, group);
-				reorder(app.groups);
+				Utilities.reorder(app.groups);
 				
 				// Send the groups back to the activity
 				response = Message.obtain(null, MSG_GET_GROUPS);
@@ -250,6 +278,10 @@ public class TaskService extends Service {
 		}
 	}
 	
+	/**
+	 * Sends a message to the activity
+	 * @param msg The message to send
+	 */
 	public static void sendMessageToActivity(Message msg) {
 		// Set who to reply to
 		msg.replyTo = messenger;
@@ -266,38 +298,44 @@ public class TaskService extends Service {
 		msg.recycle();
 	}
 	
-	public static void sendObjectToActivity(int msgType, String key, Object o) {
-		Message msg = Message.obtain(null, msgType);
-		Bundle contents = new Bundle();
-		contents.putParcelable(key, (Parcelable) o);
-		msg.setData(contents);
-		sendMessageToActivity(msg);
-	}
-	
-	public static void sendObjectToActivity(int msgType, String key, Object o, int arg1) {
-		Message msg = Message.obtain(null, msgType);
-		Bundle contents = new Bundle();
-		contents.putParcelable(key, (Parcelable) o);
-		msg.setData(contents);
-		msg.arg1 = arg1;
-		sendMessageToActivity(msg);
+	/**
+	 * Sends a Parcelable object to the activity
+	 * @param msgType The message type
+	 * @param key The key for the object
+	 * @param o The object
+	 */
+	public void sendObjectToActivity(int msgType, String key, Object o) {
+		sendObjectToActivity(msgType, key, o, -1, -1);
 	}
 	
 	/**
-	 * Reorders an ArrayList of tasks or groups by position
-	 * @param arr The ArrayList to reorder
+	 * Sends a Parcelable object and argument to the activity
+	 * @param msgType The message type
+	 * @param key The key for the object
+	 * @param o The object
+	 * @param arg The argument
 	 */
-	public void reorder(ArrayList<?> arr) {
-		for(int i = 0; i < arr.size(); i++) {
-			Object thing = arr.get(i);
-			
-			if(thing instanceof Task) {
-				((Task) thing).setPosition(i);
-			} else if(thing instanceof Group) {
-				((Group) thing).setPosition(i);
-			}  else {
-				return;
-			}
-		}
+	public void sendObjectToActivity(int msgType, String key, Object o, int arg) {
+		sendObjectToActivity(msgType, key, o, arg, -1);
+	}
+	
+	/**
+	 * Sends a Parcelable object and arguments to the activity
+	 * @param msgType The message type
+	 * @param key The key for the object
+	 * @param o The object
+	 * @param arg1 Argument 1
+	 * @param arg2 Argument 2
+	 */
+	public void sendObjectToActivity(int msgType, String key, Object o, int arg1, int arg2) {
+		Message msg = Message.obtain(null, msgType);
+		Bundle contents = new Bundle();
+		contents.putParcelable(key, (Parcelable) o);
+		msg.setData(contents);
+		
+		if(arg1 != -1) msg.arg1 = arg1;
+		if(arg2 != -1) msg.arg2 = arg2;
+		
+		sendMessageToActivity(msg);
 	}
 }

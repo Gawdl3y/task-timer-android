@@ -305,7 +305,6 @@ public class Task implements Serializable, Parcelable {
 			complete = true;
 			
 			if(stopAtGoal) {
-				// Stop the task and update the entire view
 				running = false;
 			}
 		}
@@ -422,7 +421,7 @@ public class Task implements Serializable, Parcelable {
 	 */
 	@Override
 	public String toString() {
-		return "Task[name: \"" + name + "\", id: " + id + "]";
+		return "Task[ name=\"" + name + "\" id=" + id + " ]";
 	}
 	
 	

@@ -14,6 +14,10 @@ import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.adapters.TaskListFragmentAdapter;
 
+/**
+ * The main fragment for Task Timer; contains a TaskListFragmentAdapter
+ * @author Schuyler Cebulskie
+ */
 public class MainFragment extends SherlockFragment {
 	private static final String TAG = "MainFragment";
 	

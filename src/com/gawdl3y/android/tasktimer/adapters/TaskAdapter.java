@@ -12,7 +12,7 @@ import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.classes.Task;
 
 /**
- * The adapter to display a list of tasks
+ * The adapter to display a list of Tasks
  * @author Schuyler Cebulskie
  */
 public class TaskAdapter extends ArrayAdapter<Task> {
