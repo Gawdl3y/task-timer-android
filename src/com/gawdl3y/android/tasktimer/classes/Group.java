@@ -1,6 +1,5 @@
 package com.gawdl3y.android.tasktimer.classes;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -11,9 +10,7 @@ import android.os.Parcelable;
  * A category for Task objcts; contains an array of Tasks if necessary
  * @author Schuyler Cebulskie
  */
-public class Group implements Serializable, Parcelable {
-	private static final long serialVersionUID = -8667036902807578578L;
-	
+public class Group implements Parcelable {
 	private String name;
 	private ArrayList<Task> tasks;
 	private int position, id;

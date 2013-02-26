@@ -1,7 +1,5 @@
 package com.gawdl3y.android.tasktimer;
 
-import java.util.ArrayList;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -41,6 +40,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	
 	private Messenger messenger = new Messenger(new IncomingHandler()), serviceMessenger;
 	private boolean connected = false;
+	
+	private boolean fetchedData = false;
 	
 	/**
 	 * The service connection
@@ -80,23 +81,19 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		// Call the superclass' method
 		super.onCreate(savedInstanceState);
 		
-		// Request window features
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		
 		// Display
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 		
-		// Initialize
-		if(app.groups == null) app.groups = new ArrayList<Group>();
-		if(app.tasks == null) app.tasks = new ArrayList<Task>();
-		
 		// Start and bind the service
-		Intent intent = new Intent(this, TaskService.class);
-		startService(intent);
+		Intent intent = new Intent(app, TaskService.class);
+		app.startService(intent);
 		if(bindService(intent, serviceConnection, Context.BIND_ABOVE_CLIENT | Context.BIND_ADJUST_WITH_ACTIVITY)) {
 			if(app.debug) Log.v(TAG, "Service bound");
 		} else {
+			Toast.makeText(this, app.resources.getString(R.string.error_serviceNotBound), Toast.LENGTH_SHORT).show();
 			Log.w(TAG, "Service couldn't be bound");
+			finish();
 		}
 	}
 	
@@ -108,7 +105,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		super.onStart();
 		
 		// Show the loading indicator if we don't have the groups or tasks yet
-		if(app.groups.size() == 0 && app.tasks.size() == 0) setSupportProgressBarIndeterminateVisibility(true);
+		if(!fetchedData) setSupportProgressBarIndeterminateVisibility(true);
 	}
 	
 	/* (non-Javadoc)
@@ -120,7 +117,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		super.onDestroy();
 		
 		// Unbind service
-		unbindService(serviceConnection);
+		try { unbindService(serviceConnection); } catch(Exception e) {}
 		if(app.debug) Log.v(TAG, "Service unbound");
 	}
 	
@@ -205,7 +202,6 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		View parent = (View) view.getParent();
 		Task task = app.groups.get((Integer) parent.getTag(R.id.tag_group)).getTasks().get((Integer) parent.getTag(R.id.tag_task));
 		Message msg;
-		Bundle contents = new Bundle();
 				
 		if(view.getId() == R.id.task_toggle) {
 			task.toggle();
@@ -272,12 +268,14 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			
 			case TaskService.MSG_GET_ALL:
 				// Add the main fragment to the activity
-				mainFragment = new MainFragment();
+				Log.d(TAG, app.tasks.toString());
+				mainFragment = MainFragment.newInstance(app);
 				FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 				transaction.add(R.id.activity_main, mainFragment);
 				transaction.commit();
 				
 				// Hide the loading indicator
+				fetchedData = true;
 				setSupportProgressBarIndeterminateVisibility(false);
 				break;
 			default:

@@ -1,7 +1,5 @@
 package com.gawdl3y.android.tasktimer.classes;
 
-import java.io.Serializable;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,9 +10,7 @@ import android.os.Parcelable;
  * a specific time relative to the day.
  * @author Schuyler Cebulskie
  */
-public class TimeAmount implements Serializable, Parcelable, Comparable<TimeAmount> {
-	private static final long serialVersionUID = -2489624821453413799L;
-	
+public class TimeAmount implements Parcelable, Comparable<TimeAmount> {
 	private int hours;
 	private short mins, secs;
 	
@@ -121,7 +117,7 @@ public class TimeAmount implements Serializable, Parcelable, Comparable<TimeAmou
 	/**
 	 * Increments the Time by 1 second
 	 */
-	public void increment() {
+	public synchronized void increment() {
 		increment(1);
 	}
 	
@@ -129,7 +125,7 @@ public class TimeAmount implements Serializable, Parcelable, Comparable<TimeAmou
 	 * Increments the Time
 	 * @param secs the number of seconds to increment by
 	 */
-	public void increment(int secs) {
+	public synchronized void increment(int secs) {
 		this.secs += secs;
 		this.distribute();
 	}
@@ -138,7 +134,7 @@ public class TimeAmount implements Serializable, Parcelable, Comparable<TimeAmou
 	 * Distributes the hours, minutes, and seconds into the proper amounts
 	 * For example, 2 hours 72 minutes 106 seconds will become 3 hours 13 minutes 46 seconds
 	 */
-	public void distribute() {
+	public synchronized void distribute() {
 		if(secs >= 60) {
 			short addMins = (short) (secs / 60);
 			secs = (short) (secs - addMins * 60);

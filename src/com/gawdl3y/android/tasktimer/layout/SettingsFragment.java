@@ -17,20 +17,6 @@ import com.gawdl3y.android.tasktimer.SettingsActivity;
 public class SettingsFragment extends PreferenceFragment {
 	private SettingsActivity activity;
 
-	/**
-	 * Default constructor
-	 */
-	public SettingsFragment() {}
-
-	/**
-	 * Create a new instance of SettingsFragment
-	 * @return a new instance of SettingsFragment
-	 */
-	public static final SettingsFragment newInstance() {
-		SettingsFragment fragment = new SettingsFragment();
-		return fragment;
-	}
-
 	/* (non-Javadoc)
 	 * The fragment is created
 	 * @see android.preference.PreferenceFragment#onCreate(android.os.Bundle)
@@ -59,4 +45,14 @@ public class SettingsFragment extends PreferenceFragment {
 			activity.onPreferenceChange(findPreference(key));
 		}
 	};
+	
+	
+	/**
+	 * Create a new instance of SettingsFragment
+	 * @return a new instance of SettingsFragment
+	 */
+	public static final SettingsFragment newInstance() {
+		SettingsFragment fragment = new SettingsFragment();
+		return fragment;
+	}
 }

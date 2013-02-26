@@ -1,6 +1,5 @@
 package com.gawdl3y.android.tasktimer.layout;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -27,25 +26,13 @@ public class MainFragment extends SherlockFragment {
 	public ViewPager pager;
 	
 	/* (non-Javadoc)
-	 * The fragment is being attached to an activity
-	 * @see com.actionbarsherlock.app.SherlockFragment#onAttach(android.app.Activity)
-	 */
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		app = (TaskTimerApplication) activity.getApplication();
-		
-		if(app.debug) Log.v(TAG, "Attached");
-	}
-	
-	/* (non-Javadoc)
 	 * The view for the fragment is being created
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_main, container, false);
-		adapter = new TaskListFragmentAdapter(getFragmentManager(), app);
+		adapter = new TaskListFragmentAdapter(getFragmentManager(), app.groups);
         pager = (ViewPager) view.findViewById(R.id.pager);
 		
         new SetAdapterTask().execute();
@@ -55,10 +42,11 @@ public class MainFragment extends SherlockFragment {
 	}
 
 	/**
-	 * @author Schuyler Cebulskie
 	 * Sets the adapter of the ViewPager
+	 * @author Schuyler Cebulskie
 	 */
 	private class SetAdapterTask extends AsyncTask<Void, Void, Void> {
+		@Override
 		protected Void doInBackground(Void... params) {
 			return null;
 		}
@@ -68,5 +56,17 @@ public class MainFragment extends SherlockFragment {
 			pager.setAdapter(adapter);
 			if(app.debug) Log.v(TAG, "Set ViewPager adapter");
 		}
+	}
+	
+	
+	/**
+	 * Creates a new instance of MainFragment
+	 * @param app The application
+	 * @return A new instance of MainFragment
+	 */
+	public static final MainFragment newInstance(TaskTimerApplication app) {
+		MainFragment fragment = new MainFragment();
+		fragment.app = app;
+		return fragment;
 	}
 }

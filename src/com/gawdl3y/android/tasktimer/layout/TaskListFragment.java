@@ -99,6 +99,7 @@ public class TaskListFragment extends SherlockListFragment {
         outState.putParcelable("group", group);
     }
 	
+	
 	/**
 	 * Creates a new instance of TaskListFragment
 	 * @param group The group the fragment is for

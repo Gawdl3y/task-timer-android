@@ -45,9 +45,9 @@ public class TaskService extends Service {
 	public static final int MSG_EXIT = 11;
 	
 	// Messaging things
-	public static boolean connected = false;
-	public static Messenger activityMessenger;
-	public static Messenger messenger;
+	public boolean connected = false;
+	public Messenger activityMessenger;
+	public Messenger messenger;
 	
 	private TaskTimerApplication app;
 	private Notification notification;
@@ -154,7 +154,7 @@ public class TaskService extends Service {
 
 	/**
 	 * The service binder to use for binding the service to an activity
-	 * @author Schuyler
+	 * @author Schuyler Cebulskie
 	 */
 	public class ServiceBinder extends Binder {
 		TaskService getService() {
@@ -173,12 +173,45 @@ public class TaskService extends Service {
 			if(app.debug) Log.v(TAG, "Received message: " + msg);
 			
 			Message response;
-			Bundle contents = new Bundle();
-			Task task;
-			Bundle data = msg.getData();
+			Bundle data = msg.getData(), contents = new Bundle();
 			data.setClassLoader(getClassLoader());
 			
+			Task task;
+			Group group;
+			
 			switch(msg.what) {
+			case MSG_GET_GROUPS:
+				// Send the groups to the activity
+				response = Message.obtain(null, MSG_GET_GROUPS);
+				contents.putParcelableArrayList("groups", app.groups);
+				response.setData(contents);
+				sendMessageToActivity(response);
+				break;
+			case MSG_ADD_GROUP:
+				// Add the group TODO SQL
+				groupID++;
+				group = (Group) data.getParcelable("group");
+				group.setId(groupID);
+				app.groups.add(msg.arg1, group);
+				Utilities.reorder(app.groups);
+				
+				// Send the groups back to the activity
+				response = Message.obtain(null, MSG_GET_GROUPS);
+				contents.putParcelableArrayList("groups", app.groups);
+				response.setData(contents);
+				response.arg1 = group.getPosition();
+				sendMessageToActivity(response);
+				break;
+			case MSG_DELETE_GROUP:
+				// Delete a Group TODO SQL
+				app.groups.remove(msg.arg1);
+				break;
+			case MSG_UPDATE_GROUP:
+				// Update a Group TODO SQL
+				group = (Group) data.getParcelable("group");
+				app.groups.set(msg.arg1, group);
+				break;
+			
 			case MSG_GET_TASKS:
 				// Send the response message
 				response = Message.obtain(null, MSG_GET_TASKS);
@@ -187,11 +220,12 @@ public class TaskService extends Service {
 				sendMessageToActivity(response);
 				break;
 			case MSG_ADD_TASK:
-				// Add the task TODO SQL
+				// Add a Task TODO SQL
 				taskID++;
 				task = (Task) data.getParcelable("task");
 				task.setId(taskID);
 				task.setGroup(app.groups.get(msg.arg1).getId());
+				
 				app.tasks.add(task);
 				app.groups.get(msg.arg1).getTasks().add(task.getPosition(), task);
 				Utilities.reorder(app.groups.get(msg.arg1).getTasks());
@@ -204,14 +238,18 @@ public class TaskService extends Service {
 				sendMessageToActivity(response);
 				break;
 			case MSG_DELETE_TASK:
-				// TODO SQL
+				// Delete a Task TODO SQL
+				app.tasks.remove(msg.arg2);
 				app.groups.get(msg.arg1).getTasks().remove(msg.arg2);
 				break;
 			case MSG_UPDATE_TASK:
-				// TODO SQL
-				app.groups.get(msg.arg1).getTasks().set(msg.arg2, (Task) data.getParcelable("task"));
+				// Update a Task TODO SQL
+				task = (Task) data.getParcelable("task");
+				app.tasks.set(msg.arg2, task);
+				app.groups.get(msg.arg1).getTasks().set(msg.arg2, task);
 				break;
 			case MSG_TOGGLE_TASK:
+				// Toggle a Task
 				task = app.groups.get(msg.arg1).getTasks().get(msg.arg2);
 				task.toggle();
 				
@@ -230,37 +268,8 @@ public class TaskService extends Service {
 				
 				break;
 				
-			case MSG_GET_GROUPS:
-				// Send the response message
-				response = Message.obtain(null, MSG_GET_GROUPS);
-				contents.putParcelableArrayList("groups", app.groups);
-				response.setData(contents);
-				sendMessageToActivity(response);
-				break;
-			case MSG_ADD_GROUP:
-				// Add the group TODO SQL
-				groupID++;
-				Group group = (Group) data.getParcelable("group");
-				group.setId(groupID);
-				app.groups.add(msg.arg1, group);
-				Utilities.reorder(app.groups);
-				
-				// Send the groups back to the activity
-				response = Message.obtain(null, MSG_GET_GROUPS);
-				contents.putParcelableArrayList("groups", app.groups);
-				response.setData(contents);
-				response.arg1 = group.getPosition();
-				sendMessageToActivity(response);
-				break;
-			case MSG_DELETE_GROUP:
-				// TODO SQL
-				break;
-			case MSG_UPDATE_GROUP:
-				// TODO SQL
-				break;
-				
 			case MSG_GET_ALL:
-				// Send the response message
+				// Get the Groups and Tasks
 				response = Message.obtain(null, MSG_GET_ALL);
 				contents.putParcelableArrayList("groups", app.groups);
 				contents.putParcelableArrayList("tasks", app.tasks);
@@ -269,6 +278,7 @@ public class TaskService extends Service {
 				break;
 				
 			case MSG_EXIT:
+				// Exit the application
 				TaskService.this.stopSelf();
 				break;
 				
@@ -282,7 +292,7 @@ public class TaskService extends Service {
 	 * Sends a message to the activity
 	 * @param msg The message to send
 	 */
-	public static void sendMessageToActivity(Message msg) {
+	public void sendMessageToActivity(Message msg) {
 		// Set who to reply to
 		msg.replyTo = messenger;
 		

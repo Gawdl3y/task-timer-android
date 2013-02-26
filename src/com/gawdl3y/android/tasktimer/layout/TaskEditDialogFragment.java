@@ -43,11 +43,6 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		void onFinishEditDialog(Task task, int group);
 	}
 	
-	/**
-	 * Default constructor
-	 */
-	public TaskEditDialogFragment() {}
-	
 	/* (non-Javadoc)
 	 * The fragment is being created
 	 * @see android.support.v4.app.DialogFragment#onCreate(android.os.Bundle)
@@ -190,6 +185,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		savedInstanceState.putInt("position", positionView.getSelectedItemPosition());
 		savedInstanceState.putString("description", descriptionView.getText().toString());
 	}
+	
 	
 	/**
 	 * Creates a new instance of TaskEditDialogFragment

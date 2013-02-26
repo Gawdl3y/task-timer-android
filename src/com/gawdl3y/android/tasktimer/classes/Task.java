@@ -1,6 +1,5 @@
 package com.gawdl3y.android.tasktimer.classes;
 
-import java.io.Serializable;
 import java.util.Comparator;
 
 import android.content.res.TypedArray;
@@ -18,9 +17,7 @@ import com.gawdl3y.android.tasktimer.TaskTimerApplication;
  * A class that contains a time, goal time, and task-related properties
  * @author Schuyler Cebulskie
  */
-public class Task implements Serializable, Parcelable {
-	private static final long serialVersionUID = -5638162774940783076L;
-	
+public class Task implements Parcelable {
 	private String name, description;
 	private TimeAmount time, goal;
 	private boolean indefinite, complete, running, stopAtGoal;
@@ -284,14 +281,14 @@ public class Task implements Serializable, Parcelable {
 	/**
 	 * Toggles the running status of the Task
 	 */
-	public void toggle() {
+	public synchronized void toggle() {
 		running = !running;
 	}
 	
 	/**
 	 * Increments the Task's time by 1 second
 	 */
-	public void incrementTime() {
+	public synchronized void incrementTime() {
 		incrementTime(1);
 	}
 	
@@ -299,7 +296,7 @@ public class Task implements Serializable, Parcelable {
 	 * Increments the Task's time
 	 * @param secs The seconds to increment the time by
 	 */
-	public void incrementTime(int secs) {
+	public synchronized void incrementTime(int secs) {
 		time.increment(secs);
 		if(time.compareTo(goal) >= 0) {
 			complete = true;
@@ -315,7 +312,7 @@ public class Task implements Serializable, Parcelable {
 	 * @param task The Task to update the view of
 	 * @param view The view of the task
 	 */
-	public static void updateView(Task task, View view) {
+	public synchronized static void updateView(Task task, View view) {
 		TextView nameView = (TextView) view.findViewById(R.id.task_name);
 		TextView timeView = (TextView) view.findViewById(R.id.task_time);
 		TextView goalView = (TextView) view.findViewById(R.id.task_goal);

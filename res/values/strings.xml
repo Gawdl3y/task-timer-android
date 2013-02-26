@@ -176,6 +176,10 @@
     <string name="position_end">End of the list</string>
     
     
+    <!-- Error strings -->
+    <string name="error_serviceNotBound">The service could not be bound</string>
+    
+    
     <!-- General strings -->
     <string name="no_tasks">No tasks</string>
     

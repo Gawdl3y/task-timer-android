@@ -38,11 +38,6 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		void onFinishEditDialog(Group group);
 	}
 	
-	/**
-	 * Default constructor
-	 */
-	public GroupEditDialogFragment() {}
-	
 	/* (non-Javadoc)
 	 * The fragment is being created
 	 * @see android.support.v4.app.DialogFragment#onCreate(android.os.Bundle)
@@ -151,6 +146,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		savedInstanceState.putString("name", nameView.getText().toString());
 		savedInstanceState.putInt("position", positionView.getSelectedItemPosition());
 	}
+	
 	
 	/**
 	 * Creates a new instance of GroupEditDialogFragment
