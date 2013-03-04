@@ -23,7 +23,7 @@
         </activity>
         <activity android:name=".SettingsActivity" android:label="@string/menu_settings"></activity>
         
-        <service android:description="@string/service_description" android:name=".TaskService" android:label="@string/service_label" android:process=":TaskService"></service>
+        <service android:description="@string/service_description" android:name=".TaskService" android:label="@string/service_label"></service>
         
     </application>
 
