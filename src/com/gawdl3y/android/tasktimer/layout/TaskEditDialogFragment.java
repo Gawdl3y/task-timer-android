@@ -115,14 +115,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		});
 		
 		// Set view stuff
-		if(savedInstanceState != null) {
-			// Load from saved instance
-			nameView.setText(savedInstanceState.getString("name"));
-			groupView.setSelection(savedInstanceState.getInt("group"));
-			positionView.setSelection(savedInstanceState.getInt("position"));
-			descriptionView.setText(savedInstanceState.getString("description"));
-		} else if(getArguments() != null) {
-			// Load from arguments
+		if(getArguments() != null) {
 			groupView.setSelection(getArguments().getInt("group"));
 			positionView.setSelection(getArguments().getInt("position"));
 		}
@@ -180,10 +173,6 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		
 		// Save the data to the saved instance state
 		savedInstanceState.putParcelableArrayList("groups", groups);
-		savedInstanceState.putString("name", nameView.getText().toString());
-		savedInstanceState.putInt("group", groupView.getSelectedItemPosition());
-		savedInstanceState.putInt("position", positionView.getSelectedItemPosition());
-		savedInstanceState.putString("description", descriptionView.getText().toString());
 		if(task != null) savedInstanceState.putParcelable("task", task);
 	}
 	

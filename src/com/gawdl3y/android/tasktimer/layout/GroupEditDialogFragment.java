@@ -86,12 +86,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		positionView.setAdapter(positionAdapter);
 		
 		// Set view stuff
-		if(savedInstanceState != null) {
-			// Load from saved instance
-			nameView.setText(savedInstanceState.getString("name"));
-			positionView.setSelection(savedInstanceState.getInt("position"));
-		} else if(getArguments() != null) {
-			// Load from arguments
+		if(getArguments() != null) {
 			positionView.setSelection(getArguments().getInt("position") == -1 ? 0 : getArguments().getInt("position"));
 		}
 		
@@ -146,8 +141,6 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		
 		// Save the data to the saved instance state
 		savedInstanceState.putParcelableArrayList("groups", groups);
-		savedInstanceState.putString("name", nameView.getText().toString());
-		savedInstanceState.putInt("position", positionView.getSelectedItemPosition());
 		if(group != null) savedInstanceState.putParcelable("group", group);
 	}
 	
