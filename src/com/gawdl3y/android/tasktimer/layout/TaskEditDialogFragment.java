@@ -116,16 +116,15 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 		
 		// Set view stuff
 		if(savedInstanceState != null) {
-			// Load from saved instance state
+			// Load from saved instance
 			nameView.setText(savedInstanceState.getString("name"));
 			groupView.setSelection(savedInstanceState.getInt("group"));
 			positionView.setSelection(savedInstanceState.getInt("position"));
 			descriptionView.setText(savedInstanceState.getString("description"));
 		} else if(getArguments() != null) {
 			// Load from arguments
-			Bundle args = getArguments();
-			groupView.setSelection(args.getInt("group"));
-			positionView.setSelection(args.getInt("position"));
+			groupView.setSelection(getArguments().getInt("group"));
+			positionView.setSelection(getArguments().getInt("position"));
 		}
 		
 		// Create the dialog

@@ -14,7 +14,7 @@ import android.graphics.drawable.Drawable;
  */
 public final class Utilities {
 	/**
-	 * Reorders an ArrayList of tasks or groups by position
+	 * Sets the positions of tasks or groups in an ArrayList to the position in the array
 	 * @param arr The ArrayList to reorder
 	 */
 	public static void reorder(ArrayList<?> arr) {

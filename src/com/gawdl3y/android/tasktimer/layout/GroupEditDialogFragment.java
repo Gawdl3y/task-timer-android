@@ -85,16 +85,14 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		positionView.setAdapter(positionAdapter);
 		
-		// Load from arguments
-		if(getArguments() != null) {
-			Bundle args = getArguments();
-			positionView.setSelection(args.getInt("position") == -1 ? 0 : args.getInt("position"));
-		}
-		
-		// Load from saved instance state
+		// Set view stuff
 		if(savedInstanceState != null) {
+			// Load from saved instance
 			nameView.setText(savedInstanceState.getString("name"));
 			positionView.setSelection(savedInstanceState.getInt("position"));
+		} else if(getArguments() != null) {
+			// Load from arguments
+			positionView.setSelection(getArguments().getInt("position") == -1 ? 0 : getArguments().getInt("position"));
 		}
 		
 		// Create the dialog
@@ -123,7 +121,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 	@Override
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		if(actionId == EditorInfo.IME_ACTION_DONE) {
-			// Create the Group
+			// Create/modify the Group
 			if(group == null) group = new Group();
 			group.setName(nameView.getText().toString());
 			group.setPosition(positionView.getSelectedItemPosition());

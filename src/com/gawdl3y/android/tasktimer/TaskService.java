@@ -90,13 +90,17 @@ public class TaskService extends Service {
 		
 		// Use these until database is implemented
 		ArrayList<Task> tasks1 = new ArrayList<Task>(), tasks2 = new ArrayList<Task>(), tasks3 = new ArrayList<Task>();
-		tasks1.add(new Task("This is a task", "", new TimeAmount(1, 2, 3), new TimeAmount(), true, false, false, false, 22, 1, 42));
-		tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, false, 4, 5, 42));
+		tasks1.add(new Task("This is a task", "", new TimeAmount(1, 2, 3), new TimeAmount(), true, false, false, false, 22, 5, 42));
+		tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, false, 4, 1, 42));
 		tasks2.add(new Task("It's a task!", "", new TimeAmount(), new TimeAmount(2.54321), false, false, false, true, 0, 1, 43));
 		
 		Collections.sort(tasks1, Task.PositionComparator);
 		Collections.sort(tasks2, Task.PositionComparator);
 		Collections.sort(tasks3, Task.PositionComparator);
+		
+		Utilities.reorder(tasks1);
+		Utilities.reorder(tasks2);
+		Utilities.reorder(tasks3);
 		
 		tasks.addAll(tasks1);
 		tasks.addAll(tasks2);

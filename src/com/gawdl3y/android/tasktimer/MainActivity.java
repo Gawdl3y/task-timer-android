@@ -266,6 +266,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				break;
 			case TaskService.MSG_UPDATE_TASK:
 				task = (Task) data.getParcelable("task");
+				groups.get(msg.arg1).getTasks().set(task.getPosition(), task);
 				
 				try {
 					fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);

@@ -34,7 +34,6 @@ public class TaskTimerThread extends Thread {
 		 * @param task The task that the timer is for
 		 */
 		public TaskTimerRunnable(Task task, int group, TaskService service) {
-			super();
 			this.task = task;
 			this.group = group;
 			this.service = service;
@@ -47,9 +46,8 @@ public class TaskTimerThread extends Thread {
 		@Override
 		public void run() {
 			while(task.isRunning()) {
-				task.getTime().increment();
+				task.incrementTime();
 				if(service.connected) service.sendObjectToActivity(TaskService.MSG_UPDATE_TASK, "task", task, group);
-				System.out.println(task.getTime());
 				
 				try {
 					Thread.sleep(1000);
@@ -59,6 +57,7 @@ public class TaskTimerThread extends Thread {
 			}
 		}
 	}
+	
 	
 	/**
 	 * Comparator for comparing tasks

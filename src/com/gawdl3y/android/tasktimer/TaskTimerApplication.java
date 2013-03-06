@@ -1,15 +1,10 @@
 package com.gawdl3y.android.tasktimer;
 
-import java.util.ArrayList;
-
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
-import com.gawdl3y.android.tasktimer.classes.Group;
-import com.gawdl3y.android.tasktimer.classes.Task;
 
 /**
  * The base application class for Task Timer
