@@ -2,7 +2,10 @@ package com.gawdl3y.android.tasktimer.classes;
 
 import java.util.Comparator;
 
+import android.R;
+
 import com.gawdl3y.android.tasktimer.TaskService;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 
 /**
  * Thread that increments the time of a task
@@ -14,9 +17,12 @@ public class TaskTimerThread extends Thread {
 	/**
 	 * Fill constructor
 	 * @param task The task that the timer is for
+	 * @param group The position of the group that the task is in
+	 * @param delay The amount of time to delay (in seconds)
+	 * @param service The service that is running the thread
 	 */
-	public TaskTimerThread(Task task, int group, TaskService service) {
-		super(new TaskTimerRunnable(task, group, service));
+	public TaskTimerThread(Task task, int group, int delay, TaskService service) {
+		super(new TaskTimerRunnable(task, group, delay, service));
 		this.task = task;
 	}
 	
@@ -26,16 +32,20 @@ public class TaskTimerThread extends Thread {
 	 */
 	public static class TaskTimerRunnable implements Runnable {
 		private final Task task;
-		private final int group;
+		private final int group, delay;
 		private final TaskService service;
 		
 		/**
 		 * Fill constructor
 		 * @param task The task that the timer is for
+		 * @param group The position of the group that the task is in
+		 * @param delay The amount of time to delay (in seconds)
+		 * @param service The service that is running the thread
 		 */
-		public TaskTimerRunnable(Task task, int group, TaskService service) {
+		public TaskTimerRunnable(Task task, int group, int delay, TaskService service) {
 			this.task = task;
 			this.group = group;
+			this.delay = delay;
 			this.service = service;
 		}
 		
@@ -45,15 +55,20 @@ public class TaskTimerThread extends Thread {
 		 */
 		@Override
 		public void run() {
-			while(task.isRunning()) {
-				task.incrementTime();
-				if(service.connected) service.sendObjectToActivity(TaskService.MSG_UPDATE_TASK, "task", task, group);
+			while(task.isRunning() && !Thread.interrupted()) {
+				// Get the difference between the goal and time
+				int difference = (int) Math.ceil(task.getGoal().toDouble() * 3600 - task.getTime().toDouble() * 3600);
 				
-				try {
-					Thread.sleep(1000);
-				} catch(InterruptedException e) {
-					
+				if(difference >= delay || !task.getStopAtGoal()) {
+					Utilities.sleep(delay * 1000);
+					task.incrementTime(delay);
+				} else {
+					Utilities.sleep(difference * 1000);
+					task.incrementTime(difference);
 				}
+				
+				// Send the updated task to the activity if necessary
+				if(service.isConnected()) service.sendObjectToActivity(TaskService.MSG_UPDATE_TASK, "task", task, group);
 			}
 		}
 	}

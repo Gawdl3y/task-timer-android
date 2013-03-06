@@ -45,9 +45,9 @@ public class TaskService extends Service {
 	public static final int MSG_EXIT = 11;
 	
 	// Messaging things
-	public boolean connected = false;
-	public Messenger activityMessenger;
-	public Messenger messenger;
+	private boolean connected = false;
+	private Messenger activityMessenger;
+	private Messenger messenger;
 	
 	private TaskTimerApplication app;
 	private Notification notification;
@@ -133,8 +133,8 @@ public class TaskService extends Service {
 	 */
 	@Override
 	public IBinder onBind(Intent intent) {
-		if(app.debug) Log.v(TAG, "Bound to activity");
 		connected = true;
+		if(app.debug) Log.v(TAG, "Bound");
 		return messenger.getBinder();
 	}
 	
@@ -144,9 +144,15 @@ public class TaskService extends Service {
 	 */
 	@Override
 	public boolean onUnbind(Intent intent) {
-		if(app.debug) Log.v(TAG, "Unbound from activity");
 		connected = false;
-		return super.onUnbind(intent);
+		if(app.debug) Log.v(TAG, "Unbound");
+		return true;
+	}
+	
+	@Override
+	public void onRebind(Intent intent) {
+		connected = true;
+		if(app.debug) Log.v(TAG, "Rebound");
 	}
 
 	/* (non-Javadoc)
@@ -155,8 +161,8 @@ public class TaskService extends Service {
 	 */
 	@Override
 	public void onDestroy() {
-		if(app.debug) Log.v(TAG, "Destroyed");
 		super.onDestroy();
+		if(app.debug) Log.v(TAG, "Destroyed");
 	}
 
 	/**
@@ -262,12 +268,15 @@ public class TaskService extends Service {
 				
 				// Create or destroy the timer thread
 				if(task.isRunning()) {
-					TaskTimerThread timer = new TaskTimerThread(task, msg.arg1, TaskService.this);
+					// Figure out what update rate to use
+					int delay = Integer.parseInt(app.preferences.getString(connected ? "pref_foregroundRate" : "pref_backgroundRate", "60"));
+					
+					TaskTimerThread timer = new TaskTimerThread(task, msg.arg1, delay, TaskService.this);
 					timer.start();
 					timers.add(timer);
 					Collections.sort(timers, TaskTimerThread.TaskComparator);
 				} else {
-					int position = Collections.binarySearch(timers, new TaskTimerThread(task, -1, TaskService.this), TaskTimerThread.TaskComparator);
+					int position = Collections.binarySearch(timers, new TaskTimerThread(task, -1, -1, TaskService.this), TaskTimerThread.TaskComparator);
 					TaskTimerThread timer = timers.get(position);
 					timer.interrupt();
 					timers.remove(position);
@@ -354,5 +363,13 @@ public class TaskService extends Service {
 		if(arg2 != -1) msg.arg2 = arg2;
 		
 		sendMessageToActivity(msg);
+	}
+	
+	/**
+	 * Returns whether or not the service is connected to the activity
+	 * @return
+	 */
+	public boolean isConnected() {
+		return connected;
 	}
 }

@@ -30,6 +30,18 @@ public final class Utilities {
 	}
 	
 	/**
+	 * Sleep for a given amount of time
+	 * @param time The amount of time to sleep (in milliseconds)
+	 */
+	public static void sleep(long time) {
+		try {
+			Thread.sleep(time);
+		} catch(InterruptedException e) {
+			
+		}
+	}
+	
+	/**
 	 * Generates a Bitmap from a Drawable
 	 * @param drawable The Drawable to convert to a Bitmap
 	 * @return Bitmap

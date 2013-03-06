@@ -174,7 +174,7 @@ public class Group implements Parcelable {
 	 */
 	@Override
 	public String toString() {
-		return "Group[ name=\"" + name + "\" id=" + id + " ]";
+		return "Group[name=\"" + name + "\" id=" + id + "]";
 	}
 	
 	
