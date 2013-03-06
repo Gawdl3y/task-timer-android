@@ -51,6 +51,9 @@ public class TaskService extends Service {
 	
 	private TaskTimerApplication app;
 	private Notification notification;
+	
+	private ArrayList<Task> tasks = new ArrayList<Task>();
+	private ArrayList<Group> groups = new ArrayList<Group>();
 	private ArrayList<TaskTimerThread> timers = new ArrayList<TaskTimerThread>();
 	private int groupID, taskID;
 	
@@ -95,15 +98,15 @@ public class TaskService extends Service {
 		Collections.sort(tasks2, Task.PositionComparator);
 		Collections.sort(tasks3, Task.PositionComparator);
 		
-		app.tasks.addAll(tasks1);
-		app.tasks.addAll(tasks2);
-		app.tasks.addAll(tasks3);
+		tasks.addAll(tasks1);
+		tasks.addAll(tasks2);
+		tasks.addAll(tasks3);
 		
-		app.groups.add(new Group("It's a group!", tasks1, 0, 42));
-		app.groups.add(new Group("Also a group", tasks2, 2, 43));
-		app.groups.add(new Group("no way another group", tasks3, 1, 2));
+		groups.add(new Group("It's a group!", tasks1, 0, 42));
+		groups.add(new Group("Also a group", tasks2, 2, 43));
+		groups.add(new Group("no way another group", tasks3, 1, 2));
 		
-		Collections.sort(app.groups, Group.PositionComparator);
+		Collections.sort(groups, Group.PositionComparator);
 		
 		groupID = 43;
 		taskID = 22;
@@ -112,7 +115,7 @@ public class TaskService extends Service {
 	}
 	
 	/* (non-Javadoc)
-	 * A command is being started on the service
+	 * The service is receiving a command to start
 	 * @see android.app.Service#onStartCommand(android.content.Intent, int, int)
 	 */
 	@Override
@@ -183,7 +186,7 @@ public class TaskService extends Service {
 			case MSG_GET_GROUPS:
 				// Send the groups to the activity
 				response = Message.obtain(null, MSG_GET_GROUPS);
-				contents.putParcelableArrayList("groups", app.groups);
+				contents.putParcelableArrayList("groups", groups);
 				response.setData(contents);
 				sendMessageToActivity(response);
 				break;
@@ -192,30 +195,30 @@ public class TaskService extends Service {
 				groupID++;
 				group = (Group) data.getParcelable("group");
 				group.setId(groupID);
-				app.groups.add(msg.arg1, group);
-				Utilities.reorder(app.groups);
+				groups.add(msg.arg1, group);
+				Utilities.reorder(groups);
 				
 				// Send the groups back to the activity
 				response = Message.obtain(null, MSG_GET_GROUPS);
-				contents.putParcelableArrayList("groups", app.groups);
+				contents.putParcelableArrayList("groups", groups);
 				response.setData(contents);
 				response.arg1 = group.getPosition();
 				sendMessageToActivity(response);
 				break;
 			case MSG_DELETE_GROUP:
 				// Delete a Group TODO SQL
-				app.groups.remove(msg.arg1);
+				groups.remove(msg.arg1);
 				break;
 			case MSG_UPDATE_GROUP:
 				// Update a Group TODO SQL
 				group = (Group) data.getParcelable("group");
-				app.groups.set(msg.arg1, group);
+				groups.set(msg.arg1, group);
 				break;
 			
 			case MSG_GET_TASKS:
 				// Send the response message
 				response = Message.obtain(null, MSG_GET_TASKS);
-				contents.putParcelableArrayList("tasks", app.tasks);
+				contents.putParcelableArrayList("tasks", tasks);
 				response.setData(contents);
 				sendMessageToActivity(response);
 				break;
@@ -224,11 +227,11 @@ public class TaskService extends Service {
 				taskID++;
 				task = (Task) data.getParcelable("task");
 				task.setId(taskID);
-				task.setGroup(app.groups.get(msg.arg1).getId());
+				task.setGroup(groups.get(msg.arg1).getId());
 				
-				app.tasks.add(task);
-				app.groups.get(msg.arg1).getTasks().add(task.getPosition(), task);
-				Utilities.reorder(app.groups.get(msg.arg1).getTasks());
+				tasks.add(task);
+				groups.get(msg.arg1).getTasks().add(task.getPosition(), task);
+				Utilities.reorder(groups.get(msg.arg1).getTasks());
 				
 				// Send the task back to the activity
 				response = Message.obtain(null, MSG_ADD_TASK);
@@ -239,18 +242,18 @@ public class TaskService extends Service {
 				break;
 			case MSG_DELETE_TASK:
 				// Delete a Task TODO SQL
-				app.tasks.remove(msg.arg2);
-				app.groups.get(msg.arg1).getTasks().remove(msg.arg2);
+				tasks.remove(msg.arg2);
+				groups.get(msg.arg1).getTasks().remove(msg.arg2);
 				break;
 			case MSG_UPDATE_TASK:
 				// Update a Task TODO SQL
 				task = (Task) data.getParcelable("task");
-				app.tasks.set(msg.arg2, task);
-				app.groups.get(msg.arg1).getTasks().set(msg.arg2, task);
+				tasks.set(msg.arg2, task);
+				groups.get(msg.arg1).getTasks().set(msg.arg2, task);
 				break;
 			case MSG_TOGGLE_TASK:
 				// Toggle a Task
-				task = app.groups.get(msg.arg1).getTasks().get(msg.arg2);
+				task = groups.get(msg.arg1).getTasks().get(msg.arg2);
 				task.toggle();
 				
 				// Create or destroy the timer thread
@@ -271,8 +274,8 @@ public class TaskService extends Service {
 			case MSG_GET_ALL:
 				// Get the Groups and Tasks
 				response = Message.obtain(null, MSG_GET_ALL);
-				contents.putParcelableArrayList("groups", app.groups);
-				contents.putParcelableArrayList("tasks", app.tasks);
+				contents.putParcelableArrayList("groups", groups);
+				contents.putParcelableArrayList("tasks", tasks);
 				response.setData(contents);
 				sendMessageToActivity(response);
 				break;

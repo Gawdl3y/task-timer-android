@@ -31,12 +31,6 @@ public class TaskTimerApplication extends Application {
 	public SharedPreferences preferences = PREFERENCES;
 	public int theme = THEME;
 	
-	// Data
-	public static ArrayList<Task> TASKS;
-	public static ArrayList<Group> GROUPS;
-	public ArrayList<Task> tasks = TASKS;
-	public ArrayList<Group> groups = GROUPS;
-	
 	/* (non-Javadoc)
 	 * The application is being created
 	 * @see android.app.Application#onCreate()
@@ -61,12 +55,6 @@ public class TaskTimerApplication extends Application {
 		THEME = themeStr.equals("2") ? R.style.Theme_Light_DarkActionBar : (themeStr.equals("1") ? R.style.Theme_Light : R.style.Theme_Dark);
 		theme = THEME;
 		
-		// Set data
-		TASKS = new ArrayList<Task>();
-		GROUPS = new ArrayList<Group>();
-		tasks = TASKS;
-		groups = GROUPS;
-		
-		Log.v(TAG, "Created");
+		if(DEBUG) Log.v(TAG, "Created");
 	}
 }

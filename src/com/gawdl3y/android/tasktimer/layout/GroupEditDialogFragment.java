@@ -1,5 +1,7 @@
 package com.gawdl3y.android.tasktimer.layout;
 
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -26,7 +28,9 @@ import com.gawdl3y.android.tasktimer.classes.Group;
 public class GroupEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
 	private TaskTimerApplication app;
 	
+	private ArrayList<Group> groups;
 	private Group group;
+	
 	private EditText nameView;
 	private Spinner positionView;
 	
@@ -47,16 +51,17 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		super.onCreate(savedInstanceState);
 		app = (TaskTimerApplication) getActivity().getApplication();
 		
-		// Load from arguments
-		if(getArguments() != null) {
-			Bundle args = getArguments();
-			group = (Group) args.getParcelable("group");
+		if(savedInstanceState != null) {
+			// Load from saved instance
+			groups = savedInstanceState.getParcelableArrayList("groups");
+			group = (Group) savedInstanceState.getParcelable("group");
+		} else if(getArguments() != null) {
+			// Load from arguments
+			groups = getArguments().getParcelableArrayList("groups");
+			group = (Group) getArguments().getParcelable("group");
 		}
 		
 		// Load from saved instance state
-		if(savedInstanceState != null) {
-			group = (Group) savedInstanceState.getParcelable("group");
-		}
 	}
 	
 	/* (non-Javadoc)
@@ -72,10 +77,10 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		positionView = (Spinner) view.findViewById(R.id.group_edit_position);
 		
 		// Add the possible positions to the spinner
-		String[] opts = new String[app.groups.size() + 1];
-		opts[app.groups.size()] = app.resources.getString(R.string.position_end);
-		for(int i  = 0; i < app.groups.size(); i++)
-			opts[i] = String.format(app.resources.getString(R.string.position_before), app.groups.get(i).getName());
+		String[] opts = new String[groups.size() + 1];
+		opts[groups.size()] = app.resources.getString(R.string.position_end);
+		for(int i  = 0; i < groups.size(); i++)
+			opts[i] = String.format(app.resources.getString(R.string.position_before), groups.get(i).getName());
 		ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
 		positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		positionView.setAdapter(positionAdapter);
@@ -142,28 +147,30 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 		super.onSaveInstanceState(savedInstanceState);
 		
 		// Save the data to the saved instance state
-		if(group != null) savedInstanceState.putParcelable("group", group);
+		savedInstanceState.putParcelableArrayList("groups", groups);
 		savedInstanceState.putString("name", nameView.getText().toString());
 		savedInstanceState.putInt("position", positionView.getSelectedItemPosition());
+		if(group != null) savedInstanceState.putParcelable("group", group);
 	}
 	
 	
 	/**
 	 * Creates a new instance of GroupEditDialogFragment
-	 * @param group The already-existing group, if any
+	 * @param groups The groups
 	 * @param position The initial position for the position spinner
+	 * @param group The already-existing group, if any
 	 * @return A new instance of the fragment
 	 */
-	public static final GroupEditDialogFragment newInstance(Group group, int position) {
-		// Create a new fragment
-		GroupEditDialogFragment fragment = new GroupEditDialogFragment();
-		
-		// Set the arguments on the fragment
+	public static final GroupEditDialogFragment newInstance(ArrayList<Group> groups, int position, Group group) {
+		// Create the arguments for the fragment
 		Bundle args = new Bundle();
-		if(group != null) args.putParcelable("group", group);
+		args.putParcelableArrayList("groups", groups);
 		args.putInt("position", position);
-		fragment.setArguments(args);
+		if(group != null) args.putParcelable("group", group);
 		
+		// Create the fragment
+		GroupEditDialogFragment fragment = new GroupEditDialogFragment();
+		fragment.setArguments(args);
 		return fragment;
 	}
 }

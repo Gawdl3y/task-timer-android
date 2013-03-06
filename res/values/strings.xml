@@ -110,14 +110,14 @@
     </string-array>
     
     <string name="pref_backgroundRate">Background update rate</string>
-    <string name="pref_backgroundRate_default">30</string>
+    <string name="pref_backgroundRate_default">60</string>
     <string-array name="pref_backgroundRate_entries">
         <item>1 second</item>
         <item>5 seconds</item>
         <item>10 seconds</item>
         <item>15 seconds</item>
-        <item>30 seconds (default)</item>
-        <item>1 minute</item>
+        <item>30 seconds</item>
+        <item>1 minute (default)</item>
         <item>5 minutes</item>
         <item>10 minutes</item>
         <item>15 minutes</item>

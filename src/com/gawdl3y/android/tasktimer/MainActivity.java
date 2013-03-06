@@ -1,5 +1,7 @@
 package com.gawdl3y.android.tasktimer;
 
+import java.util.ArrayList;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -35,20 +37,21 @@ import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener {
 	private static final String TAG = "MainActivity";
 	
+	private ArrayList<Group> groups;
+	private boolean fetchedData = false;
+	
 	private TaskTimerApplication app;
 	private MainFragment mainFragment;
 	
 	private Messenger messenger = new Messenger(new IncomingHandler()), serviceMessenger;
 	private boolean connected = false;
 	
-	private boolean fetchedData = false;
-	
 	/**
 	 * The service connection
 	 */
 	private ServiceConnection serviceConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			Log.v(TAG, "Service connected: " + name);
+			if(app.debug) Log.v(TAG, "Service connected: " + name);
 			
 			// Set the service messenger and connected status
 			MainActivity.this.serviceMessenger = new Messenger(service);
@@ -85,16 +88,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 		
-		// Start and bind the service
+		// Start the service
 		Intent intent = new Intent(app, TaskService.class);
 		app.startService(intent);
-		if(bindService(intent, serviceConnection, Context.BIND_ABOVE_CLIENT | Context.BIND_ADJUST_WITH_ACTIVITY)) {
-			if(app.debug) Log.v(TAG, "Service bound");
-		} else {
-			Toast.makeText(this, app.resources.getString(R.string.error_serviceNotBound), Toast.LENGTH_SHORT).show();
-			Log.w(TAG, "Service couldn't be bound");
-			finish();
-		}
 	}
 	
 	/* (non-Javadoc)
@@ -104,8 +100,33 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	protected void onStart() {
 		super.onStart();
 		
+		// Bind the service
+		Intent intent = new Intent(app, TaskService.class);
+		if(bindService(intent, serviceConnection, Context.BIND_ABOVE_CLIENT | Context.BIND_ADJUST_WITH_ACTIVITY)) {
+			if(app.debug) Log.v(TAG, "Service bound");
+		} else {
+			Toast.makeText(this, app.resources.getString(R.string.error_serviceNotBound), Toast.LENGTH_SHORT).show();
+			Log.w(TAG, "Service couldn't be bound");
+			finish();
+		}
+		
 		// Show the loading indicator if we don't have the groups or tasks yet
 		if(!fetchedData) setSupportProgressBarIndeterminateVisibility(true);
+		
+		if(app.debug) Log.v(TAG, "Started");
+	}
+	
+	/* (non-Javadoc)
+	 * The activity is being stopped
+	 * @see com.actionbarsherlock.app.SherlockFragmentActivity#onStop()
+	 */
+	protected void onStop() {
+		super.onStop();
+		
+		// Unbind service
+		try { unbindService(serviceConnection); } catch(IllegalArgumentException e) {}
+		
+		if(app.debug) Log.v(TAG, "Stopped");
 	}
 	
 	/* (non-Javadoc)
@@ -115,10 +136,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		
-		// Unbind service
-		try { unbindService(serviceConnection); } catch(Exception e) {}
-		if(app.debug) Log.v(TAG, "Service unbound");
+		if(app.debug) Log.v(TAG, "Destroyed");
 	}
 	
 	/* (non-Javadoc)
@@ -144,12 +162,12 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	    switch(item.getItemId()) {
 	        case R.id.menu_new_task:
 				fm = getSupportFragmentManager();
-				TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(null, mainFragment.pager.getCurrentItem());
+				TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(groups, mainFragment.pager.getCurrentItem(), null);
 				taskEditDialog.show(fm, "fragment_task_edit");
 	        	return true;
 	        case R.id.menu_new_group:
 	        	fm = getSupportFragmentManager();
-				GroupEditDialogFragment groupEditDialog = GroupEditDialogFragment.newInstance(null, 0);
+				GroupEditDialogFragment groupEditDialog = GroupEditDialogFragment.newInstance(groups, 0, null);
 				groupEditDialog.show(fm, "fragment_group_edit");
 	        	return true;
 	        case R.id.menu_settings:
@@ -200,7 +218,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	 */
 	public void onTaskButtonClick(View view) {
 		View parent = (View) view.getParent();
-		Task task = app.groups.get((Integer) parent.getTag(R.id.tag_group)).getTasks().get((Integer) parent.getTag(R.id.tag_task));
+		Task task = groups.get((Integer) parent.getTag(R.id.tag_group)).getTasks().get((Integer) parent.getTag(R.id.tag_task));
 		Message msg;
 				
 		if(view.getId() == R.id.task_toggle) {
@@ -228,13 +246,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			Task task;
 			
 			switch(msg.what) {
-			case TaskService.MSG_GET_TASKS:
-				app.tasks = data.getParcelableArrayList("tasks");
-				buildList();
-				break;
 			case TaskService.MSG_ADD_TASK:
 				task = (Task) data.getParcelable("task");
-				Group group = app.groups.get(msg.arg1);
+				Group group = groups.get(msg.arg1);
 				
 				// Update the task list fragment for the group
 				TaskListFragment fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
@@ -248,7 +262,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				mainFragment.adapter.notifyDataSetChanged();
 				
 				// Scroll to the group that the task was added to
-				mainFragment.pager.setCurrentItem(msg.arg1);
+				mainFragment.pager.setCurrentItem(msg.arg1, true);
 				break;
 			case TaskService.MSG_UPDATE_TASK:
 				task = (Task) data.getParcelable("task");
@@ -263,13 +277,16 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				break;
 			
 			case TaskService.MSG_GET_GROUPS:
-				if(msg.arg1 != -1) buildList(msg.arg1); else buildList();
+				buildList();
+				if(msg.arg1 != -1) mainFragment.pager.setCurrentItem(msg.arg1, true);
 				break;
 			
 			case TaskService.MSG_GET_ALL:
+				// Get the data
+				groups = data.getParcelableArrayList("groups");
+				
 				// Add the main fragment to the activity
-				Log.d(TAG, app.tasks.toString());
-				mainFragment = MainFragment.newInstance(app);
+				mainFragment = MainFragment.newInstance(groups);
 				FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 				transaction.add(R.id.activity_main, mainFragment);
 				transaction.commit();
@@ -288,18 +305,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	 * Builds the list of groups and tasks
 	 */
 	private void buildList() {
-		mainFragment.adapter.groups = app.groups;
+		mainFragment.adapter.groups = groups;
 		mainFragment.adapter.notifyDataSetChanged();
 		mainFragment.pager.invalidate();
-	}
-	
-	/**
-	 * Builds the list of groups and tasks, then switches to a group
-	 * @param position The position of the group to switch to
-	 */
-	private void buildList(int position) {
-		buildList();
-		mainFragment.pager.setCurrentItem(position);
 	}
 	
 	/**
