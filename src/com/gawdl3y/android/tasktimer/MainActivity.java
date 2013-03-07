@@ -100,6 +100,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	protected void onStart() {
 		super.onStart();
 		
+		// Show the loading indicator if we don't have the groups or tasks yet
+		if(!fetchedData) setSupportProgressBarIndeterminateVisibility(true);
+		
 		// Bind the service
 		Intent intent = new Intent(app, TaskService.class);
 		if(bindService(intent, serviceConnection, Context.BIND_ABOVE_CLIENT | Context.BIND_ADJUST_WITH_ACTIVITY)) {
@@ -109,9 +112,6 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			Log.w(TAG, "Service couldn't be bound");
 			finish();
 		}
-		
-		// Show the loading indicator if we don't have the groups or tasks yet
-		if(!fetchedData) setSupportProgressBarIndeterminateVisibility(true);
 		
 		if(app.debug) Log.v(TAG, "Started");
 	}
@@ -157,18 +157,15 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent intent;
-		FragmentManager fm;
 		
 	    switch(item.getItemId()) {
 	        case R.id.menu_new_task:
-				fm = getSupportFragmentManager();
 				TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(groups, mainFragment.pager.getCurrentItem(), null);
-				taskEditDialog.show(fm, "fragment_task_edit");
+				taskEditDialog.show(getSupportFragmentManager(), "fragment_task_edit");
 	        	return true;
 	        case R.id.menu_new_group:
-	        	fm = getSupportFragmentManager();
 				GroupEditDialogFragment groupEditDialog = GroupEditDialogFragment.newInstance(groups, 0, null);
-				groupEditDialog.show(fm, "fragment_group_edit");
+				groupEditDialog.show(getSupportFragmentManager(), "fragment_group_edit");
 	        	return true;
 	        case R.id.menu_settings:
 	        	intent = new Intent(this, SettingsActivity.class);
@@ -243,41 +240,43 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			
 			Bundle data = msg.getData();
 			data.setClassLoader(getClassLoader());
+			
 			Task task;
+			TaskListFragment fragment;
 			
 			switch(msg.what) {
 			case TaskService.MSG_ADD_TASK:
+				// Set the containing group
 				task = (Task) data.getParcelable("task");
 				Group group = groups.get(msg.arg1);
+				group.getTasks().add(task.getPosition(), task);
 				
-				// Update the task list fragment for the group
-				TaskListFragment fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
+				// Update the task list fragment adapter for the group
+				fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
 				if(fragment != null) {
 					fragment.group = group;
 					fragment.adapter.notifyDataSetChanged();
 				}
 				
-				// Update the main adapter
-				mainFragment.adapter.groups.set(msg.arg1, group);
-				mainFragment.adapter.notifyDataSetChanged();
-				
-				// Scroll to the group that the task was added to
+				// Update the main adapter's groups and scroll to the group that the task was added to
+				mainFragment.adapter.groups = groups;
 				mainFragment.pager.setCurrentItem(msg.arg1, true);
 				break;
 			case TaskService.MSG_UPDATE_TASK:
+				// Set the task
 				task = (Task) data.getParcelable("task");
 				groups.get(msg.arg1).getTasks().set(task.getPosition(), task);
 				
+				// Update the view of the task
 				try {
 					fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
 					View view = fragment.getView().findViewWithTag(Integer.valueOf(task.getPosition()));
 					Task.updateView(task, view);
-				} catch(NullPointerException e) {
-					
-				}
+				} catch(NullPointerException e) { }
 				break;
 			
 			case TaskService.MSG_GET_GROUPS:
+				groups = data.getParcelableArrayList("groups");
 				buildList();
 				if(msg.arg1 != -1) mainFragment.pager.setCurrentItem(msg.arg1, true);
 				break;

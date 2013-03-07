@@ -2,10 +2,7 @@ package com.gawdl3y.android.tasktimer.classes;
 
 import java.util.Comparator;
 
-import android.R;
-
 import com.gawdl3y.android.tasktimer.TaskService;
-import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 
 /**
  * Thread that increments the time of a task

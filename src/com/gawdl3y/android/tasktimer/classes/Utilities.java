@@ -17,7 +17,7 @@ public final class Utilities {
 	 * Sets the positions of tasks or groups in an ArrayList to the position in the array
 	 * @param arr The ArrayList to reorder
 	 */
-	public static void reorder(ArrayList<?> arr) {
+	public static void reposition(ArrayList<?> arr) {
 		for(int i = 0; i < arr.size(); i++) {
 			Object thing = arr.get(i);
 			

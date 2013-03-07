@@ -98,9 +98,9 @@ public class TaskService extends Service {
 		Collections.sort(tasks2, Task.PositionComparator);
 		Collections.sort(tasks3, Task.PositionComparator);
 		
-		Utilities.reorder(tasks1);
-		Utilities.reorder(tasks2);
-		Utilities.reorder(tasks3);
+		Utilities.reposition(tasks1);
+		Utilities.reposition(tasks2);
+		Utilities.reposition(tasks3);
 		
 		tasks.addAll(tasks1);
 		tasks.addAll(tasks2);
@@ -195,10 +195,7 @@ public class TaskService extends Service {
 			switch(msg.what) {
 			case MSG_GET_GROUPS:
 				// Send the groups to the activity
-				response = Message.obtain(null, MSG_GET_GROUPS);
-				contents.putParcelableArrayList("groups", groups);
-				response.setData(contents);
-				sendMessageToActivity(response);
+				sendListToActivity(MSG_GET_GROUPS, "groups", groups);
 				break;
 			case MSG_ADD_GROUP:
 				// Add the group TODO SQL
@@ -206,14 +203,10 @@ public class TaskService extends Service {
 				group = (Group) data.getParcelable("group");
 				group.setId(groupID);
 				groups.add(msg.arg1, group);
-				Utilities.reorder(groups);
+				Utilities.reposition(groups);
 				
-				// Send the groups back to the activity
-				response = Message.obtain(null, MSG_GET_GROUPS);
-				contents.putParcelableArrayList("groups", groups);
-				response.setData(contents);
-				response.arg1 = group.getPosition();
-				sendMessageToActivity(response);
+				// Send the groups to the activity
+				sendListToActivity(MSG_GET_GROUPS, "groups", groups, group.getPosition());
 				break;
 			case MSG_DELETE_GROUP:
 				// Delete a Group TODO SQL
@@ -226,11 +219,8 @@ public class TaskService extends Service {
 				break;
 			
 			case MSG_GET_TASKS:
-				// Send the response message
-				response = Message.obtain(null, MSG_GET_TASKS);
-				contents.putParcelableArrayList("tasks", tasks);
-				response.setData(contents);
-				sendMessageToActivity(response);
+				// Send the tasks to the activity
+				sendListToActivity(MSG_GET_TASKS, "tasks", tasks);
 				break;
 			case MSG_ADD_TASK:
 				// Add a Task TODO SQL
@@ -241,7 +231,7 @@ public class TaskService extends Service {
 				
 				tasks.add(task);
 				groups.get(msg.arg1).getTasks().add(task.getPosition(), task);
-				Utilities.reorder(groups.get(msg.arg1).getTasks());
+				Utilities.reposition(groups.get(msg.arg1).getTasks());
 				
 				// Send the task back to the activity
 				response = Message.obtain(null, MSG_ADD_TASK);
@@ -271,13 +261,17 @@ public class TaskService extends Service {
 					// Figure out what update rate to use
 					int delay = Integer.parseInt(app.preferences.getString(connected ? "pref_foregroundRate" : "pref_backgroundRate", "60"));
 					
+					// Create the timer
 					TaskTimerThread timer = new TaskTimerThread(task, msg.arg1, delay, TaskService.this);
 					timer.start();
 					timers.add(timer);
 					Collections.sort(timers, TaskTimerThread.TaskComparator);
 				} else {
+					// Find the timer
 					int position = Collections.binarySearch(timers, new TaskTimerThread(task, -1, -1, TaskService.this), TaskTimerThread.TaskComparator);
 					TaskTimerThread timer = timers.get(position);
+					
+					// Destroy the timer
 					timer.interrupt();
 					timers.remove(position);
 				}
@@ -357,6 +351,47 @@ public class TaskService extends Service {
 		Message msg = Message.obtain(null, msgType);
 		Bundle contents = new Bundle();
 		contents.putParcelable(key, (Parcelable) o);
+		msg.setData(contents);
+		
+		if(arg1 != -1) msg.arg1 = arg1;
+		if(arg2 != -1) msg.arg2 = arg2;
+		
+		sendMessageToActivity(msg);
+	}
+	
+	/**
+	 * Sends an ArrayList of Parcelable objects to the activity
+	 * @param msgType The message type
+	 * @param key The key for the list
+	 * @param list The list
+	 */
+	public void sendListToActivity(int msgType, String key, ArrayList list) {
+		sendListToActivity(msgType, key, list, -1, -1);
+	}
+	
+	/**
+	 * Sends an ArrayList of Parcelable objects and an argument to the activity
+	 * @param msgType The message type
+	 * @param key The key for the list
+	 * @param list The list
+	 * @param arg The argument
+	 */
+	public void sendListToActivity(int msgType, String key, ArrayList list, int arg) {
+		sendListToActivity(msgType, key, list, arg, -1);
+	}
+	
+	/**
+	 * Sends an ArrayList of Parcelable objects and arguments to the activity
+	 * @param msgType The message type
+	 * @param key The key for the list
+	 * @param list The list
+	 * @param arg1 Argument 1
+	 * @param arg2 Argument 2
+	 */
+	public void sendListToActivity(int msgType, String key, ArrayList list, int arg1, int arg2) {
+		Message msg = Message.obtain(null, msgType);
+		Bundle contents = new Bundle();
+		contents.putParcelableArrayList(key, list);
 		msg.setData(contents);
 		
 		if(arg1 != -1) msg.arg1 = arg1;
