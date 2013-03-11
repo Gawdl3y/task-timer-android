@@ -191,6 +191,7 @@ public class TaskService extends Service {
 			
 			Task task;
 			Group group;
+			int position;
 			
 			switch(msg.what) {
 			case MSG_GET_GROUPS:
@@ -204,6 +205,7 @@ public class TaskService extends Service {
 				group.setId(groupID);
 				groups.add(msg.arg1, group);
 				Utilities.reposition(groups);
+				rebuildTimers();
 				
 				// Send the groups to the activity
 				sendListToActivity(MSG_GET_GROUPS, "groups", groups, group.getPosition());
@@ -234,22 +236,33 @@ public class TaskService extends Service {
 				Utilities.reposition(groups.get(msg.arg1).getTasks());
 				
 				// Send the task back to the activity
-				response = Message.obtain(null, MSG_ADD_TASK);
-				contents.putParcelable("task", task);
-				response.setData(contents);
-				response.arg1 = msg.arg1;
-				sendMessageToActivity(response);
+				sendObjectToActivity(MSG_ADD_TASK, "task", task, msg.arg1);
 				break;
 			case MSG_DELETE_TASK:
 				// Delete a Task TODO SQL
+				task = groups.get(msg.arg1).getTasks().get(msg.arg2);
 				tasks.remove(msg.arg2);
 				groups.get(msg.arg1).getTasks().remove(msg.arg2);
+				
+				// Destroy its timer
+				if(task.isRunning()) {
+					// Find the timer
+					position = Collections.binarySearch(timers, new TaskTimerThread(task, -1, -1, TaskService.this), TaskTimerThread.TaskComparator);
+					TaskTimerThread timer = timers.get(position);
+					
+					// Destroy the timer
+					timer.interrupt();
+					timers.remove(position);
+				}
 				break;
 			case MSG_UPDATE_TASK:
 				// Update a Task TODO SQL
 				task = (Task) data.getParcelable("task");
 				tasks.set(msg.arg2, task);
 				groups.get(msg.arg1).getTasks().set(msg.arg2, task);
+				
+				// Send the task back to the activity
+				sendObjectToActivity(MSG_UPDATE_TASK, "task", task, msg.arg1);
 				break;
 			case MSG_TOGGLE_TASK:
 				// Toggle a Task
@@ -268,7 +281,7 @@ public class TaskService extends Service {
 					Collections.sort(timers, TaskTimerThread.TaskComparator);
 				} else {
 					// Find the timer
-					int position = Collections.binarySearch(timers, new TaskTimerThread(task, -1, -1, TaskService.this), TaskTimerThread.TaskComparator);
+					position = Collections.binarySearch(timers, new TaskTimerThread(task, -1, -1, TaskService.this), TaskTimerThread.TaskComparator);
 					TaskTimerThread timer = timers.get(position);
 					
 					// Destroy the timer
@@ -294,6 +307,28 @@ public class TaskService extends Service {
 				
 			default:
 				super.handleMessage(msg);
+			}
+		}
+	}
+	
+	/**
+	 * Rebuilds the timer threads
+	 */
+	public void rebuildTimers() {
+		for(TaskTimerThread t : timers) {
+			t.interrupt();
+		}
+		
+		timers.clear();
+		
+		for(Group g : groups) {
+			for(Task t : g.getTasks()) {
+				if(t.isRunning()) {
+					int delay = Integer.parseInt(app.preferences.getString(connected ? "pref_foregroundRate" : "pref_backgroundRate", "60"));
+					TaskTimerThread timer = new TaskTimerThread(t, g.getPosition(), delay, this);
+					timer.start();
+					timers.add(timer);
+				}
 			}
 		}
 	}

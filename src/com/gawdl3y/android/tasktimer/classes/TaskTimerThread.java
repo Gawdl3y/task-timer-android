@@ -31,6 +31,7 @@ public class TaskTimerThread extends Thread {
 		private final Task task;
 		private final int group, delay;
 		private final TaskService service;
+		private boolean running = true;
 		
 		/**
 		 * Fill constructor
@@ -52,20 +53,25 @@ public class TaskTimerThread extends Thread {
 		 */
 		@Override
 		public void run() {
-			while(task.isRunning() && !Thread.interrupted()) {
-				// Get the difference between the goal and time
-				int difference = (int) Math.ceil(task.getGoal().toDouble() * 3600 - task.getTime().toDouble() * 3600);
-				
-				if(difference >= delay || !task.getStopAtGoal()) {
-					Utilities.sleep(delay * 1000);
-					task.incrementTime(delay);
-				} else {
-					Utilities.sleep(difference * 1000);
-					task.incrementTime(difference);
+			while(task.isRunning() && running) {
+				try {
+					// Get the difference between the goal and time
+					int difference = (int) Math.ceil(task.getGoal().toDouble() * 3600 - task.getTime().toDouble() * 3600);
+					
+					// Delay and increment time
+					if(difference >= delay || !task.getStopAtGoal()) {
+						Thread.sleep(delay * 1000);
+						task.incrementTime(delay);
+					} else {
+						Thread.sleep(difference * 1000);
+						task.incrementTime(difference);
+					}
+					
+					// Send the updated task to the activity if necessary
+					if(service.isConnected()) service.sendObjectToActivity(TaskService.MSG_UPDATE_TASK, "task", task, group);
+				} catch(InterruptedException e) {
+					running = false;
 				}
-				
-				// Send the updated task to the activity if necessary
-				if(service.isConnected()) service.sendObjectToActivity(TaskService.MSG_UPDATE_TASK, "task", task, group);
 			}
 		}
 	}
