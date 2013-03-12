@@ -31,5 +31,9 @@
             android:process=":TaskService">
         </service>
         
+        <receiver android:name=".utilities.TaskTimerReceiver">
+            <action android:name="start_app" />
+        </receiver>
+        
     </application>
 </manifest>

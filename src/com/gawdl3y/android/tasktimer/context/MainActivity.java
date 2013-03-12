@@ -2,6 +2,8 @@ package com.gawdl3y.android.tasktimer.context;
 
 import java.util.ArrayList;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +33,7 @@ import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
+import com.gawdl3y.android.tasktimer.utilities.TaskTimerReceiver;
 
 /**
  * The main activity of Task Timer
@@ -87,12 +90,14 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		super.onCreate(savedInstanceState);
 		
 		// Display
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		try { requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); } catch(Exception e) {}
 		setContentView(R.layout.activity_main);
 		
 		// Start the service
 		Intent intent = new Intent(app, TaskService.class);
 		app.startService(intent);
+		
+		Log.v(TAG, "Created");
 	}
 	
 	/* (non-Javadoc)
@@ -101,6 +106,18 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	 */
 	protected void onStart() {
 		super.onStart();
+		
+		// Restart if necessary
+		if(getIntent().hasExtra("restart")) {
+			AlarmManager alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+			Intent intent = new Intent(this, TaskTimerReceiver.class);
+			intent.setAction(TaskTimerReceiver.ACTION_START_APP);
+			PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+			alarmMgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, pendingIntent);
+			
+			finish();
+			return;
+		}
 		
 		// Show the loading indicator if we don't have the groups or tasks yet
 		if(!fetchedData) setSupportProgressBarIndeterminateVisibility(true);

@@ -17,7 +17,7 @@
     
     <!-- Dialog strings -->
     <string name="dialog_restart_title">Restart Needed</string>
-    <string name="dialog_restart_message">A complete restart of Task Timer is required for this change to take effect.</string>
+    <string name="dialog_restart_message">A complete restart of Task Timer is required for this change to fully take effect.</string>
     <string name="dialog_restart_button_now">Restart Now</string>
     <string name="dialog_restart_button_later">Restart Later</string>
     

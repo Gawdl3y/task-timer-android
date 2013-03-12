@@ -35,7 +35,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		super.onCreate(savedInstanceState);
 
 		// Display the settings
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			// Use the old preference activity methods for devices older than Honeycomb
 			addPreferencesFromResource(R.xml.preferences);
 			app.preferences.registerOnSharedPreferenceChangeListener(changeListener);
@@ -67,17 +67,19 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		String key = pref.getKey();
 		
 		// List preference changed
-		if (pref instanceof ListPreference) {
+		if(pref instanceof ListPreference) {
 			// Change the summary
 			pref.setSummary(((ListPreference) pref).getEntry());
 
 			// See if the theme was changed
-			if (key.equals("pref_theme")) {
+			if(key.equals("pref_theme")) {
 				String theme = app.preferences.getString("pref_theme", "0");
 				int themeIdent = theme.equals("2") ? R.style.Theme_Light_DarkActionBar : (theme.equals("1") ? R.style.Theme_Light : R.style.Theme_Dark);
 
 				// Make sure the new theme is different
-				if (themeIdent != app.theme) {
+				if(themeIdent != app.theme) {
+					app.theme = themeIdent;
+					
 					// Create a dialog to ask about restarting now or later
 					AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 					dialogBuilder.setTitle(R.string.dialog_restart_title).setMessage(R.string.dialog_restart_message);
@@ -85,9 +87,10 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 						@Override
 						public void onClick(DialogInterface dialog, int id) {
 							// Restart Now
+							dialog.dismiss();
 							Intent intent = new Intent(getBaseContext(), MainActivity.class);
 							intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-							intent.putExtra("RESTART", true);
+							intent.putExtra("restart", true);
 							startActivity(intent);
 							finish();
 						}
