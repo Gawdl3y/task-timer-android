@@ -115,6 +115,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 			alarmMgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, pendingIntent);
 			
+			Log.v(TAG, "Restarting");
 			finish();
 			return;
 		}
