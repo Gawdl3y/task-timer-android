@@ -1,6 +1,10 @@
-package com.gawdl3y.android.tasktimer.classes;
+package com.gawdl3y.android.tasktimer.utilities;
 
 import java.util.ArrayList;
+
+import com.gawdl3y.android.tasktimer.pojos.Group;
+import com.gawdl3y.android.tasktimer.pojos.Task;
+
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;

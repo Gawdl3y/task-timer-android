@@ -7,7 +7,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 import com.gawdl3y.android.tasktimer.R;
-import com.gawdl3y.android.tasktimer.SettingsActivity;
+import com.gawdl3y.android.tasktimer.context.SettingsActivity;
 
 /**
  * Fragment used to display the preferences - API >= 11

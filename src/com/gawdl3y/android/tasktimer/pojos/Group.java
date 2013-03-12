@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer.classes;
+package com.gawdl3y.android.tasktimer.pojos;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -174,7 +174,7 @@ public class Group implements Parcelable {
 	 */
 	@Override
 	public String toString() {
-		return "Group[name=\"" + name + "\" id=" + id + "]";
+		return "{ name=\"" + name + "\" id=" + id + " }";
 	}
 	
 	

@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer;
+package com.gawdl3y.android.tasktimer.context;
 
 import java.util.Map;
 
@@ -15,6 +15,8 @@ import android.preference.Preference;
 
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.layout.SettingsFragment;
 
 public class SettingsActivity extends SherlockPreferenceActivity {

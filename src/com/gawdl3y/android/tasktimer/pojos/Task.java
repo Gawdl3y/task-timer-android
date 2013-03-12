@@ -1,17 +1,10 @@
-package com.gawdl3y.android.tasktimer.classes;
+package com.gawdl3y.android.tasktimer.pojos;
 
 import java.util.Comparator;
 
-import android.content.res.TypedArray;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.gawdl3y.android.tasktimer.R;
-import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 
 /**
  * A class that contains a time, goal time, and task-related properties
@@ -22,12 +15,13 @@ public class Task implements Parcelable {
 	private TimeAmount time, goal;
 	private boolean indefinite, complete, running, stopAtGoal;
 	private int id, position, group;
+	private long lastTick;
 	
 	/**
 	 * Default constructor
 	 */
 	public Task() {
-		this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, false, -1, -1, -1);
+		this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, false, -1, -1, -1, -1);
 	}
 
 	/**
@@ -43,7 +37,7 @@ public class Task implements Parcelable {
 	 * @param position The position of the Task in the array/ViewList
 	 * @param group The ID of the group that the task is in
 	 */
-	public Task(String name, String description, TimeAmount time, TimeAmount goal, boolean indefinite, boolean complete, boolean running, boolean stopAtGoal, int id, int position, int group) {
+	public Task(String name, String description, TimeAmount time, TimeAmount goal, boolean indefinite, boolean complete, boolean running, boolean stopAtGoal, int id, int position, int group, long lastTick) {
 		this.name = name;
 		this.description = description;
 		this.time = time;
@@ -55,6 +49,7 @@ public class Task implements Parcelable {
 		this.id = id;
 		this.position = position;
 		this.group = group;
+		this.lastTick = lastTick;
 	}
 	
 	/**
@@ -266,6 +261,22 @@ public class Task implements Parcelable {
 	}
 	
 	/**
+	 * Gets the last tick time (for use in timer threads)
+	 * @return The last tick time
+	 */
+	public long getLastTick() {
+		return lastTick;
+	}
+	
+	/**
+	 * Sets the last tick time (for use in timer threads)
+	 * @param lastTick The last tick time
+	 */
+	public void setLastTick(long lastTick) {
+		this.lastTick = lastTick;
+	}
+	
+	/**
 	 * Gets the progress of the Task
 	 * @return progress The progress of the Task (0 to 100)
 	 */
@@ -305,37 +316,6 @@ public class Task implements Parcelable {
 				running = false;
 			}
 		}
-	}
-	
-	/**
-	 * Updates the view of a Task
-	 * @param task The Task to update the view of
-	 * @param view The view of the task
-	 */
-	public synchronized static void updateView(Task task, View view) {
-		TextView nameView = (TextView) view.findViewById(R.id.task_name);
-		TextView timeView = (TextView) view.findViewById(R.id.task_time);
-		TextView goalView = (TextView) view.findViewById(R.id.task_goal);
-		ProgressBar progressView = (ProgressBar) view.findViewById(R.id.task_progress);
-		ImageView toggleView = (ImageView) view.findViewById(R.id.task_toggle);
-
-		// Text views
-		nameView.setText(task.getName());
-		timeView.setText(task.getTime().toString());
-		goalView.setText(task.isIndefinite() ? TaskTimerApplication.RESOURCES.getString(R.string.task_indefinite) : task.getGoal().toString());
-
-		// Progress bar
-		progressView.setIndeterminate(task.isIndefinite() && task.isRunning());
-		progressView.setProgress(task.getProgress());
-
-		// Change the toggle button to the proper image
-		TypedArray ta = view.getContext().obtainStyledAttributes(new int[] { task.isRunning() ? R.attr.ic_pause : R.attr.ic_start });
-		toggleView.setImageDrawable(ta.getDrawable(0));
-		ta.recycle();
-
-		// Set tags so we can figure out what task is being acted upon later
-		view.setTag(task.getPosition());
-		toggleView.setTag(task.getPosition());
 	}
 	
 	
@@ -418,7 +398,7 @@ public class Task implements Parcelable {
 	 */
 	@Override
 	public String toString() {
-		return "Task[name=\"" + name + "\" id=" + id + "]";
+		return "{ name=\"" + name + "\" id=" + id + " }";
 	}
 	
 	

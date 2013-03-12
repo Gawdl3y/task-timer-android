@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer;
+package com.gawdl3y.android.tasktimer.context;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,11 +18,12 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-import com.gawdl3y.android.tasktimer.classes.Group;
-import com.gawdl3y.android.tasktimer.classes.Task;
-import com.gawdl3y.android.tasktimer.classes.TaskTimerThread;
-import com.gawdl3y.android.tasktimer.classes.TimeAmount;
-import com.gawdl3y.android.tasktimer.classes.Utilities;
+import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
+import com.gawdl3y.android.tasktimer.pojos.Group;
+import com.gawdl3y.android.tasktimer.pojos.Task;
+import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
+import com.gawdl3y.android.tasktimer.utilities.Utilities;
 
 /**
  * The service that handles storing/retrieving data and the timers
@@ -46,6 +47,7 @@ public class TaskService extends Service {
 	
 	// Messaging things
 	private boolean connected = false;
+	private long lastConnection = -1;
 	private Messenger activityMessenger;
 	private Messenger messenger;
 	
@@ -54,7 +56,6 @@ public class TaskService extends Service {
 	
 	private ArrayList<Task> tasks = new ArrayList<Task>();
 	private ArrayList<Group> groups = new ArrayList<Group>();
-	private ArrayList<TaskTimerThread> timers = new ArrayList<TaskTimerThread>();
 	private int groupID, taskID;
 	
 	/* (non-Javadoc)
@@ -90,9 +91,9 @@ public class TaskService extends Service {
 		
 		// Use these until database is implemented
 		ArrayList<Task> tasks1 = new ArrayList<Task>(), tasks2 = new ArrayList<Task>(), tasks3 = new ArrayList<Task>();
-		tasks1.add(new Task("This is a task", "", new TimeAmount(1, 2, 3), new TimeAmount(), true, false, false, false, 22, 5, 42));
-		tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, false, 4, 1, 42));
-		tasks2.add(new Task("It's a task!", "", new TimeAmount(), new TimeAmount(2.54321), false, false, false, true, 0, 1, 43));
+		tasks1.add(new Task("This is a task", "", new TimeAmount(1, 2, 3), new TimeAmount(), true, false, false, false, 22, 5, 42, -1));
+		tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, false, 4, 1, 42, -1));
+		tasks2.add(new Task("It's a task!", "", new TimeAmount(), new TimeAmount(2.54321), false, false, false, true, 0, 1, 43, -1));
 		
 		Collections.sort(tasks1, Task.PositionComparator);
 		Collections.sort(tasks2, Task.PositionComparator);
@@ -145,6 +146,10 @@ public class TaskService extends Service {
 	@Override
 	public boolean onUnbind(Intent intent) {
 		connected = false;
+		lastConnection = System.currentTimeMillis();
+		
+		// TODO AlarmManager to alert running tasks reaching their goals
+		
 		if(app.debug) Log.v(TAG, "Unbound");
 		return true;
 	}
@@ -152,6 +157,9 @@ public class TaskService extends Service {
 	@Override
 	public void onRebind(Intent intent) {
 		connected = true;
+		
+		// TODO Update the times of running tasks
+		
 		if(app.debug) Log.v(TAG, "Rebound");
 	}
 
@@ -205,7 +213,6 @@ public class TaskService extends Service {
 				group.setId(groupID);
 				groups.add(msg.arg1, group);
 				Utilities.reposition(groups);
-				rebuildTimers();
 				
 				// Send the groups to the activity
 				sendListToActivity(MSG_GET_GROUPS, "groups", groups, group.getPosition());
@@ -243,17 +250,6 @@ public class TaskService extends Service {
 				task = groups.get(msg.arg1).getTasks().get(msg.arg2);
 				tasks.remove(msg.arg2);
 				groups.get(msg.arg1).getTasks().remove(msg.arg2);
-				
-				// Destroy its timer
-				if(task.isRunning()) {
-					// Find the timer
-					position = Collections.binarySearch(timers, new TaskTimerThread(task, -1, -1, TaskService.this), TaskTimerThread.TaskComparator);
-					TaskTimerThread timer = timers.get(position);
-					
-					// Destroy the timer
-					timer.interrupt();
-					timers.remove(position);
-				}
 				break;
 			case MSG_UPDATE_TASK:
 				// Update a Task TODO SQL
@@ -268,27 +264,6 @@ public class TaskService extends Service {
 				// Toggle a Task
 				task = groups.get(msg.arg1).getTasks().get(msg.arg2);
 				task.toggle();
-				
-				// Create or destroy the timer thread
-				if(task.isRunning()) {
-					// Figure out what update rate to use
-					int delay = Integer.parseInt(app.preferences.getString(connected ? "pref_foregroundRate" : "pref_backgroundRate", "60"));
-					
-					// Create the timer
-					TaskTimerThread timer = new TaskTimerThread(task, msg.arg1, delay, TaskService.this);
-					timer.start();
-					timers.add(timer);
-					Collections.sort(timers, TaskTimerThread.TaskComparator);
-				} else {
-					// Find the timer
-					position = Collections.binarySearch(timers, new TaskTimerThread(task, -1, -1, TaskService.this), TaskTimerThread.TaskComparator);
-					TaskTimerThread timer = timers.get(position);
-					
-					// Destroy the timer
-					timer.interrupt();
-					timers.remove(position);
-				}
-				
 				break;
 				
 			case MSG_GET_ALL:
@@ -311,10 +286,10 @@ public class TaskService extends Service {
 		}
 	}
 	
-	/**
+	/*
 	 * Rebuilds the timer threads
 	 */
-	public void rebuildTimers() {
+	/*public void rebuildTimers() {
 		for(TaskTimerThread t : timers) {
 			t.interrupt();
 		}
@@ -331,7 +306,7 @@ public class TaskService extends Service {
 				}
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * Sends a message to the activity
@@ -400,7 +375,7 @@ public class TaskService extends Service {
 	 * @param key The key for the list
 	 * @param list The list
 	 */
-	public void sendListToActivity(int msgType, String key, ArrayList list) {
+	public void sendListToActivity(int msgType, String key, ArrayList<? extends Parcelable> list) {
 		sendListToActivity(msgType, key, list, -1, -1);
 	}
 	
@@ -411,7 +386,7 @@ public class TaskService extends Service {
 	 * @param list The list
 	 * @param arg The argument
 	 */
-	public void sendListToActivity(int msgType, String key, ArrayList list, int arg) {
+	public void sendListToActivity(int msgType, String key, ArrayList<? extends Parcelable> list, int arg) {
 		sendListToActivity(msgType, key, list, arg, -1);
 	}
 	
@@ -423,7 +398,7 @@ public class TaskService extends Service {
 	 * @param arg1 Argument 1
 	 * @param arg2 Argument 2
 	 */
-	public void sendListToActivity(int msgType, String key, ArrayList list, int arg1, int arg2) {
+	public void sendListToActivity(int msgType, String key, ArrayList<? extends Parcelable> list, int arg1, int arg2) {
 		Message msg = Message.obtain(null, msgType);
 		Bundle contents = new Bundle();
 		contents.putParcelableArrayList(key, list);

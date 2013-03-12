@@ -13,8 +13,8 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
-import com.gawdl3y.android.tasktimer.adapters.TaskAdapter;
-import com.gawdl3y.android.tasktimer.classes.Group;
+import com.gawdl3y.android.tasktimer.adapters.TaskListAdapter;
+import com.gawdl3y.android.tasktimer.pojos.Group;
 
 /**
  * The fragment for displaying a list of Tasks
@@ -23,7 +23,7 @@ import com.gawdl3y.android.tasktimer.classes.Group;
 public class TaskListFragment extends SherlockListFragment {
 	private static final String TAG = "TaskListFragment";
 	
-	public TaskAdapter adapter;
+	public TaskListAdapter adapter;
 	public Group group;
 	
 	/* (non-Javadoc)
@@ -56,7 +56,7 @@ public class TaskListFragment extends SherlockListFragment {
 		View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 		view.setTag(group.getPosition());
 		
-		adapter = new TaskAdapter(inflater.getContext(), group.getTasks(), group.getPosition());
+		adapter = new TaskListAdapter(inflater.getContext(), group.getTasks(), group.getPosition());
 		setListAdapter(adapter);
 		
 		if(TaskTimerApplication.DEBUG) Log.v(TAG, "View created");

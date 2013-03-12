@@ -1,11 +1,11 @@
-package com.gawdl3y.android.tasktimer.classes;
+package com.gawdl3y.android.tasktimer.pojos;
 
 import java.util.Comparator;
 
-import com.gawdl3y.android.tasktimer.TaskService;
 
 /**
  * Thread that increments the time of a task
+ * <p>For use in the UI
  * @author Schuyler Cebulskie
  */
 public class TaskTimerThread extends Thread {
@@ -14,12 +14,11 @@ public class TaskTimerThread extends Thread {
 	/**
 	 * Fill constructor
 	 * @param task The task that the timer is for
-	 * @param group The position of the group that the task is in
 	 * @param delay The amount of time to delay (in seconds)
-	 * @param service The service that is running the thread
+	 * @param tickListener The tick listener
 	 */
-	public TaskTimerThread(Task task, int group, int delay, TaskService service) {
-		super(new TaskTimerRunnable(task, group, delay, service));
+	public TaskTimerThread(Task task, int delay, TickListener tickListener) {
+		super(new TaskTimerRunnable(task, delay, tickListener));
 		this.task = task;
 	}
 	
@@ -29,22 +28,20 @@ public class TaskTimerThread extends Thread {
 	 */
 	public static class TaskTimerRunnable implements Runnable {
 		private final Task task;
-		private final int group, delay;
-		private final TaskService service;
+		private final int delay;
+		private final TickListener tickListener;
 		private boolean running = true;
 		
 		/**
 		 * Fill constructor
 		 * @param task The task that the timer is for
-		 * @param group The position of the group that the task is in
 		 * @param delay The amount of time to delay (in seconds)
-		 * @param service The service that is running the thread
+		 * @param tickListener The tick listener
 		 */
-		public TaskTimerRunnable(Task task, int group, int delay, TaskService service) {
+		public TaskTimerRunnable(Task task, int delay, TickListener tickListener) {
 			this.task = task;
-			this.group = group;
 			this.delay = delay;
-			this.service = service;
+			this.tickListener = tickListener;
 		}
 		
 		/* (non-Javadoc)
@@ -67,8 +64,8 @@ public class TaskTimerThread extends Thread {
 						task.incrementTime(difference);
 					}
 					
-					// Send the updated task to the activity if necessary
-					if(service.isConnected()) service.sendObjectToActivity(TaskService.MSG_UPDATE_TASK, "task", task, group);
+					// Call the listener
+					if(tickListener != null) tickListener.onTick();
 				} catch(InterruptedException e) {
 					running = false;
 				}
@@ -76,6 +73,17 @@ public class TaskTimerThread extends Thread {
 		}
 	}
 	
+	
+	/**
+	 * The interface for listening to ticks of the timer
+	 * @author Schuyler Cebulskie
+	 */
+	public static interface TickListener {
+		/**
+		 * Called when the timer ticks
+		 */
+		void onTick();
+	}
 	
 	/**
 	 * Comparator for comparing tasks

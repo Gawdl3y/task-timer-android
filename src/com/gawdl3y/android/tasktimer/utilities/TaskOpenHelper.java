@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer.classes;
+package com.gawdl3y.android.tasktimer.utilities;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

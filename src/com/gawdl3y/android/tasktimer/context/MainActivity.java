@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer;
+package com.gawdl3y.android.tasktimer.context;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
@@ -21,14 +20,17 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
-import com.gawdl3y.android.tasktimer.classes.Group;
-import com.gawdl3y.android.tasktimer.classes.Task;
+import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment;
 import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener;
 import com.gawdl3y.android.tasktimer.layout.MainFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener;
 import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
+import com.gawdl3y.android.tasktimer.layout.TaskListItem;
+import com.gawdl3y.android.tasktimer.pojos.Group;
+import com.gawdl3y.android.tasktimer.pojos.Task;
 
 /**
  * The main activity of Task Timer
@@ -44,7 +46,6 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	private MainFragment mainFragment;
 	
 	private Messenger messenger = new Messenger(new IncomingHandler()), serviceMessenger;
-	private boolean connected = false;
 	
 	/**
 	 * The service connection
@@ -53,9 +54,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			if(app.debug) Log.v(TAG, "Service connected: " + name);
 			
-			// Set the service messenger and connected status
+			// Set the service messenger
 			MainActivity.this.serviceMessenger = new Messenger(service);
-			MainActivity.this.connected = true;
 			
 			// Retrieve ALL THE THINGS
 			Message msg = Message.obtain(null, TaskService.MSG_GET_ALL);
@@ -65,9 +65,11 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		public void onServiceDisconnected(ComponentName name) {
 			if(app.debug) Log.v(TAG, "Service disconnected: " + name);
 			
-			// Reset the service messenger and connection status
+			// Reset the service messenger
 			MainActivity.this.serviceMessenger = null;
-			MainActivity.this.connected = false;
+			
+			// Stop the activity
+			finish();
 		}
 	};
 	
@@ -183,7 +185,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	
 	/* (non-Javadoc)
 	 * The add group dialog is finished
-	 * @see com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment.GroupEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.classes.Group, int)
+	 * @see com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment.GroupEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.utilities.Group, int)
 	 */
 	@Override
 	public void onFinishEditDialog(Group group) {
@@ -197,7 +199,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	
 	/* (non-Javadoc)
 	 * The add task dialog is finished
-	 * @see com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment.TaskEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.classes.Task)
+	 * @see com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment.TaskEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.utilities.Task)
 	 */
 	@Override
 	public void onFinishEditDialog(Task task, int group) {
@@ -214,17 +216,18 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 	 * @param view The view of the button that was clicked
 	 */
 	public void onTaskButtonClick(View view) {
-		View parent = (View) view.getParent();
-		Task task = groups.get((Integer) parent.getTag(R.id.tag_group)).getTasks().get((Integer) parent.getTag(R.id.tag_task));
+		TaskListItem item = (TaskListItem) view.getParent().getParent();
+		Task task = groups.get((Integer) item.getTag(R.id.tag_group)).getTasks().get((Integer) item.getTag(R.id.tag_task));
 		Message msg;
 				
 		if(view.getId() == R.id.task_toggle) {
 			task.toggle();
-			Task.updateView(task, parent);
+			item.invalidate(task);
+			item.buildTimer();
 			
 			msg = Message.obtain(null, TaskService.MSG_TOGGLE_TASK);
-			msg.arg1 = (Integer) parent.getTag(R.id.tag_group);
-			msg.arg2 = (Integer) parent.getTag(R.id.tag_task);
+			msg.arg1 = (Integer) item.getTag(R.id.tag_group);
+			msg.arg2 = (Integer) item.getTag(R.id.tag_task);
 			sendMessageToService(msg);
 		}
 	}
@@ -270,8 +273,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				// Update the view of the task
 				try {
 					fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
-					View view = fragment.getView().findViewWithTag(Integer.valueOf(task.getPosition()));
-					Task.updateView(task, view);
+					TaskListItem view = (TaskListItem) fragment.getView().findViewWithTag(Integer.valueOf(task.getPosition()));
+					view.invalidate(task);
 				} catch(NullPointerException e) { }
 				break;
 			

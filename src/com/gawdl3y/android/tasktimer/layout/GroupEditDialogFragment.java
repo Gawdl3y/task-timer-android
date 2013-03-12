@@ -2,6 +2,7 @@ package com.gawdl3y.android.tasktimer.layout;
 
 import java.util.ArrayList;
 
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -19,7 +20,7 @@ import android.widget.TextView.OnEditorActionListener;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
-import com.gawdl3y.android.tasktimer.classes.Group;
+import com.gawdl3y.android.tasktimer.pojos.Group;
 
 /**
  * The dialog fragment for editing a Group

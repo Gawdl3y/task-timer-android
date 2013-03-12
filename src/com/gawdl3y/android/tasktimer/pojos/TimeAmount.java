@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer.classes;
+package com.gawdl3y.android.tasktimer.pojos;
 
 import android.os.Parcel;
 import android.os.Parcelable;
