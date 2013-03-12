@@ -160,6 +160,7 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
 			if(task.getLastTick() != -1) {
 				task.incrementTime((int) ((System.currentTimeMillis() - task.getLastTick()) / 1000));
 				task.setLastTick(-1);
+				invalidate();
 			}
 			
 			// Create and start the timer
