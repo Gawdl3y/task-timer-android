@@ -12,15 +12,15 @@ import android.os.Parcelable;
 public class Task implements Parcelable {
 	private String name, description;
 	private TimeAmount time, goal;
-	private boolean indefinite, complete, running, stopAtGoal, alertMade;
-	private int id, position, group;
+	private boolean indefinite, complete, running, stopAtGoal;
+	private int id, position, group, alert;
 	private long lastTick;
 	
 	/**
 	 * Default constructor
 	 */
 	public Task() {
-		this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, false, -1, -1, -1, -1);
+		this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, false, -1, -1, -1, -1, -1);
 	}
 
 	/**
@@ -35,9 +35,10 @@ public class Task implements Parcelable {
 	 * @param id The ID of the Task
 	 * @param position The position of the Task in the array/ViewList
 	 * @param group The ID of the group that the task is in
+	 * @param alert The pseudo-ID of the alert that is handling the task reaching its goal
 	 * @param lastTick The time (in milliseconds) the task's time was last incremented
 	 */
-	public Task(String name, String description, TimeAmount time, TimeAmount goal, boolean indefinite, boolean complete, boolean running, boolean stopAtGoal, int id, int position, int group, long lastTick) {
+	public Task(String name, String description, TimeAmount time, TimeAmount goal, boolean indefinite, boolean complete, boolean running, boolean stopAtGoal, int id, int position, int group, int alert, long lastTick) {
 		this.name = name;
 		this.description = description;
 		this.time = time;
@@ -49,6 +50,7 @@ public class Task implements Parcelable {
 		this.id = id;
 		this.position = position;
 		this.group = group;
+		this.alert = alert;
 		this.lastTick = lastTick;
 	}
 	
@@ -196,35 +198,19 @@ public class Task implements Parcelable {
 	}
 	
 	/**
-	 * Gets whether or not the Task will stop when its goal is reached
-	 * @return Whether or not the Task will stop when its goal is reached
+	 * Gets whether or not the Task should stop when its goal is reached
+	 * @return Whether or not the Task should stop when its goal is reached
 	 */
 	public boolean getStopAtGoal() {
 		return stopAtGoal;
 	}
 	
 	/**
-	 * Sets whether or not the Task will stop when its goal is reached
-	 * @param stopAtGoal Whether or not the Task will stop when its goal is reached
+	 * Sets whether or not the Task should stop when its goal is reached
+	 * @param stopAtGoal Whether or not the Task should stop when its goal is reached
 	 */
 	public void setStopAtGoal(boolean stopAtGoal) {
 		this.stopAtGoal = stopAtGoal;
-	}
-	
-	/**
-	 * Sets whether or not an alert has been made for the task reaching its goal
-	 * @param alertMade Whether or not an alert has been made
-	 */
-	public void setAlertMade(boolean alertMade) {
-		this.alertMade = alertMade;
-	}
-	
-	/**
-	 * Gets whether or not an alert has been made for the task reaching its goal
-	 * @return Whether or not an alert has been made
-	 */
-	public boolean getAlertMade() {
-		return alertMade;
 	}
 
 	/**
@@ -273,6 +259,22 @@ public class Task implements Parcelable {
 	 */
 	public void setPosition(int position) {
 		this.position = position;
+	}
+	
+	/**
+	 * Sets the pseudo-ID of the alert that is handling the task reaching its goal
+	 * @param alert The pseudo-ID
+	 */
+	public void setAlert(int alert) {
+		this.alert = alert;
+	}
+	
+	/**
+	 * Gets the pseudo-ID of the alert that is handling the task reaching its goal
+	 * @return The pseudo-ID
+	 */
+	public int getAlert() {
+		return alert;
 	}
 	
 	/**

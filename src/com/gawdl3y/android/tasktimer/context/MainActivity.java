@@ -264,6 +264,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 			
 			Task task;
 			TaskListFragment fragment;
+			TaskListItem view;
 			
 			switch(msg.what) {
 			case TaskService.MSG_ADD_TASK:
@@ -291,7 +292,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				// Update the view of the task
 				try {
 					fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
-					TaskListItem view = (TaskListItem) fragment.getView().findViewWithTag(Integer.valueOf(task.getPosition()));
+					view = (TaskListItem) fragment.getView().findViewWithTag(Integer.valueOf(task.getPosition()));
 					view.invalidate(task);
 					view.buildTimer();
 				} catch(Exception e) { }
@@ -310,8 +311,21 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				// Add the main fragment to the activity
 				mainFragment = MainFragment.newInstance(groups);
 				FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-				transaction.add(R.id.activity_main, mainFragment);
+				transaction.replace(R.id.activity_main, mainFragment);
 				transaction.commit();
+				
+				// Update all of the views if they're already there
+				for(Group g : groups) {
+					fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + g.getPosition());
+					
+					for(Task t : g.getTasks()) {
+						try {
+							view = (TaskListItem) fragment.getView().findViewWithTag(Integer.valueOf(t.getPosition()));
+							view.invalidate(t);
+							view.buildTimer();
+						} catch(Exception e) {}
+					}
+				}
 				
 				// Hide the loading indicator
 				fetchedData = true;
