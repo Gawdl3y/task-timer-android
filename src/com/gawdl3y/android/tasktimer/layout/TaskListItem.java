@@ -157,21 +157,20 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
 	public void buildTimer() {
 		if(task.isRunning()) {
 			// Update the time from when the timer was last running
-			if(task.getLastTick() != -1) {
+			if(task.getLastTick() > 0) {
 				task.incrementTime((int) ((System.currentTimeMillis() - task.getLastTick()) / 1000));
 				task.setLastTick(-1);
 				invalidate();
 			}
 			
 			// Create and start the timer
+			if(timer != null) timer.interrupt();
 			timer = new TaskTimerThread(task, 1, this);
 			timer.start();
 		} else {
-			// Clear the last tick
-			task.setLastTick(-1);
-			
-			// Stop the timer
+			// Stop the timer and clear the last tick
 			if(timer != null) timer.interrupt();
+			task.setLastTick(-1);
 		}
 	}
 	

@@ -3,9 +3,11 @@ package com.gawdl3y.android.tasktimer.context;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
@@ -17,12 +19,14 @@ import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
+import com.gawdl3y.android.tasktimer.utilities.TaskTimerReceiver;
 import com.gawdl3y.android.tasktimer.utilities.Utilities;
 
 /**
@@ -47,7 +51,6 @@ public class TaskService extends Service {
 	
 	// Messaging things
 	private boolean connected = false;
-	private long lastConnection = -1;
 	private Messenger activityMessenger;
 	private Messenger messenger;
 	
@@ -125,6 +128,21 @@ public class TaskService extends Service {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		if(intent != null && intent.getAction() != null) {
+			if(intent.getAction().equals(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED)) {
+				// A task's goal has been reached
+				int group = intent.getExtras().getInt("group");
+				Task task = groups.get(group).getTasks().get(intent.getExtras().getInt("task"));
+				
+				if(task.isRunning()) {
+					task.setTime(task.getGoal());
+					if(task.getStopAtGoal()) task.setRunning(false);
+					sendObjectToActivity(MSG_UPDATE_TASK, "task", task, group);
+					Toast.makeText(this, String.format(app.resources.getString(R.string.task_goal_reached), task.getName()), Toast.LENGTH_LONG).show();
+				}
+			}
+		}
+		
 		return START_STICKY;
 	}
 
@@ -146,20 +164,25 @@ public class TaskService extends Service {
 	@Override
 	public boolean onUnbind(Intent intent) {
 		connected = false;
-		lastConnection = System.currentTimeMillis();
-		
-		// TODO AlarmManager to alert running tasks reaching their goals
-		
 		if(app.debug) Log.v(TAG, "Unbound");
 		return true;
 	}
 	
 	@Override
 	public void onRebind(Intent intent) {
+		// Update the times of running tasks
+		for(Group g : groups) {
+			for(Task t : g.getTasks()) {
+				if(t.getLastTick() > 0) {
+					int time = (int) ((System.currentTimeMillis() - t.getLastTick()) / 1000);
+					t.incrementTime(time);
+					t.setLastTick(System.currentTimeMillis());
+					if(app.debug) Log.d(TAG, "Updated task #" + t.getPosition() + " of group #" + g.getPosition() + " time by " + time + " seconds");
+				}
+			}
+		}
+		
 		connected = true;
-		
-		// TODO Update the times of running tasks
-		
 		if(app.debug) Log.v(TAG, "Rebound");
 	}
 
@@ -199,7 +222,6 @@ public class TaskService extends Service {
 			
 			Task task;
 			Group group;
-			int position;
 			
 			switch(msg.what) {
 			case MSG_GET_GROUPS:
@@ -264,6 +286,27 @@ public class TaskService extends Service {
 				// Toggle a Task
 				task = groups.get(msg.arg1).getTasks().get(msg.arg2);
 				task.toggle();
+				
+				// Update its time if it WAS running
+				if(!task.isRunning() && task.getLastTick() > 0) {
+					int time = (int) ((System.currentTimeMillis() - task.getLastTick()) / 1000);
+					task.incrementTime(time);
+					task.setLastTick(System.currentTimeMillis());
+					if(app.debug) Log.d(TAG, "Updated task #" + msg.arg2 + " of group #" + msg.arg1 + " time by " + time + " seconds");
+				}
+				
+				// Count the toggle as a tick
+				task.setLastTick(task.isRunning() ? System.currentTimeMillis() : -1);
+				
+				// Send out a future alert for the task reaching its goal
+				AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+				if(task.isRunning() && !task.getAlertMade()) {
+					Intent alert = new Intent(TaskService.this, TaskTimerReceiver.class);
+					alert.setAction(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED);
+					PendingIntent pendingIntent = PendingIntent.getBroadcast(TaskService.this, 0, alert, PendingIntent.FLAG_CANCEL_CURRENT);
+					alarmMgr.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (long) ((task.getGoal().toDouble() - task.getTime().toDouble()) * 3600 * 1000), pendingIntent);
+					task.setAlertMade(true);
+				}
 				break;
 				
 			case MSG_GET_ALL:
@@ -285,28 +328,6 @@ public class TaskService extends Service {
 			}
 		}
 	}
-	
-	/*
-	 * Rebuilds the timer threads
-	 */
-	/*public void rebuildTimers() {
-		for(TaskTimerThread t : timers) {
-			t.interrupt();
-		}
-		
-		timers.clear();
-		
-		for(Group g : groups) {
-			for(Task t : g.getTasks()) {
-				if(t.isRunning()) {
-					int delay = Integer.parseInt(app.preferences.getString(connected ? "pref_foregroundRate" : "pref_backgroundRate", "60"));
-					TaskTimerThread timer = new TaskTimerThread(t, g.getPosition(), delay, this);
-					timer.start();
-					timers.add(timer);
-				}
-			}
-		}
-	}*/
 	
 	/**
 	 * Sends a message to the activity

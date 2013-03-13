@@ -109,11 +109,11 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		
 		// Restart if necessary
 		if(getIntent().hasExtra("restart")) {
-			AlarmManager alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+			AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 			Intent intent = new Intent(this, TaskTimerReceiver.class);
 			intent.setAction(TaskTimerReceiver.ACTION_START_APP);
 			PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-			alarmMgr.set(AlarmManager.RTC, System.currentTimeMillis() + 500, pendingIntent);
+			alarmMgr.set(AlarmManager.RTC, System.currentTimeMillis() + 250, pendingIntent);
 			
 			Log.v(TAG, "Restarting");
 			finish();
@@ -293,7 +293,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 					fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
 					TaskListItem view = (TaskListItem) fragment.getView().findViewWithTag(Integer.valueOf(task.getPosition()));
 					view.invalidate(task);
-				} catch(NullPointerException e) { }
+					view.buildTimer();
+				} catch(Exception e) { }
 				break;
 			
 			case TaskService.MSG_GET_GROUPS:

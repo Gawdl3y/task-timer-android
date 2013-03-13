@@ -182,6 +182,7 @@
     
     <!-- General strings -->
     <string name="no_tasks">No tasks</string>
+    <string name="task_goal_reached">Task \"%s\" has reached its goal</string>
     
     
     <!--  View tag IDs -->

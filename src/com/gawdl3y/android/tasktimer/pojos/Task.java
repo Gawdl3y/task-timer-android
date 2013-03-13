@@ -2,7 +2,6 @@ package com.gawdl3y.android.tasktimer.pojos;
 
 import java.util.Comparator;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,7 +12,7 @@ import android.os.Parcelable;
 public class Task implements Parcelable {
 	private String name, description;
 	private TimeAmount time, goal;
-	private boolean indefinite, complete, running, stopAtGoal;
+	private boolean indefinite, complete, running, stopAtGoal, alertMade;
 	private int id, position, group;
 	private long lastTick;
 	
@@ -36,6 +35,7 @@ public class Task implements Parcelable {
 	 * @param id The ID of the Task
 	 * @param position The position of the Task in the array/ViewList
 	 * @param group The ID of the group that the task is in
+	 * @param lastTick The time (in milliseconds) the task's time was last incremented
 	 */
 	public Task(String name, String description, TimeAmount time, TimeAmount goal, boolean indefinite, boolean complete, boolean running, boolean stopAtGoal, int id, int position, int group, long lastTick) {
 		this.name = name;
@@ -211,6 +211,21 @@ public class Task implements Parcelable {
 		this.stopAtGoal = stopAtGoal;
 	}
 	
+	/**
+	 * Sets whether or not an alert has been made for the task reaching its goal
+	 * @param alertMade Whether or not an alert has been made
+	 */
+	public void setAlertMade(boolean alertMade) {
+		this.alertMade = alertMade;
+	}
+	
+	/**
+	 * Gets whether or not an alert has been made for the task reaching its goal
+	 * @return Whether or not an alert has been made
+	 */
+	public boolean getAlertMade() {
+		return alertMade;
+	}
 
 	/**
 	 * Gets the group of the Task
