@@ -352,9 +352,9 @@ public class TaskService extends Service {
 		// Send the message
 		try {
 			activityMessenger.send(msg);
-			if(TaskTimerApplication.DEBUG) Log.v(TAG, "Sent message: " + msg);
+			if(app.debug) Log.v(TAG, "Sent message: " + msg);
 		} catch(android.os.RemoteException e) {
-			if(TaskTimerApplication.DEBUG) Log.w(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
+			if(app.debug) Log.w(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
 		}
 		
 		// Return the message to the global pool
