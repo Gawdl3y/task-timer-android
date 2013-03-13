@@ -2,6 +2,7 @@ package com.gawdl3y.android.tasktimer.context;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -94,9 +95,9 @@ public class TaskService extends Service {
 		
 		// Use these until database is implemented
 		ArrayList<Task> tasks1 = new ArrayList<Task>(), tasks2 = new ArrayList<Task>(), tasks3 = new ArrayList<Task>();
-		tasks1.add(new Task("This is a task", "", new TimeAmount(1, 2, 3), new TimeAmount(), true, false, false, false, 22, 5, 42, -1, -1));
-		tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, false, 4, 1, 42, -1, -1));
-		tasks2.add(new Task("It's a task!", "", new TimeAmount(), new TimeAmount(2.54321), false, false, false, true, 0, 1, 43, -1, -1));
+		tasks1.add(new Task("This is a task", "", new TimeAmount(1, 2, 3), new TimeAmount(), true, false, false, 22, 5, 42, new HashMap<String, Object>(), -1, -1));
+		tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, 4, 1, 42, new HashMap<String, Object>(), -1, -1));
+		tasks2.add(new Task("It's a task!", "", new TimeAmount(), new TimeAmount(2.54321), false, false, false, 0, 1, 43, new HashMap<String, Object>(), -1, -1));
 		
 		Collections.sort(tasks1, Task.PositionComparator);
 		Collections.sort(tasks2, Task.PositionComparator);
@@ -128,20 +129,19 @@ public class TaskService extends Service {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		if(app.debug) Log.v(TAG, "Received start command: " + intent.toString());
+		
 		if(intent != null && intent.getAction() != null) {
-			if(app.debug) Log.v(TAG, "Received intent " + intent.toString());
-			
 			if(intent.getAction().equals(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED)) {
 				// A task's goal has been reached
 				int group = intent.getExtras().getInt("group");
 				Task task = groups.get(group).getTasks().get(intent.getExtras().getInt("task"));
 				int alarmID = intent.getExtras().getInt("alarm");
 				
-				if(app.debug) Log.v(TAG, "Alarm ID: " + alarmID);
-				
 				if(task.isRunning() && task.getAlert() == alarmID) {
 					task.setTime(task.getGoal());
-					if(task.getStopAtGoal()) task.setRunning(false);
+					task.setComplete(true);
+					if(task.getBooleanSetting("stop")) task.setRunning(false);
 					sendObjectToActivity(MSG_UPDATE_TASK, "task", task, group);
 					Toast.makeText(this, String.format(app.resources.getString(R.string.task_goal_reached), task.getName()), Toast.LENGTH_LONG).show();
 					if(app.debug) Log.d(TAG, "Task #" + task.getPosition() + " of group #" + group + " has reached its goal");
@@ -317,7 +317,7 @@ public class TaskService extends Service {
 					alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
 					
 					task.setAlert(alarmID);
-					if(app.debug) Log.v(TAG, "Set alarm for task #" + msg.arg2 + " of group #" + msg.arg1 + " at " + alarmTime + " with ID " + alarmID);
+					if(app.debug) Log.v(TAG, "Set alarm for task #" + msg.arg2 + " of group #" + msg.arg1 + " in " + (alarmTime - System.currentTimeMillis()) / 1000 + " seconds with ID " + alarmID);
 				}
 				break;
 				

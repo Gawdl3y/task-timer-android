@@ -1,6 +1,7 @@
 package com.gawdl3y.android.tasktimer.pojos;
 
 import java.util.Comparator;
+import java.util.HashMap;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,17 +11,31 @@ import android.os.Parcelable;
  * @author Schuyler Cebulskie
  */
 public class Task implements Parcelable {
+	// Data properties
 	private String name, description;
 	private TimeAmount time, goal;
-	private boolean indefinite, complete, running, stopAtGoal;
-	private int id, position, group, alert;
+	private boolean indefinite, complete, running;
+	private int id, position, group;
+	private HashMap<String, Object> settings;
+	
+	// Non-data utility properties
+	private int alert;
 	private long lastTick;
+	
+	// Static properties
+	public static final HashMap<String, Object> DEFAULT_SETTINGS = new HashMap<String, Object>();
+	
+	// Static constructor
+	static {
+		DEFAULT_SETTINGS.put("stop", true);
+		DEFAULT_SETTINGS.put("overtime", false);
+	}
 	
 	/**
 	 * Default constructor
 	 */
 	public Task() {
-		this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, false, -1, -1, -1, -1, -1);
+		this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, -1, -1, -1, new HashMap<String, Object>(), -1, -1);
 	}
 
 	/**
@@ -31,14 +46,14 @@ public class Task implements Parcelable {
 	 * @param indefinite Whether or not the Task's goal is indefinite
 	 * @param complete Whether or not the Task is completed
 	 * @param running Whether or not the Task is running
-	 * @param stopAtGoal Whether or not to stop the Task when it hits its goal
 	 * @param id The ID of the Task
 	 * @param position The position of the Task in the array/ViewList
 	 * @param group The ID of the group that the task is in
+	 * @param settings Key-value-pairs of settings
 	 * @param alert The pseudo-ID of the alert that is handling the task reaching its goal
 	 * @param lastTick The time (in milliseconds) the task's time was last incremented
 	 */
-	public Task(String name, String description, TimeAmount time, TimeAmount goal, boolean indefinite, boolean complete, boolean running, boolean stopAtGoal, int id, int position, int group, int alert, long lastTick) {
+	public Task(String name, String description, TimeAmount time, TimeAmount goal, boolean indefinite, boolean complete, boolean running, int id, int position, int group, HashMap<String, Object> settings, int alert, long lastTick) {
 		this.name = name;
 		this.description = description;
 		this.time = time;
@@ -46,10 +61,11 @@ public class Task implements Parcelable {
 		this.indefinite = indefinite;
 		this.complete = complete;
 		this.running = running;
-		this.stopAtGoal = stopAtGoal;
 		this.id = id;
 		this.position = position;
 		this.group = group;
+		this.settings = settings;
+		
 		this.alert = alert;
 		this.lastTick = lastTick;
 	}
@@ -196,22 +212,6 @@ public class Task implements Parcelable {
 	public void setRunning(boolean running) {
 		this.running = running;
 	}
-	
-	/**
-	 * Gets whether or not the Task should stop when its goal is reached
-	 * @return Whether or not the Task should stop when its goal is reached
-	 */
-	public boolean getStopAtGoal() {
-		return stopAtGoal;
-	}
-	
-	/**
-	 * Sets whether or not the Task should stop when its goal is reached
-	 * @param stopAtGoal Whether or not the Task should stop when its goal is reached
-	 */
-	public void setStopAtGoal(boolean stopAtGoal) {
-		this.stopAtGoal = stopAtGoal;
-	}
 
 	/**
 	 * Gets the group of the Task
@@ -262,6 +262,23 @@ public class Task implements Parcelable {
 	}
 	
 	/**
+	 * Gets the settings
+	 * @return The settings
+	 */
+	public HashMap<String, Object> getSettings() {
+		return settings;
+	}
+	
+	/**
+	 * Sets the settings
+	 * @param settings The settings
+	 */
+	public void setSettings(HashMap<String, Object> settings) {
+		this.settings = settings;
+	}
+	
+	
+	/**
 	 * Sets the pseudo-ID of the alert that is handling the task reaching its goal
 	 * @param alert The pseudo-ID
 	 */
@@ -291,6 +308,43 @@ public class Task implements Parcelable {
 	 */
 	public void setLastTick(long lastTick) {
 		this.lastTick = lastTick;
+	}
+	
+	
+	/**
+	 * Gets a setting from the provided key if it exists, or the default value if it doesn't
+	 * @param key The key of the setting
+	 * @return The setting
+	 */
+	public Object getSetting(String key) {
+		return settings.containsKey(key) ? settings.get(key) : DEFAULT_SETTINGS.get(key);
+	}
+	
+	/**
+	 * Gets a boolean setting
+	 * @param key The key of the boolean setting
+	 * @return The boolean setting
+	 */
+	public boolean getBooleanSetting(String key) {
+		if(!settings.containsKey(key)) return (Boolean) DEFAULT_SETTINGS.get(key);
+		return settings.containsKey(key) ? (Boolean) settings.get(key) : (Boolean) DEFAULT_SETTINGS.get(key);
+	}
+	
+	/**
+	 * Sets a setting
+	 * @param key The key of the setting
+	 * @param value The value of the setting
+	 */
+	public void setSetting(String key, Object value) {
+		settings.put(key, value);
+	}
+	
+	/**
+	 * Removes a setting (resets to default)
+	 * @param key The key of the setting
+	 */
+	public void removeSetting(String key) {
+		settings.remove(key);
 	}
 	
 	/**
@@ -329,7 +383,7 @@ public class Task implements Parcelable {
 		if(time.compareTo(goal) >= 0) {
 			complete = true;
 			
-			if(stopAtGoal) {
+			if(getBooleanSetting("stop")) {
 				running = false;
 			}
 		}
@@ -370,16 +424,17 @@ public class Task implements Parcelable {
 		dest.writeByte((byte) (indefinite ? 1 : 0));
 		dest.writeByte((byte) (complete ? 1 : 0));
 		dest.writeByte((byte) (running ? 1 : 0));
-		dest.writeByte((byte) (stopAtGoal ? 1 : 0));
 		dest.writeInt(id);
 		dest.writeInt(position);
 		dest.writeInt(group);
+		dest.writeMap(settings);
 	}
 	
 	/**
 	 * Fills the Task from a parcel
 	 * @param in The parcel to read from
 	 */
+	@SuppressWarnings("unchecked")
 	private void readFromParcel(Parcel in) {
 		name = in.readString();
 		description = in.readString();
@@ -388,10 +443,10 @@ public class Task implements Parcelable {
 		indefinite = in.readByte() == 1 ? true : false;
 		complete = in.readByte() == 1 ? true : false;
 		running = in.readByte() == 1 ? true : false;
-		stopAtGoal = in.readByte() == 1 ? true : false;
 		id = in.readInt();
 		position = in.readInt();
 		group = in.readInt();
+		settings = in.readHashMap(Task.class.getClassLoader());
 	}
 	
 	
@@ -415,7 +470,7 @@ public class Task implements Parcelable {
 	 */
 	@Override
 	public String toString() {
-		return "{ name=\"" + name + "\" id=" + id + " }";
+		return "Task { name=\"" + name + "\" id=" + id + " }";
 	}
 	
 	

@@ -239,14 +239,16 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		Message msg;
 				
 		if(view.getId() == R.id.task_toggle) {
-			task.toggle();
-			item.invalidate(task);
-			item.buildTimer();
-			
-			msg = Message.obtain(null, TaskService.MSG_TOGGLE_TASK);
-			msg.arg1 = (Integer) item.getTag(R.id.tag_group);
-			msg.arg2 = (Integer) item.getTag(R.id.tag_task);
-			sendMessageToService(msg);
+			if(!task.isComplete() || !task.getBooleanSetting("stop")) {
+				task.toggle();
+				item.invalidate(task);
+				item.buildTimer();
+				
+				msg = Message.obtain(null, TaskService.MSG_TOGGLE_TASK);
+				msg.arg1 = (Integer) item.getTag(R.id.tag_group);
+				msg.arg2 = (Integer) item.getTag(R.id.tag_task);
+				sendMessageToService(msg);
+			}
 		}
 	}
 	
