@@ -148,7 +148,12 @@ public class TaskService extends Service {
 				if(task.isRunning() && task.getAlert() == alarmID) {
 					task.setTime(task.getGoal());
 					task.setComplete(true);
-					if(task.getBooleanSetting("stop")) task.setRunning(false);
+					if(task.getBooleanSetting("stop") || !task.getBooleanSetting("overtime")) {
+						task.setRunning(false);
+						task.setLastTick(-1);
+					}
+					
+					// Notify
 					sendObjectToActivity(MSG_UPDATE_TASK, "task", task, group.getPosition());
 					Toast.makeText(this, String.format(app.resources.getString(R.string.task_goal_reached), task.getName()), Toast.LENGTH_LONG).show();
 					if(app.debug) Log.d(TAG, "Task #" + task.getPosition() + " of group #" + group.getPosition() + " has reached its goal");
