@@ -12,26 +12,40 @@ import android.os.Parcelable;
  */
 public class Group implements Parcelable {
 	private String name;
+	private int id, position;
 	private ArrayList<Task> tasks;
-	private int position, id;
 	
 	/**
 	 * Default constructor
 	 */
 	public Group() {
-		this("EMPTY NAME", new ArrayList<Task>(), -1, -1);
+		this("EMPTY NAME", -1, -1, null);
+	}
+	
+	public Group(String name) {
+		this(name, -1, -1, null);
+	}
+	
+	/**
+	 * ID constructor
+	 * @param id The ID of the Group
+	 */
+	public Group(int id) {
+		this("EMPTY NAME", id, -1, null);
 	}
 	
 	/**
 	 * Fill constructor
 	 * @param name The name of the Group
-	 * @param id The ID of the Group for database use
+	 * @param id The ID of the Group
+	 * @param position The position of the Group
+	 * @param tasks The tasks in the Group
 	 */
-	public Group(String name, ArrayList<Task> tasks, int position, int id) {
+	public Group(String name, int id, int position, ArrayList<Task> tasks) {
 		this.name = name;
-		this.tasks = tasks;
-		this.position = position;
 		this.id = id;
+		this.position = position;
+		this.tasks = tasks;
 	}
 	
 	/**
@@ -60,19 +74,19 @@ public class Group implements Parcelable {
 	}
 	
 	/**
-	 * Gets the Tasks assigned to the Group
-	 * @return the tasks
+	 * Gets the ID of the Group for database use
+	 * @return The ID of the Group
 	 */
-	public ArrayList<Task> getTasks() {
-		return tasks;
+	public int getId() {
+		return id;
 	}
-
+	
 	/**
-	 * Sets the Tasks assigned to the Group
-	 * @param tasks the tasks to set
+	 * Sets the ID of the Group for database use
+	 * @param id The ID of the Group
 	 */
-	public void setTasks(ArrayList<Task> tasks) {
-		this.tasks = tasks;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	/**
@@ -92,19 +106,19 @@ public class Group implements Parcelable {
 	}
 	
 	/**
-	 * Gets the ID of the Group for database use
-	 * @return The ID of the Group
+	 * Gets the Tasks assigned to the Group
+	 * @return the tasks
 	 */
-	public int getId() {
-		return id;
+	public ArrayList<Task> getTasks() {
+		return tasks;
 	}
-	
+
 	/**
-	 * Sets the ID of the Group for database use
-	 * @param id The ID of the Group
+	 * Sets the Tasks assigned to the Group
+	 * @param tasks the tasks to set
 	 */
-	public void setId(int id) {
-		this.id = id;
+	public void setTasks(ArrayList<Task> tasks) {
+		this.tasks = tasks;
 	}
 	
 	

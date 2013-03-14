@@ -37,6 +37,22 @@ public class Task implements Parcelable {
 	public Task() {
 		this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, -1, -1, -1, new HashMap<String, Object>(), -1, -1);
 	}
+	
+	/**
+	 * Name constructor
+	 * @param name The name of the Task
+	 */
+	public Task(String name) {
+		this(name, "", new TimeAmount(), new TimeAmount(), false, false, false, -1, -1, -1, new HashMap<String, Object>(), -1, -1);
+	}
+	
+	/**
+	 * ID constructor
+	 * @param id The ID of the Task
+	 */
+	public Task(int id) {
+		this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, id, -1, -1, new HashMap<String, Object>(), -1, -1);
+	}
 
 	/**
 	 * Fill constructor
