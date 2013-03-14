@@ -35,12 +35,24 @@ public final class Utilities {
 	}
 	
 	/**
-	 * Finds and returns a task by an ID
+	 * Finds and returns a task by an ID in an ArrayList of tasks
+	 * @param id The ID to search for
+	 * @param groups The tasks to search in
+	 * @return The task with the specified ID
+	 */
+	public static final Task getTaskByID(int id, ArrayList<Task> tasks) {
+		int t = Collections.binarySearch(tasks, new Task(id), Task.IDComparator);
+		if(t != -1) return tasks.get(t);
+		return null;
+	}
+	
+	/**
+	 * Finds and returns a task by an ID in an ArrayList of groups
 	 * @param id The ID to search for
 	 * @param groups The groups to search in
 	 * @return The task with the specified ID
 	 */
-	public static final Task getTaskByID(int id, ArrayList<Group> groups) {
+	public static final Task getGroupedTaskByID(int id, ArrayList<Group> groups) {
 		for(int g = 0; g < groups.size(); g++) {
 			int t = Collections.binarySearch(groups.get(g).getTasks(), new Task(id), Task.IDComparator);
 			if(t != -1) return groups.get(g).getTasks().get(t);
