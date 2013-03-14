@@ -377,6 +377,15 @@ public class Task implements Parcelable {
 	}
 	
 	/**
+	 * Determines whether or not the task should stop running
+	 * @return Whether or not the task should stop running
+	 */
+	public boolean shouldStop() {
+		if((!complete && getBooleanSetting("stop")) || (complete && !getBooleanSetting("overtime"))) return true;
+		return false;
+	}
+	
+	/**
 	 * Toggles the running status of the Task
 	 */
 	public synchronized void toggle() {
@@ -397,11 +406,8 @@ public class Task implements Parcelable {
 	public synchronized void incrementTime(int secs) {
 		time.increment(secs);
 		if(time.compareTo(goal) >= 0) {
+			if(shouldStop()) running = false;
 			complete = true;
-			
-			if(getBooleanSetting("stop")) {
-				running = false;
-			}
 		}
 	}
 	

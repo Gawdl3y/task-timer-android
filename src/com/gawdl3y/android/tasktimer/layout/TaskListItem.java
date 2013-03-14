@@ -172,6 +172,8 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
 			if(timer != null) timer.interrupt();
 			task.setLastTick(-1);
 		}
+		
+		Log.d(TAG, "Built timer");
 	}
 	
 	/* (non-Javadoc)

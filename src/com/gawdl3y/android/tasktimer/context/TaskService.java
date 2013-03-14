@@ -94,10 +94,17 @@ public class TaskService extends Service {
 		startForeground(1, notification);
 		
 		// Use these until database is implemented
+		HashMap<String, Object> settings1 = new HashMap<String, Object>();
+		settings1.put("overtime", true);
+		
+		HashMap<String, Object> settings2 = new HashMap<String, Object>();
+		settings2.put("overtime", true);
+		settings2.put("stop", false);
+		
 		ArrayList<Task> tasks1 = new ArrayList<Task>(), tasks2 = new ArrayList<Task>(), tasks3 = new ArrayList<Task>();
-		tasks1.add(new Task("This is a task", "", new TimeAmount(1, 2, 3), new TimeAmount(), true, false, false, 22, 5, 42, new HashMap<String, Object>(), -1, -1));
+		tasks1.add(new Task("This is a task", "", new TimeAmount(1, 2, 3), new TimeAmount(1, 2, 5), true, false, false, 22, 5, 42, settings1, -1, -1));
 		tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, 4, 1, 42, new HashMap<String, Object>(), -1, -1));
-		tasks2.add(new Task("It's a task!", "", new TimeAmount(), new TimeAmount(2.54321), false, false, false, 0, 1, 43, new HashMap<String, Object>(), -1, -1));
+		tasks2.add(new Task("It's a task!", "", new TimeAmount(2.54), new TimeAmount(2.54321), false, false, false, 0, 1, 43, settings2, -1, -1));
 		
 		Collections.sort(tasks1, Task.PositionComparator);
 		Collections.sort(tasks2, Task.PositionComparator);
@@ -304,7 +311,7 @@ public class TaskService extends Service {
 				task.setLastTick(task.isRunning() ? System.currentTimeMillis() : -1);
 				
 				// Set a future alarm for the task reaching its goal
-				if(task.isRunning()) {
+				if(task.isRunning() && !task.isComplete()) {
 					AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 					int alarmID = task.getAlert() + 1;
 					long alarmTime = System.currentTimeMillis() + (long) ((task.getGoal().toDouble() - task.getTime().toDouble()) * 3600 * 1000);
