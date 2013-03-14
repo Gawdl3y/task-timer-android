@@ -74,7 +74,7 @@ public class TaskListAdapter extends BaseAdapter {
 		TaskListItem v = new TaskListItem(context, (Task) getItem(position));
 		v.setTag(R.id.tag_task, position);
 		v.setTag(R.id.tag_group, group);
-		Log.v(TAG, "Getting view");
+		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Getting view");
 		return v;
 	}
 }

@@ -97,7 +97,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 		Intent intent = new Intent(app, TaskService.class);
 		app.startService(intent);
 		
-		Log.v(TAG, "Created");
+		if(app.debug) Log.v(TAG, "Created");
 	}
 	
 	/* (non-Javadoc)
