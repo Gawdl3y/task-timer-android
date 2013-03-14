@@ -41,8 +41,10 @@ public final class Utilities {
 	 * @return The task with the specified ID
 	 */
 	public static final Task getTaskByID(int id, ArrayList<Task> tasks) {
-		int t = Collections.binarySearch(tasks, new Task(id), Task.IDComparator);
-		if(t != -1) return tasks.get(t);
+		for(Task t : tasks) {
+			if(t.getId() == id) return t;
+		}
+		
 		return null;
 	}
 	
@@ -53,9 +55,10 @@ public final class Utilities {
 	 * @return The task with the specified ID
 	 */
 	public static final Task getGroupedTaskByID(int id, ArrayList<Group> groups) {
-		for(int g = 0; g < groups.size(); g++) {
-			int t = Collections.binarySearch(groups.get(g).getTasks(), new Task(id), Task.IDComparator);
-			if(t != -1) return groups.get(g).getTasks().get(t);
+		for(Group g : groups) {
+			for(Task t : g.getTasks()) {
+				if(t.getId() == id) return t;
+			}
 		}
 		
 		return null;
@@ -68,8 +71,10 @@ public final class Utilities {
 	 * @return The group with the specified ID
 	 */
 	public static final Group getGroupByID(int id, ArrayList<Group> groups) {
-		int g = Collections.binarySearch(groups, new Group(id), Group.IDComparator);
-		if(g != -1) return groups.get(g);
+		for(Group g : groups) {
+			if(g.getId() == id) return g;
+		}
+		
 		return null;
 	}
 	
