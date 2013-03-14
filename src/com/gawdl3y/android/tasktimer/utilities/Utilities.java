@@ -22,7 +22,7 @@ public final class Utilities {
 	 * Sets the positions of tasks or groups in an ArrayList to the position in the array
 	 * @param arr The ArrayList to reorder
 	 */
-	public static void reposition(ArrayList<?> arr) {
+	public static final void reposition(ArrayList<?> arr) {
 		for(int i = 0; i < arr.size(); i++) {
 			Object thing = arr.get(i);
 			
@@ -40,7 +40,7 @@ public final class Utilities {
 	 * @param groups The groups to search in
 	 * @return The task with the specified ID
 	 */
-	public Task getTaskByID(int id, ArrayList<Group> groups) {
+	public static final Task getTaskByID(int id, ArrayList<Group> groups) {
 		for(int g = 0; g < groups.size(); g++) {
 			int t = Collections.binarySearch(groups.get(g).getTasks(), new Task(id), Task.IDComparator);
 			if(t != -1) return groups.get(g).getTasks().get(t);
@@ -55,7 +55,7 @@ public final class Utilities {
 	 * @param groups The groups to search in
 	 * @return The group with the specified ID
 	 */
-	public Group getGroupByID(int id, ArrayList<Group> groups) {
+	public static final Group getGroupByID(int id, ArrayList<Group> groups) {
 		int g = Collections.binarySearch(groups, new Group(id), Group.IDComparator);
 		if(g != -1) return groups.get(g);
 		return null;
