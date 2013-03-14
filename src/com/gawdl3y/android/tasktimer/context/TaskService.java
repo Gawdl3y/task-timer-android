@@ -246,6 +246,7 @@ public class TaskService extends Service {
 				groupID++;
 				group = (Group) data.getParcelable("group");
 				group.setId(groupID);
+				group.setTasks(new ArrayList<Task>());
 				groups.add(msg.arg1, group);
 				Utilities.reposition(groups);
 				
