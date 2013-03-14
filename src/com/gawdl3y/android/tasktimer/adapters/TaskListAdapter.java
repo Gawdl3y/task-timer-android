@@ -71,10 +71,11 @@ public class TaskListAdapter extends BaseAdapter {
 	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Getting view");
+		
 		TaskListItem v = new TaskListItem(context, (Task) getItem(position));
 		v.setTag(R.id.tag_task, position);
 		v.setTag(R.id.tag_group, group);
-		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Getting view");
 		return v;
 	}
 }

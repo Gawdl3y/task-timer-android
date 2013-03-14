@@ -92,7 +92,8 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 	 */
 	@Override
 	public Parcelable saveState() {
-		Bundle bundle = (Bundle) super.saveState();
+		Bundle bundle = new Bundle();
+		bundle.putParcelable("super", super.saveState());
 		bundle.putParcelableArrayList("groups", groups);
 		return bundle;
 	}
@@ -103,7 +104,8 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 	 */
 	@Override
 	public void restoreState(Parcelable state, ClassLoader loader) {
-		super.restoreState(state, loader);
-		groups = ((Bundle) state).getParcelableArrayList("groups");
+		Bundle bundle = (Bundle) state;
+		super.restoreState(bundle.getParcelable("super"), loader);
+		groups = bundle.getParcelableArrayList("groups");
 	}
 }
