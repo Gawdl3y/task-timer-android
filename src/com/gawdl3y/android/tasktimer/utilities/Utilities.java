@@ -1,6 +1,7 @@
 package com.gawdl3y.android.tasktimer.utilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
@@ -34,15 +35,30 @@ public final class Utilities {
 	}
 	
 	/**
-	 * Sleep for a given amount of time
-	 * @param time The amount of time to sleep (in milliseconds)
+	 * Finds and returns a task by an ID
+	 * @param id The ID to search for
+	 * @param groups The groups to search in
+	 * @return The task with the specified ID
 	 */
-	public static void sleep(long time) {
-		try {
-			Thread.sleep(time);
-		} catch(InterruptedException e) {
-			
+	public Task getTaskByID(int id, ArrayList<Group> groups) {
+		for(int g = 0; g < groups.size(); g++) {
+			int t = Collections.binarySearch(groups.get(g).getTasks(), new Task(id), Task.IDComparator);
+			if(t != -1) return groups.get(g).getTasks().get(t);
 		}
+		
+		return null;
+	}
+	
+	/**
+	 * Finds and returns a group by an ID
+	 * @param id The ID to search for
+	 * @param groups The groups to search in
+	 * @return The group with the specified ID
+	 */
+	public Group getGroupByID(int id, ArrayList<Group> groups) {
+		int g = Collections.binarySearch(groups, new Group(id), Group.IDComparator);
+		if(g != -1) return groups.get(g);
+		return null;
 	}
 	
 	/**
