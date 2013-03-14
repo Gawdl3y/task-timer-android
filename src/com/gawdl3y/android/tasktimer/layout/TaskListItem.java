@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.pojos.TaskTimerThread;
 
@@ -84,7 +85,7 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
 		
 		invalidate();
 		buildTimer();
-		Log.v(TAG, "Inflated");
+		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Inflated");
 	}
 	
 	/* (non-Javadoc)
@@ -94,7 +95,7 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
 	@Override
 	protected void onDetachedFromWindow() {
 		if(timer != null) timer.interrupt();
-		Log.v(TAG, "Detached");
+		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Detached");
 	}
 	
 	/* (non-Javadoc)
@@ -167,13 +168,13 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
 			if(timer != null) timer.interrupt();
 			timer = new TaskTimerThread(task, 1, this);
 			timer.start();
+			if(TaskTimerApplication.DEBUG) Log.v(TAG, "Started timer");
 		} else {
 			// Stop the timer and clear the last tick
 			if(timer != null) timer.interrupt();
 			task.setLastTick(-1);
+			if(TaskTimerApplication.DEBUG) Log.v(TAG, "Stopped timer");
 		}
-		
-		Log.d(TAG, "Built timer");
 	}
 	
 	/* (non-Javadoc)
