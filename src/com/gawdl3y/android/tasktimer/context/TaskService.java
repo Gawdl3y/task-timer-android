@@ -111,9 +111,9 @@ public class TaskService extends Service {
 		tasks.addAll(tasks2);
 		tasks.addAll(tasks3);
 		
-		groups.add(new Group("It's a group!", tasks1, 0, 42));
-		groups.add(new Group("Also a group", tasks2, 2, 43));
-		groups.add(new Group("no way another group", tasks3, 1, 2));
+		groups.add(new Group("It's a group!", 42, 0, tasks1));
+		groups.add(new Group("Also a group", 43, 2, tasks2));
+		groups.add(new Group("no way another group", 2, 1, tasks3));
 		
 		Collections.sort(groups, Group.PositionComparator);
 		
@@ -134,17 +134,17 @@ public class TaskService extends Service {
 		if(intent != null && intent.getAction() != null) {
 			if(intent.getAction().equals(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED)) {
 				// A task's goal has been reached
-				int group = intent.getExtras().getInt("group");
-				Task task = groups.get(group).getTasks().get(intent.getExtras().getInt("task"));
+				Task task = Utilities.getGroupedTaskByID(intent.getExtras().getInt("task"), groups);
+				Group group = Utilities.getGroupByID(task.getGroup(), groups);
 				int alarmID = intent.getExtras().getInt("alarm");
 				
 				if(task.isRunning() && task.getAlert() == alarmID) {
 					task.setTime(task.getGoal());
 					task.setComplete(true);
 					if(task.getBooleanSetting("stop")) task.setRunning(false);
-					sendObjectToActivity(MSG_UPDATE_TASK, "task", task, group);
+					sendObjectToActivity(MSG_UPDATE_TASK, "task", task, group.getPosition());
 					Toast.makeText(this, String.format(app.resources.getString(R.string.task_goal_reached), task.getName()), Toast.LENGTH_LONG).show();
-					if(app.debug) Log.d(TAG, "Task #" + task.getPosition() + " of group #" + group + " has reached its goal");
+					if(app.debug) Log.d(TAG, "Task #" + task.getPosition() + " of group #" + group.getPosition() + " has reached its goal");
 				}
 			}
 		}
@@ -312,6 +312,7 @@ public class TaskService extends Service {
 					// Create the alarm
 					Intent alarmIntent = new Intent(TaskService.this, TaskTimerReceiver.class);
 					alarmIntent.setAction(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED);
+					alarmIntent.putExtra("task", task.getId());
 					alarmIntent.putExtra("alarm", alarmID);
 					PendingIntent pendingIntent = PendingIntent.getBroadcast(TaskService.this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 					alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
@@ -441,13 +442,5 @@ public class TaskService extends Service {
 		if(arg2 != -1) msg.arg2 = arg2;
 		
 		sendMessageToActivity(msg);
-	}
-	
-	/**
-	 * Returns whether or not the service is connected to the activity
-	 * @return
-	 */
-	public boolean isConnected() {
-		return connected;
 	}
 }
