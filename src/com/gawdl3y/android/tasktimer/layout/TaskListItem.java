@@ -132,7 +132,7 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
 		// Set the view values
 		name.setText(task.getName());
 		time.setText(task.getTime().toString());
-		goal.setText(task.getGoal().toString());
+		goal.setText(task.isIndefinite() ? TaskTimerApplication.RESOURCES.getString(R.string.task_indefinite) : task.getGoal().toString());
 		progress.setProgress(task.getProgress());
 		progress.setIndeterminate(task.isIndefinite() && task.isRunning());
 		
