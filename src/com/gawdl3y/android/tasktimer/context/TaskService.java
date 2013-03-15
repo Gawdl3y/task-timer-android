@@ -61,7 +61,7 @@ public class TaskService extends Service {
 	private ArrayList<Task> tasks = new ArrayList<Task>();
 	private ArrayList<Group> groups = new ArrayList<Group>();
 	private int groupID, taskID;
-	
+
 	/* (non-Javadoc)
 	 * The service is being created
 	 * @see android.app.Service#onCreate()
@@ -103,7 +103,7 @@ public class TaskService extends Service {
 		
 		ArrayList<Task> tasks1 = new ArrayList<Task>(), tasks2 = new ArrayList<Task>(), tasks3 = new ArrayList<Task>();
 		tasks1.add(new Task("This is a task", "", new TimeAmount(1, 2, 3), new TimeAmount(1, 2, 5), true, false, false, 22, 5, 42, settings1, -1, -1));
-		tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, 4, 1, 42, new HashMap<String, Object>(), -1, -1));
+		tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, 4, 1, 42, null, -1, -1));
 		tasks2.add(new Task("It's a task!", "", new TimeAmount(2.54), new TimeAmount(2.54321), false, false, false, 0, 1, 43, settings2, -1, -1));
 		
 		Collections.sort(tasks1, Task.PositionComparator);
@@ -144,10 +144,14 @@ public class TaskService extends Service {
 				Task task = Utilities.getGroupedTaskByID(intent.getExtras().getInt("task"), groups);
 				Group group = Utilities.getGroupByID(task.getGroup(), groups);
 				int alarmID = intent.getExtras().getInt("alarm");
-				
+
+                // Make sure the task is running and the received alarm is the most current alarm for the task
 				if(task.isRunning() && task.getAlert() == alarmID) {
-					task.setTime(task.getGoal());
+					// Finish the task
+                    task.setTime(task.getGoal());
 					task.setComplete(true);
+
+                    // Stop the task if necessary
 					if(task.getBooleanSetting("stop") || !task.getBooleanSetting("overtime")) {
 						task.setRunning(false);
 						task.setLastTick(-1);
@@ -185,7 +189,11 @@ public class TaskService extends Service {
 		if(app.debug) Log.v(TAG, "Unbound");
 		return true;
 	}
-	
+
+    /* (non-Javadoc)
+     * The service is being bound again after being bound once before
+     * @see android.app.Service#onRebind(android.content.Intent)
+     */
 	@Override
 	public void onRebind(Intent intent) {
 		// Update the times of running tasks

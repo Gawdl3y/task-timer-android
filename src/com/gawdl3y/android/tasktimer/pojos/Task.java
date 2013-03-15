@@ -333,7 +333,7 @@ public class Task implements Parcelable {
 	 * @return The setting
 	 */
 	public Object getSetting(String key) {
-		return settings.containsKey(key) ? settings.get(key) : DEFAULT_SETTINGS.get(key);
+		return settings != null && settings.containsKey(key) ? settings.get(key) : DEFAULT_SETTINGS.get(key);
 	}
 	
 	/**
@@ -342,8 +342,7 @@ public class Task implements Parcelable {
 	 * @return The boolean setting
 	 */
 	public boolean getBooleanSetting(String key) {
-		if(!settings.containsKey(key)) return (Boolean) DEFAULT_SETTINGS.get(key);
-		return settings.containsKey(key) ? (Boolean) settings.get(key) : (Boolean) DEFAULT_SETTINGS.get(key);
+        return settings != null && settings.containsKey(key) ? (Boolean) settings.get(key) : (Boolean) DEFAULT_SETTINGS.get(key);
 	}
 	
 	/**
@@ -352,6 +351,7 @@ public class Task implements Parcelable {
 	 * @param value The value of the setting
 	 */
 	public void setSetting(String key, Object value) {
+        if(settings == null) settings = new HashMap<String, Object>();
 		settings.put(key, value);
 	}
 	
@@ -360,7 +360,7 @@ public class Task implements Parcelable {
 	 * @param key The key of the setting
 	 */
 	public void removeSetting(String key) {
-		settings.remove(key);
+        if(settings != null) settings.remove(key);
 	}
 	
 	/**
