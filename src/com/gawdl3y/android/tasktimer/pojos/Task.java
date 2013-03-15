@@ -381,7 +381,7 @@ public class Task implements Parcelable {
 	 * @return Whether or not the task should stop running
 	 */
 	public boolean shouldStop() {
-		if((!complete && getBooleanSetting("stop")) || (complete && !getBooleanSetting("overtime"))) return true;
+		if(!indefinite && ((!complete && getBooleanSetting("stop")) || (complete && !getBooleanSetting("overtime")))) return true;
 		return false;
 	}
 	

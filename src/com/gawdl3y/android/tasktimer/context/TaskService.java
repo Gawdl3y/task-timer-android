@@ -145,8 +145,8 @@ public class TaskService extends Service {
 				Group group = Utilities.getGroupByID(task.getGroup(), groups);
 				int alarmID = intent.getExtras().getInt("alarm");
 
-                // Make sure the task is running and the received alarm is the most current alarm for the task
-				if(task.isRunning() && task.getAlert() == alarmID) {
+                // Make sure the task is running, isn't indefinite, and the received alarm is the most current alarm for the task
+				if(task.isRunning() && !task.isIndefinite() && task.getAlert() == alarmID) {
 					// Finish the task
                     task.setTime(task.getGoal());
 					task.setComplete(true);
@@ -325,7 +325,7 @@ public class TaskService extends Service {
 				task.setLastTick(task.isRunning() ? System.currentTimeMillis() : -1);
 				
 				// Set a future alarm for the task reaching its goal
-				if(task.isRunning() && !task.isComplete()) {
+				if(task.isRunning() && !task.isComplete() && !task.isIndefinite()) {
 					AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 					int alarmID = task.getAlert() + 1;
 					long alarmTime = System.currentTimeMillis() + (long) ((task.getGoal().toDouble() - task.getTime().toDouble()) * 3600 * 1000);
