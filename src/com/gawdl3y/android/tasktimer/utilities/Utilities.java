@@ -37,7 +37,7 @@ public final class Utilities {
 	/**
 	 * Finds and returns a task by an ID in an ArrayList of tasks
 	 * @param id The ID to search for
-	 * @param groups The tasks to search in
+	 * @param tasks The tasks to search in
 	 * @return The task with the specified ID
 	 */
 	public static final Task getTaskByID(int id, ArrayList<Task> tasks) {
