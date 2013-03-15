@@ -25,6 +25,7 @@
     <!-- Preference strings -->
     <string name="pref_generalSettings">General Settings</string>
     <string name="pref_taskSettings">Task Settings</string>
+    <string name="pref_notifSettings">Notification Settings</string>
     
     <string name="pref_theme">Theme</string>
     <string name="pref_theme_default">2</string>
@@ -71,6 +72,11 @@
     <string name="pref_multipleRunning_default">true</string>
     <string name="pref_multipleRunning_summary_on">More than one task can be running at a time</string>
     <string name="pref_multipleRunning_summary_off">Only one task can be running at a time</string>
+    
+    <string name="pref_goalNotification">Goal reached notifications</string>
+    <string name="pref_goalNotification_default">true</string>
+    <string name="pref_goalNotification_summary_on">A notification will be made when a task reaches its goal</string>
+    <string name="pref_goalNotification_summary_off">A notification will not be made when a task reaches its goal</string>
     
     <!--  Task strings -->
     <string name="task_name">Name</string>

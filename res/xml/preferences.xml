@@ -58,4 +58,18 @@
             android:defaultValue="@string/pref_multipleRunning_default"
             android:order="4" />
     </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="pref_notifSettings"
+        android:title="@string/pref_notifSettings"
+        android:order="3">
+        
+        <CheckBoxPreference
+            android:key="pref_goalNotifications"
+            android:title="@string/pref_goalNotification"
+            android:summaryOn="@string/pref_goalNotification_summary_on"
+            android:summaryOff="@string/pref_goalNotification_summary_off"
+            android:defaultValue="@string/pref_goalNotification_default"
+            android:order="1" />
+    </PreferenceCategory>
 </PreferenceScreen>
