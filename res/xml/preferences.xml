@@ -71,5 +71,11 @@
             android:summaryOff="@string/pref_goalNotification_summary_off"
             android:defaultValue="@string/pref_goalNotification_default"
             android:order="1" />
+        <RingtonePreference
+            android:key="pref_notificationSound"
+            android:title="@string/pref_notificationSound"
+            android:ringtoneType="notification"
+            android:defaultValue="content://settings/system/notification_sound"
+            android:order="2"/>
     </PreferenceCategory>
 </PreferenceScreen>

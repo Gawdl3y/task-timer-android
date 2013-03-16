@@ -77,6 +77,8 @@
     <string name="pref_goalNotification_default">true</string>
     <string name="pref_goalNotification_summary_on">A notification will be made when a task reaches its goal</string>
     <string name="pref_goalNotification_summary_off">A notification will not be made when a task reaches its goal</string>
+
+    <string name="pref_notificationSound">Notification sound</string>
     
     <!--  Task strings -->
     <string name="task_name">Name</string>

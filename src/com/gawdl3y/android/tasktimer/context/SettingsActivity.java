@@ -8,11 +8,16 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 
+import android.preference.PreferenceManager;
+import android.preference.RingtonePreference;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
 import com.actionbarsherlock.view.MenuItem;
 import com.gawdl3y.android.tasktimer.R;
@@ -108,7 +113,13 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 					dialog.show();
 				}
 			}
-		}
+        // Ringtone preference changed
+		} else if(pref instanceof RingtonePreference) {
+            // Change the summary to the name of the ringtone
+            Uri ringtoneUri = Uri.parse(PreferenceManager.getDefaultSharedPreferences(this).getString(key, "content://settings/system/notification_sound"));
+            Ringtone ringtone = RingtoneManager.getRingtone(this, ringtoneUri);
+            pref.setSummary(ringtone.getTitle(this));
+        }
 	}
 	
 	/* (non-Javadoc)
