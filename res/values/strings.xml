@@ -122,11 +122,15 @@
     
     <!-- Error strings -->
     <string name="error_serviceNotBound">The service could not be bound</string>
+
+
+    <!-- Notification strings -->
+    <string name="notif_task_completed">Task goal reached</string>
+    <string name="notif_task_completed_long">Task \"%s\" has reached its goal</string>
     
     
     <!-- General strings -->
     <string name="no_tasks">No tasks</string>
-    <string name="task_goal_reached">Task \"%s\" has reached its goal</string>
     
     
     <!--  View tag IDs -->

@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.app.Service;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
@@ -81,17 +78,16 @@ public class TaskService extends Service {
 		
 		// Create the notification
 		notification = new NotificationCompat.Builder(this)
-				.setContentTitle(getString(R.string.app_name))
-				.setContentText("Hey! Listen!")
-				//.setTicker("Hey! Listen!")
-				.setSmallIcon(R.drawable.ic_launcher)
-				.setLargeIcon(Utilities.drawableToBitmap(getResources().getDrawable(R.drawable.ic_launcher)))
-				.setWhen(System.currentTimeMillis())
-				.setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
-				.build();
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText("Hey! Listen!")
+                .setSmallIcon(R.drawable.ic_stat_icon)
+                .setLargeIcon(Utilities.drawableToBitmap(getResources().getDrawable(R.drawable.ic_launcher)))
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
+                .build();
 		
 		// Start the service in the foreground
-		startForeground(1, notification);
+		startForeground(Integer.MAX_VALUE, notification);
 		
 		// Use these until database is implemented
 		HashMap<String, Object> settings1 = new HashMap<String, Object>();
@@ -156,10 +152,32 @@ public class TaskService extends Service {
 						task.setRunning(false);
 						task.setLastTick(-1);
 					}
+
+                    // Create the intent and back stack for the notification
+                    Intent notifIntent = new Intent(this, MainActivity.class);
+                    notifIntent.putExtra("task", task.getId());
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                    stackBuilder.addParentStack(MainActivity.class).addNextIntent(notifIntent);
+
+                    // Create the notification
+                    notification = new NotificationCompat.Builder(this)
+                            .setContentTitle(getString(R.string.notif_task_completed))
+                            .setContentText(String.format(getString(R.string.notif_task_completed_long), task.getName()))
+                            .setTicker(String.format(getString(R.string.notif_task_completed_long), task.getName()))
+                            .setSmallIcon(R.drawable.ic_stat_icon)
+                            .setLargeIcon(Utilities.drawableToBitmap(getResources().getDrawable(R.drawable.ic_launcher)))
+                            .setPriority(Notification.PRIORITY_HIGH)
+                            .setAutoCancel(true)
+                            .setWhen(System.currentTimeMillis())
+                            .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
+                            .build();
+
+                    // Notify
+                    NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    notifManager.notify(task.getId(), notification);
 					
-					// Notify
+					// Send task to activity
 					sendObjectToActivity(MSG_UPDATE_TASK, "task", task, group.getPosition());
-					Toast.makeText(this, String.format(app.resources.getString(R.string.task_goal_reached), task.getName()), Toast.LENGTH_LONG).show();
 					if(app.debug) Log.d(TAG, "Task #" + task.getPosition() + " of group #" + group.getPosition() + " has reached its goal");
 				}
 			}
