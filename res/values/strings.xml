@@ -135,6 +135,14 @@
     <string name="no_tasks">No tasks</string>
     
     
+    <!-- Plurals -->
+    <plurals name="plural_tasks_running">
+        <item quantity="zero">No tasks running</item>
+        <item quantity="one">One task running</item>
+        <item quantity="other">%d tasks running</item>
+    </plurals>
+    
+    
     <!--  View tag IDs -->
     <item type="id" name="tag_task" />
     <item type="id" name="tag_group" />

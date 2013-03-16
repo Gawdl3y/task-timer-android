@@ -54,13 +54,16 @@ public class TaskService extends Service {
 	private boolean connected = false;
 	private Messenger activityMessenger;
 	private Messenger messenger;
-	
+
+    // Stuff
 	private TaskTimerApplication app;
-	private Notification notification;
-	
+    private NotificationManager notifManager;
+
+    // Data
 	private ArrayList<Task> tasks = new ArrayList<Task>();
 	private ArrayList<Group> groups = new ArrayList<Group>();
 	private int groupID, taskID;
+    private int runningTasks = 0;
 
 	/* (non-Javadoc)
 	 * The service is being created
@@ -74,23 +77,9 @@ public class TaskService extends Service {
 		// Create the messenger
 		messenger = new Messenger(new IncomingHandler());
 		
-		// Create the intent to launch the app
-		Intent intent = new Intent(this, MainActivity.class);
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		stackBuilder.addParentStack(MainActivity.class).addNextIntent(intent);
-		
-		// Create the notification
-		notification = new NotificationCompat.Builder(this)
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText("Hey! Listen!")
-                .setSmallIcon(R.drawable.ic_stat_icon)
-                .setLargeIcon(Utilities.drawableToBitmap(getResources().getDrawable(R.drawable.ic_launcher)))
-                .setWhen(System.currentTimeMillis())
-                .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
-                .build();
-		
 		// Start the service in the foreground
-		startForeground(Integer.MAX_VALUE, notification);
+        notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		startForeground(Integer.MAX_VALUE, getMainNotification());
 		
 		// Use these until database is implemented
 		HashMap<String, Object> settings1 = new HashMap<String, Object>();
@@ -163,7 +152,7 @@ public class TaskService extends Service {
                     stackBuilder.addParentStack(MainActivity.class).addNextIntent(notifIntent);
 
                     // Create the notification
-                    notification = new NotificationCompat.Builder(this)
+                    Notification notification = new NotificationCompat.Builder(this)
                             .setContentTitle(getString(R.string.notif_task_completed))
                             .setContentText(String.format(getString(R.string.notif_task_completed_long), task.getName()))
                             .setTicker(String.format(getString(R.string.notif_task_completed_long), task.getName()))
@@ -176,12 +165,15 @@ public class TaskService extends Service {
                             .build();
 
                     // Show notification
-                    NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     notifManager.notify(task.getId(), notification);
 
                     // Play notification sound
                     Ringtone notifSound = RingtoneManager.getRingtone(this, Uri.parse(app.preferences.getString("pref_notificationSound", "content://settings/system/notification_sound")));
                     notifSound.play();
+
+                    // Update the main notification
+                    if(!task.isRunning()) runningTasks--;
+                    notifManager.notify(Integer.MAX_VALUE, getMainNotification());
 
                     // Send task to activity
 					sendObjectToActivity(MSG_UPDATE_TASK, "task", task, group.getPosition());
@@ -366,6 +358,11 @@ public class TaskService extends Service {
 					task.setAlert(alarmID);
 					if(app.debug) Log.v(TAG, "Set alarm for task #" + msg.arg2 + " of group #" + msg.arg1 + " in " + (alarmTime - System.currentTimeMillis()) / 1000 + " seconds with ID " + alarmID);
 				}
+
+                // Update the main notification
+                if(task.isRunning()) runningTasks++; else runningTasks--;
+                notifManager.notify(Integer.MAX_VALUE, getMainNotification());
+
 				break;
 				
 			case MSG_GET_ALL:
@@ -489,4 +486,25 @@ public class TaskService extends Service {
 		
 		sendMessageToActivity(msg);
 	}
+
+    /**
+     * Gets the main ongoing notification for the service
+     * @return The main notification
+     */
+    private Notification getMainNotification() {
+        // Create the intent to launch the app
+        Intent intent = new Intent(this, MainActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(MainActivity.class).addNextIntent(intent);
+
+        // Create the notification
+        return new NotificationCompat.Builder(this)
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(String.format(app.resources.getQuantityString(R.plurals.plural_tasks_running, runningTasks), runningTasks))
+                .setSmallIcon(R.drawable.ic_stat_icon)
+                .setLargeIcon(Utilities.drawableToBitmap(getResources().getDrawable(R.drawable.ic_launcher)))
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
+                .build();
+    }
 }
