@@ -7,6 +7,9 @@ import java.util.HashMap;
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -172,11 +175,15 @@ public class TaskService extends Service {
                             .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
                             .build();
 
-                    // Notify
+                    // Show notification
                     NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                     notifManager.notify(task.getId(), notification);
-					
-					// Send task to activity
+
+                    // Play notification sound
+                    Ringtone notifSound = RingtoneManager.getRingtone(this, Uri.parse(app.preferences.getString("pref_notificationSound", "content://settings/system/notification_sound")));
+                    notifSound.play();
+
+                    // Send task to activity
 					sendObjectToActivity(MSG_UPDATE_TASK, "task", task, group.getPosition());
 					if(app.debug) Log.d(TAG, "Task #" + task.getPosition() + " of group #" + group.getPosition() + " has reached its goal");
 				}
