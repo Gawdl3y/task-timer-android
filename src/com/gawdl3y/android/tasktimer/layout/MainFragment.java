@@ -1,19 +1,18 @@
 package com.gawdl3y.android.tasktimer.layout;
 
-import java.util.ArrayList;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.actionbarsherlock.app.SherlockFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.adapters.TaskListFragmentAdapter;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.utilities.Log;
+
+import java.util.ArrayList;
 
 /**
  * The main fragment for Task Timer; contains a TaskListFragmentAdapter

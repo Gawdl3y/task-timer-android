@@ -1,8 +1,5 @@
 package com.gawdl3y.android.tasktimer.layout;
 
-import java.util.ArrayList;
-
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -11,19 +8,16 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-
 import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
+
+import java.util.ArrayList;
 
 /**
  * The dialog fragment for editing a Task

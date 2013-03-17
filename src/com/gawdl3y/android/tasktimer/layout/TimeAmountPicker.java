@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
-
 import com.gawdl3y.android.tasktimer.R;
 import com.michaelnovakjr.numberpicker.NumberPicker;
 

@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Task;

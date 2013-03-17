@@ -3,7 +3,6 @@ package com.gawdl3y.android.tasktimer.utilities;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-
 import com.gawdl3y.android.tasktimer.context.MainActivity;
 import com.gawdl3y.android.tasktimer.context.TaskService;
 

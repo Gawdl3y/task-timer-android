@@ -1,10 +1,10 @@
 package com.gawdl3y.android.tasktimer.pojos;
 
-import java.util.Comparator;
-import java.util.HashMap;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.Comparator;
+import java.util.HashMap;
 
 /**
  * A class that contains a time, goal time, and task-related properties

@@ -1,16 +1,13 @@
 package com.gawdl3y.android.tasktimer.adapters;
 
-import java.util.ArrayList;
-
-
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
-
-import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.utilities.Log;
+
+import java.util.ArrayList;
 
 /**
  * The adapter to display a ViewPager of Groups

@@ -1,10 +1,10 @@
 package com.gawdl3y.android.tasktimer.pojos;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * A category for Task objcts; contains an array of Tasks if necessary

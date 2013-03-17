@@ -1,25 +1,14 @@
 package com.gawdl3y.android.tasktimer.context;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-
 import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Binder;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.Parcelable;
+import android.os.*;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;
@@ -28,6 +17,10 @@ import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
 import com.gawdl3y.android.tasktimer.utilities.Log;
 import com.gawdl3y.android.tasktimer.utilities.TaskTimerReceiver;
 import com.gawdl3y.android.tasktimer.utilities.Utilities;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * The service that handles storing/retrieving data and the timers

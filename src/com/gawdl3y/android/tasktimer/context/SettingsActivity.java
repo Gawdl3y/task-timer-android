@@ -1,7 +1,5 @@
 package com.gawdl3y.android.tasktimer.context;
 
-import java.util.Map;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -15,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import com.actionbarsherlock.app.SherlockPreferenceActivity;
@@ -23,6 +20,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.layout.SettingsFragment;
+
+import java.util.Map;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
 	private TaskTimerApplication app;

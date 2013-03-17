@@ -1,17 +1,14 @@
 package com.gawdl3y.android.tasktimer.utilities;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-import com.gawdl3y.android.tasktimer.pojos.Group;
-import com.gawdl3y.android.tasktimer.pojos.Task;
-
-
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import com.gawdl3y.android.tasktimer.pojos.Group;
+import com.gawdl3y.android.tasktimer.pojos.Task;
+
+import java.util.ArrayList;
 
 /**
  * General utility methods for Task Timer

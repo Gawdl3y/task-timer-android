@@ -8,7 +8,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.adapters.TaskListAdapter;

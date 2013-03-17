@@ -1,16 +1,15 @@
 package com.gawdl3y.android.tasktimer.adapters;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.utilities.Log;
+
+import java.util.ArrayList;
 
 /**
  * The adapter to display a list of Tasks

@@ -1,39 +1,30 @@
 package com.gawdl3y.android.tasktimer.context;
 
-import java.util.ArrayList;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
+import android.os.*;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Toast;
-
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
-import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment;
+import com.gawdl3y.android.tasktimer.layout.*;
 import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener;
-import com.gawdl3y.android.tasktimer.layout.MainFragment;
-import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener;
-import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
-import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.utilities.Log;
 import com.gawdl3y.android.tasktimer.utilities.TaskTimerReceiver;
+
+import java.util.ArrayList;
 
 /**
  * The main activity of Task Timer
