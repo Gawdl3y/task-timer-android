@@ -381,9 +381,8 @@ public class Task implements Parcelable {
 	 * @return Whether or not the task should stop running
 	 */
 	public boolean shouldStop() {
-		if(!indefinite && ((!complete && getBooleanSetting("stop")) || (complete && !getBooleanSetting("overtime")))) return true;
-		return false;
-	}
+        return !indefinite && ((!complete && getBooleanSetting("stop")) || (complete && !getBooleanSetting("overtime")));
+    }
 	
 	/**
 	 * Toggles the running status of the Task
@@ -420,6 +419,7 @@ public class Task implements Parcelable {
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == null) return false;
+        if(obj.getClass() != getClass()) return false;
 		return id == ((Task) obj).getId();
 	}
 	
@@ -462,9 +462,9 @@ public class Task implements Parcelable {
 		description = in.readString();
 		time = (TimeAmount) in.readParcelable(TimeAmount.class.getClassLoader());
 		goal = (TimeAmount) in.readParcelable(TimeAmount.class.getClassLoader());
-		indefinite = in.readByte() == 1 ? true : false;
-		complete = in.readByte() == 1 ? true : false;
-		running = in.readByte() == 1 ? true : false;
+		indefinite = in.readByte() == 1;
+		complete = in.readByte() == 1;
+		running = in.readByte() == 1;
 		id = in.readInt();
 		position = in.readInt();
 		group = in.readInt();

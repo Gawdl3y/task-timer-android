@@ -118,7 +118,7 @@ public class TaskService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.v(TAG, "Received start command: " + intent.toString());
 		
-		if(intent != null && intent.getAction() != null) {
+		if(intent.getAction() != null) {
 			if(intent.getAction().equals(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED)) {
 				// A task's goal has been reached
 				Task task = Utilities.getGroupedTaskByID(intent.getExtras().getInt("task"), groups);
@@ -233,16 +233,6 @@ public class TaskService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		Log.v(TAG, "Destroyed");
-	}
-
-	/**
-	 * The service binder to use for binding the service to an activity
-	 * @author Schuyler Cebulskie
-	 */
-	public class ServiceBinder extends Binder {
-		TaskService getService() {
-			return TaskService.this;
-		}
 	}
 	
 	/**

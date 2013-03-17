@@ -285,7 +285,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 				// Update the view of the task
 				try {
 					fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
-					view = (TaskListItem) fragment.getView().findViewWithTag(Integer.valueOf(task.getPosition()));
+					view = (TaskListItem) fragment.getView().findViewWithTag(task.getPosition());
 					view.invalidate(task);
 					view.buildTimer();
 				} catch(Exception e) { }
@@ -313,7 +313,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 					
 					for(Task t : g.getTasks()) {
 						try {
-							view = (TaskListItem) fragment.getView().findViewWithTag(Integer.valueOf(t.getPosition()));
+							view = (TaskListItem) fragment.getView().findViewWithTag(t.getPosition());
 							view.invalidate(t);
 							view.buildTimer();
 						} catch(Exception e) {}
