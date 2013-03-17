@@ -145,38 +145,42 @@ public class TaskService extends Service {
 						task.setLastTick(-1);
 					}
 
-                    // Create the intent and back stack for the notification
-                    Intent notifIntent = new Intent(this, MainActivity.class);
-                    notifIntent.putExtra("task", task.getId());
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-                    stackBuilder.addParentStack(MainActivity.class).addNextIntent(notifIntent);
-
-                    // Create the notification
-                    Notification notification = new NotificationCompat.Builder(this)
-                            .setContentTitle(getString(R.string.notif_task_completed))
-                            .setContentText(String.format(getString(R.string.notif_task_completed_long), task.getName()))
-                            .setTicker(String.format(getString(R.string.notif_task_completed_long), task.getName()))
-                            .setSmallIcon(R.drawable.ic_stat_icon)
-                            .setLargeIcon(Utilities.drawableToBitmap(getResources().getDrawable(R.drawable.ic_launcher)))
-                            .setPriority(Notification.PRIORITY_HIGH)
-                            .setAutoCancel(true)
-                            .setWhen(System.currentTimeMillis())
-                            .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
-                            .build();
-
-                    // Show notification
-                    notifManager.notify(task.getId(), notification);
-
-                    // Play notification sound
-                    Ringtone notifSound = RingtoneManager.getRingtone(this, Uri.parse(app.preferences.getString("pref_notificationSound", "content://settings/system/notification_sound")));
-                    notifSound.play();
-
                     // Update the main notification
                     if(!task.isRunning()) runningTasks--;
                     notifManager.notify(Integer.MAX_VALUE, getMainNotification());
 
                     // Send task to activity
-					sendObjectToActivity(MSG_UPDATE_TASK, "task", task, group.getPosition());
+                    sendObjectToActivity(MSG_UPDATE_TASK, "task", task, group.getPosition());
+
+                    // Notify about the task reaching its goal
+                    if(app.preferences.getBoolean("pref_goalNotifications", Boolean.parseBoolean(app.resources.getString(R.string.pref_goalNotification_default)))) {
+                        // Create the intent and back stack for the notification
+                        Intent notifIntent = new Intent(this, MainActivity.class);
+                        notifIntent.putExtra("task", task.getId());
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                        stackBuilder.addParentStack(MainActivity.class).addNextIntent(notifIntent);
+
+                        // Create the notification
+                        Notification notification = new NotificationCompat.Builder(this)
+                                .setContentTitle(getString(R.string.notif_task_completed))
+                                .setContentText(String.format(getString(R.string.notif_task_completed_long), task.getName()))
+                                .setTicker(String.format(getString(R.string.notif_task_completed_long), task.getName()))
+                                .setSmallIcon(R.drawable.ic_stat_icon)
+                                .setLargeIcon(Utilities.drawableToBitmap(getResources().getDrawable(R.drawable.ic_launcher)))
+                                .setPriority(Notification.PRIORITY_HIGH)
+                                .setAutoCancel(true)
+                                .setWhen(System.currentTimeMillis())
+                                .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
+                                .build();
+
+                        // Show notification
+                        notifManager.notify(task.getId(), notification);
+
+                        // Play notification sound
+                        Ringtone notifSound = RingtoneManager.getRingtone(this, Uri.parse(app.preferences.getString("pref_notificationSound", "content://settings/system/notification_sound")));
+                        notifSound.play();
+                    }
+
 					if(app.debug) Log.d(TAG, "Task #" + task.getPosition() + " of group #" + group.getPosition() + " has reached its goal");
 				}
 			}
