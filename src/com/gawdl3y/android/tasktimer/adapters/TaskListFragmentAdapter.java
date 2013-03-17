@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 import com.gawdl3y.android.tasktimer.pojos.Group;
+import com.gawdl3y.android.tasktimer.utilities.Log;
 
 /**
  * The adapter to display a ViewPager of Groups
@@ -55,7 +55,7 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 	 */
 	@Override
 	public TaskListFragment getItem(int position) {
-		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Getting item #" + position);
+		Log.v(TAG, "Getting item #" + position);
 		return TaskListFragment.newInstance(groups.get(position));
 	}
 	
@@ -78,10 +78,10 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
 		int position = groups.indexOf(item.group);
 		
 		if(position >= 0) {
-			if(TaskTimerApplication.DEBUG) Log.v(TAG, "Item found at index " + position + ": " + item.group.toString());
+			Log.v(TAG, "Item found at index " + position + ": " + item.group.toString());
 			return position;
 		} else {
-			if(TaskTimerApplication.DEBUG) Log.v(TAG, "Item not found");
+			Log.v(TAG, "Item not found");
 			return POSITION_NONE;
 		}
 	}

@@ -3,15 +3,14 @@ package com.gawdl3y.android.tasktimer.adapters;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.gawdl3y.android.tasktimer.R;
-import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Task;
+import com.gawdl3y.android.tasktimer.utilities.Log;
 
 /**
  * The adapter to display a list of Tasks
@@ -51,7 +50,7 @@ public class TaskListAdapter extends BaseAdapter {
 	 */
 	@Override
 	public Object getItem(int position) {
-		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Getting item #" + position);
+		Log.v(TAG, "Getting item #" + position);
 		return tasks.get(position);
 	}
 
@@ -71,7 +70,7 @@ public class TaskListAdapter extends BaseAdapter {
 	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Getting view");
+		Log.v(TAG, "Getting view");
 		
 		TaskListItem v = new TaskListItem(context, (Task) getItem(position));
 		v.setTag(R.id.tag_task, position);

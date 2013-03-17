@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,6 +15,7 @@ import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.pojos.TaskTimerThread;
+import com.gawdl3y.android.tasktimer.utilities.Log;
 
 /**
  * The fragment for list items in a TaskListFragment
@@ -85,7 +85,7 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
 		
 		invalidate();
 		buildTimer();
-		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Inflated");
+		Log.v(TAG, "Inflated");
 	}
 	
 	/* (non-Javadoc)
@@ -95,7 +95,7 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
 	@Override
 	protected void onDetachedFromWindow() {
 		if(timer != null) timer.interrupt();
-		if(TaskTimerApplication.DEBUG) Log.v(TAG, "Detached");
+		Log.v(TAG, "Detached");
 	}
 	
 	/* (non-Javadoc)
@@ -168,12 +168,12 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
 			if(timer != null) timer.interrupt();
 			timer = new TaskTimerThread(task, 1, this);
 			timer.start();
-			if(TaskTimerApplication.DEBUG) Log.v(TAG, "Started timer");
+			Log.v(TAG, "Started timer");
 		} else {
 			// Stop the timer and clear the last tick
 			if(timer != null) timer.interrupt();
 			task.setLastTick(-1);
-			if(TaskTimerApplication.DEBUG) Log.v(TAG, "Stopped timer");
+			Log.v(TAG, "Stopped timer");
 		}
 	}
 	

@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import com.gawdl3y.android.tasktimer.utilities.Log;
 
 /**
  * The base application class for Task Timer
@@ -50,6 +50,6 @@ public class TaskTimerApplication extends Application {
 		THEME = themeStr.equals("2") ? R.style.Theme_Light_DarkActionBar : (themeStr.equals("1") ? R.style.Theme_Light : R.style.Theme_Dark);
 		theme = THEME;
 		
-		if(DEBUG) Log.v(TAG, "Created");
+		Log.v(TAG, "Created");
 	}
 }

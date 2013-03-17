@@ -2,20 +2,18 @@ package com.gawdl3y.android.tasktimer.layout;
 
 import java.util.ArrayList;
 
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.gawdl3y.android.tasktimer.R;
-import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.adapters.TaskListFragmentAdapter;
 import com.gawdl3y.android.tasktimer.pojos.Group;
+import com.gawdl3y.android.tasktimer.utilities.Log;
 
 /**
  * The main fragment for Task Timer; contains a TaskListFragmentAdapter
@@ -58,7 +56,7 @@ public class MainFragment extends SherlockFragment {
 		
         new SetAdapterTask().execute();
         
-        if(TaskTimerApplication.DEBUG) Log.v(TAG, "View created");
+        Log.v(TAG, "View created");
 		return view;
 	}
 	
@@ -84,14 +82,14 @@ public class MainFragment extends SherlockFragment {
 		@Override
 		protected void onPostExecute(Void result) {
 			pager.setAdapter(adapter);
-			if(TaskTimerApplication.DEBUG) Log.v(TAG, "Set ViewPager adapter");
+			Log.v(TAG, "Set ViewPager adapter");
 		}
 	}
 	
 	
 	/**
 	 * Creates a new instance of MainFragment
-	 * @param app The application
+     * @param groups The groups
 	 * @return A new instance of MainFragment
 	 */
 	public static final MainFragment newInstance(ArrayList<Group> groups) {

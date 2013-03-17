@@ -19,14 +19,13 @@ import android.os.Messenger;
 import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
+import com.gawdl3y.android.tasktimer.utilities.Log;
 import com.gawdl3y.android.tasktimer.utilities.TaskTimerReceiver;
 import com.gawdl3y.android.tasktimer.utilities.Utilities;
 
@@ -115,7 +114,7 @@ public class TaskService extends Service {
 		groupID = 43;
 		taskID = 22;
 		
-		if(app.debug) Log.v(TAG, "Started");
+		Log.v(TAG, "Started");
 	}
 	
 	/* (non-Javadoc)
@@ -124,7 +123,7 @@ public class TaskService extends Service {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		if(app.debug) Log.v(TAG, "Received start command: " + intent.toString());
+		Log.v(TAG, "Received start command: " + intent.toString());
 		
 		if(intent != null && intent.getAction() != null) {
 			if(intent.getAction().equals(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED)) {
@@ -181,7 +180,7 @@ public class TaskService extends Service {
                         notifSound.play();
                     }
 
-					if(app.debug) Log.d(TAG, "Task #" + task.getPosition() + " of group #" + group.getPosition() + " has reached its goal");
+					Log.d(TAG, "Task #" + task.getPosition() + " of group #" + group.getPosition() + " has reached its goal");
 				}
 			}
 		}
@@ -196,7 +195,7 @@ public class TaskService extends Service {
 	@Override
 	public IBinder onBind(Intent intent) {
 		connected = true;
-		if(app.debug) Log.v(TAG, "Bound");
+		Log.v(TAG, "Bound");
 		return messenger.getBinder();
 	}
 	
@@ -207,7 +206,7 @@ public class TaskService extends Service {
 	@Override
 	public boolean onUnbind(Intent intent) {
 		connected = false;
-		if(app.debug) Log.v(TAG, "Unbound");
+		Log.v(TAG, "Unbound");
 		return true;
 	}
 
@@ -230,7 +229,7 @@ public class TaskService extends Service {
 		}
 		
 		connected = true;
-		if(app.debug) Log.v(TAG, "Rebound");
+		Log.v(TAG, "Rebound");
 	}
 
 	/* (non-Javadoc)
@@ -240,7 +239,7 @@ public class TaskService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if(app.debug) Log.v(TAG, "Destroyed");
+		Log.v(TAG, "Destroyed");
 	}
 
 	/**
@@ -261,7 +260,7 @@ public class TaskService extends Service {
 		@Override
 		public void handleMessage(Message msg) {
 			activityMessenger = msg.replyTo;
-			if(app.debug) Log.v(TAG, "Received message: " + msg);
+			Log.v(TAG, "Received message: " + msg);
 			
 			Message response;
 			Bundle data = msg.getData(), contents = new Bundle();
@@ -339,7 +338,7 @@ public class TaskService extends Service {
 				if(!task.isRunning() && task.getLastTick() > 0) {
 					int time = (int) ((System.currentTimeMillis() - task.getLastTick()) / 1000);
 					task.incrementTime(time);
-					if(app.debug) Log.d(TAG, "Updated task #" + msg.arg2 + " of group #" + msg.arg1 + " time by " + time + " seconds");
+					Log.d(TAG, "Updated task #" + msg.arg2 + " of group #" + msg.arg1 + " time by " + time + " seconds");
 				}
 				
 				// Count the toggle as a tick
@@ -360,7 +359,7 @@ public class TaskService extends Service {
 					alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
 					
 					task.setAlert(alarmID);
-					if(app.debug) Log.v(TAG, "Set alarm for task #" + msg.arg2 + " of group #" + msg.arg1 + " in " + (alarmTime - System.currentTimeMillis()) / 1000 + " seconds with ID " + alarmID);
+					Log.v(TAG, "Set alarm for task #" + msg.arg2 + " of group #" + msg.arg1 + " in " + (alarmTime - System.currentTimeMillis()) / 1000 + " seconds with ID " + alarmID);
 				}
 
                 // Update the main notification
@@ -400,9 +399,9 @@ public class TaskService extends Service {
 		// Send the message
 		try {
 			activityMessenger.send(msg);
-			if(app.debug) Log.v(TAG, "Sent message: " + msg);
+			Log.v(TAG, "Sent message: " + msg);
 		} catch(android.os.RemoteException e) {
-			if(app.debug) Log.w(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
+			Log.w(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
 		}
 		
 		// Return the message to the global pool
