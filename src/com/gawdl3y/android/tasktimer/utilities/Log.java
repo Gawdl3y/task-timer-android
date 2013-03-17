@@ -9,7 +9,7 @@ import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 public final class Log {
     /**
      * Send a verbose log message (Only sent when TaskTimerApplication.DEBUG is true)
-     * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
+     * @param tag     Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
      * @param message The message you would like logged.
      * @see android.util.Log#v(String, String)
      */
@@ -19,7 +19,7 @@ public final class Log {
 
     /**
      * Send a debug log message (Only sent when TaskTimerApplication.DEBUG is true)
-     * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
+     * @param tag     Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
      * @param message The message you would like logged.
      * @see android.util.Log#d(String, String)
      */
@@ -29,7 +29,7 @@ public final class Log {
 
     /**
      * Send an information log message (Only sent when TaskTimerApplication.DEBUG is true)
-     * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
+     * @param tag     Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
      * @param message The message you would like logged.
      * @see android.util.Log#i(String, String)
      */
@@ -39,7 +39,7 @@ public final class Log {
 
     /**
      * Send a warning log message
-     * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
+     * @param tag     Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
      * @param message The message you would like logged.
      * @see android.util.Log#w(String, String)
      */
@@ -49,7 +49,7 @@ public final class Log {
 
     /**
      * Send an error log message
-     * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
+     * @param tag     Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
      * @param message The message you would like logged.
      * @see android.util.Log#e(String, String)
      */
@@ -59,7 +59,7 @@ public final class Log {
 
     /**
      * Send a What a Terrible Failure log message
-     * @param tag Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
+     * @param tag     Used to identify the source of a log message. It usually identifies the class or activity where the log call occurs.
      * @param message The message you would like logged.
      * @see android.util.Log#wtf(String, String)
      */
