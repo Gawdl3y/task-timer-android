@@ -223,7 +223,7 @@ public class TaskService extends Service {
 					int time = (int) ((System.currentTimeMillis() - t.getLastTick()) / 1000);
 					t.incrementTime(time);
 					t.setLastTick(System.currentTimeMillis());
-					if(app.debug) Log.d(TAG, "Updated task #" + t.getPosition() + " of group #" + g.getPosition() + " time by " + time + " seconds");
+					Log.d(TAG, "Updated task #" + t.getPosition() + " of group #" + g.getPosition() + " time by " + time + " seconds");
 				}
 			}
 		}
