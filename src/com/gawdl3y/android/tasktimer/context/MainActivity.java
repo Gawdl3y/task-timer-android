@@ -45,6 +45,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
      * The service connection
      */
     private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.v(TAG, "Service connected: " + name);
 
@@ -56,6 +57,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
             sendMessageToService(msg);
         }
 
+        @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.v(TAG, "Service disconnected: " + name);
 
@@ -95,6 +97,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
      * The activity is being started
      * @see android.support.v4.app.FragmentActivity#onStart()
      */
+    @Override
     protected void onStart() {
         super.onStart();
 
@@ -131,6 +134,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
      * The activity is being stopped
      * @see com.actionbarsherlock.app.SherlockFragmentActivity#onStop()
      */
+    @Override
     protected void onStop() {
         super.onStop();
 
@@ -197,7 +201,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 
     /* (non-Javadoc)
      * The add group dialog is finished
-     * @see com.gawdl3y.android.tasktimer.fragments.GroupEditDialogFragment.GroupEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.utilities.Group, int)
+     * @see com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.pojos.Group, int)
      */
     @Override
     public void onFinishEditDialog(Group group) {
@@ -211,7 +215,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 
     /* (non-Javadoc)
      * The add task dialog is finished
-     * @see com.gawdl3y.android.tasktimer.fragments.TaskEditDialogFragment.TaskEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.utilities.Task)
+     * @see com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.pojos.Task)
      */
     @Override
     public void onFinishEditDialog(Task task, int group) {
