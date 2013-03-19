@@ -33,13 +33,16 @@ import java.util.ArrayList;
 public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener {
     private static final String TAG = "MainActivity";
 
-    private ArrayList<Group> groups;
-    private boolean fetchedData = false;
+    // Messenger
+    private Messenger messenger = new Messenger(new IncomingHandler()), serviceMessenger;
 
+    // Stuff
     private TaskTimerApplication app;
     private MainFragment mainFragment;
 
-    private Messenger messenger = new Messenger(new IncomingHandler()), serviceMessenger;
+    // Data
+    private ArrayList<Group> groups;
+    private boolean fetchedData = false;
 
     /**
      * The service connection
