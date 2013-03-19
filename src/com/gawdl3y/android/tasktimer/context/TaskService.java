@@ -147,10 +147,10 @@ public class TaskService extends Service {
                     // Notify about the task reaching its goal
                     if(app.preferences.getBoolean("pref_goalNotifications", Boolean.parseBoolean(app.resources.getString(R.string.pref_goalNotification_default)))) {
                         // Create the intent and back stack for the notification
-                        Intent notifIntent = new Intent(this, MainActivity.class);
-                        notifIntent.putExtra("task", task.getId());
+                        Intent notificationIntent = new Intent(this, MainActivity.class);
+                        notificationIntent.putExtra("task", task.getId());
                         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-                        stackBuilder.addParentStack(MainActivity.class).addNextIntent(notifIntent);
+                        stackBuilder.addParentStack(MainActivity.class).addNextIntent(notificationIntent);
 
                         // Create the notification
                         Notification notification = new NotificationCompat.Builder(this)
@@ -162,7 +162,7 @@ public class TaskService extends Service {
                                 .setPriority(Notification.PRIORITY_HIGH)
                                 .setAutoCancel(true)
                                 .setWhen(System.currentTimeMillis())
-                                .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
+                                .setContentIntent(stackBuilder.getPendingIntent(task.getId(), PendingIntent.FLAG_UPDATE_CURRENT))
                                 .build();
 
                         // Show notification
@@ -338,7 +338,7 @@ public class TaskService extends Service {
                         alarmIntent.setAction(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED);
                         alarmIntent.putExtra("task", task.getId());
                         alarmIntent.putExtra("alarm", alarmID);
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(TaskService.this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(TaskService.this, task.getId(), alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
                         alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
 
                         task.setAlert(alarmID);
@@ -491,7 +491,7 @@ public class TaskService extends Service {
                 .setSmallIcon(R.drawable.ic_stat_icon)
                 .setLargeIcon(Utilities.drawableToBitmap(getResources().getDrawable(R.drawable.ic_launcher)))
                 .setWhen(System.currentTimeMillis())
-                .setContentIntent(stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
+                .setContentIntent(stackBuilder.getPendingIntent(Integer.MAX_VALUE, PendingIntent.FLAG_UPDATE_CURRENT))
                 .build();
     }
 }
