@@ -86,9 +86,9 @@ public class TaskService extends Service {
         tasks1.add(new Task("Really cool task", "", new TimeAmount(1, 59, 42), new TimeAmount(2, 0, 0), false, false, false, 4, 1, 42, null, -1, -1));
         tasks2.add(new Task("It's a task!", "", new TimeAmount(2.54), new TimeAmount(2.54321), false, false, false, 0, 1, 43, settings2, -1, -1));
 
-        Collections.sort(tasks1, Task.PositionComparator);
-        Collections.sort(tasks2, Task.PositionComparator);
-        Collections.sort(tasks3, Task.PositionComparator);
+        Collections.sort(tasks1, Task.POSITION_COMPARATOR);
+        Collections.sort(tasks2, Task.POSITION_COMPARATOR);
+        Collections.sort(tasks3, Task.POSITION_COMPARATOR);
 
         Utilities.reposition(tasks1);
         Utilities.reposition(tasks2);
@@ -102,7 +102,7 @@ public class TaskService extends Service {
         groups.add(new Group("Also a group", 43, 2, tasks2));
         groups.add(new Group("no way another group", 2, 1, tasks3));
 
-        Collections.sort(groups, Group.PositionComparator);
+        Collections.sort(groups, Group.POSITION_COMPARATOR);
 
         groupID = 43;
         taskID = 22;

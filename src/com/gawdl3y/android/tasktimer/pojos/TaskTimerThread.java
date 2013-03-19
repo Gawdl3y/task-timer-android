@@ -91,7 +91,7 @@ public class TaskTimerThread extends Thread {
     public static final Comparator<TaskTimerThread> TaskComparator = new Comparator<TaskTimerThread>() {
         @Override
         public int compare(TaskTimerThread lhs, TaskTimerThread rhs) {
-            return Task.IDComparator.compare(lhs.task, rhs.task);
+            return Task.ID_COMPARATOR.compare(lhs.task, rhs.task);
         }
     };
 }

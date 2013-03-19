@@ -499,7 +499,7 @@ public class Task implements Parcelable {
     /**
      * Comparator for comparing task names
      */
-    public static final Comparator<Task> NameComparator = new Comparator<Task>() {
+    public static final Comparator<Task> NAME_COMPARATOR = new Comparator<Task>() {
         @Override
         public int compare(Task t1, Task t2) {
             return t1.getName().compareTo(t2.getName());
@@ -509,7 +509,7 @@ public class Task implements Parcelable {
     /**
      * Comparator for comparing task positions
      */
-    public static final Comparator<Task> PositionComparator = new Comparator<Task>() {
+    public static final Comparator<Task> POSITION_COMPARATOR = new Comparator<Task>() {
         @Override
         public int compare(Task t1, Task t2) {
             if(t1.getPosition() < t2.getPosition()) return -1;
@@ -521,7 +521,7 @@ public class Task implements Parcelable {
     /**
      * Comparator for comparing task IDs
      */
-    public static final Comparator<Task> IDComparator = new Comparator<Task>() {
+    public static final Comparator<Task> ID_COMPARATOR = new Comparator<Task>() {
         @Override
         public int compare(Task t1, Task t2) {
             if(t1.getId() < t2.getId()) return -1;

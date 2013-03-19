@@ -196,7 +196,7 @@ public class Group implements Parcelable {
     /**
      * Comparator for comparing group names
      */
-    public static final Comparator<Group> NameComparator = new Comparator<Group>() {
+    public static final Comparator<Group> NAME_COMPARATOR = new Comparator<Group>() {
         @Override
         public int compare(Group g1, Group g2) {
             return g1.getName().compareTo(g2.getName());
@@ -206,7 +206,7 @@ public class Group implements Parcelable {
     /**
      * Comparator for comparing group positions
      */
-    public static final Comparator<Group> PositionComparator = new Comparator<Group>() {
+    public static final Comparator<Group> POSITION_COMPARATOR = new Comparator<Group>() {
         @Override
         public int compare(Group g1, Group g2) {
             if(g1.getPosition() < g2.getPosition()) return -1;
@@ -218,7 +218,7 @@ public class Group implements Parcelable {
     /**
      * Comparator for comparing group IDs
      */
-    public static final Comparator<Group> IDComparator = new Comparator<Group>() {
+    public static final Comparator<Group> ID_COMPARATOR = new Comparator<Group>() {
         @Override
         public int compare(Group g1, Group g2) {
             if(g1.getId() < g2.getId()) return -1;
