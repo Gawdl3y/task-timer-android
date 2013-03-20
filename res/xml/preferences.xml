@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- General settings -->
     <PreferenceCategory
         android:key="pref_generalSettings"
         android:title="@string/pref_generalSettings"
@@ -22,7 +23,8 @@
 	        android:defaultValue="@string/pref_timeFormat_default"
 	        android:order="2" />
     </PreferenceCategory>
-    
+
+    <!-- Task settings -->
     <PreferenceCategory
         android:key="pref_taskSettings"
         android:title="@string/pref_taskSettings"
@@ -58,7 +60,8 @@
             android:defaultValue="@string/pref_multipleRunning_default"
             android:order="4" />
     </PreferenceCategory>
-    
+
+    <!-- Notification settings -->
     <PreferenceCategory
         android:key="pref_notifSettings"
         android:title="@string/pref_notifSettings"
@@ -76,6 +79,32 @@
             android:title="@string/pref_notificationSound"
             android:ringtoneType="notification"
             android:defaultValue="content://settings/system/notification_sound"
-            android:order="2"/>
+            android:order="2" />
+    </PreferenceCategory>
+
+    <!-- About -->
+    <PreferenceCategory
+        android:key="pref_about"
+        android:title="@string/pref_about"
+        android:order="4">
+
+        <com.gawdl3y.android.tasktimer.utilities.DialogPreference
+            android:key="pref_aboutApp"
+            android:title="@string/pref_aboutApp"
+            android:dialogTitle="@string/pref_aboutApp"
+            android:dialogLayout="@layout/about"
+            android:positiveButtonText=""
+            android:negativeButtonText=""
+            android:order="1" />
+        <Preference
+            android:key="pref_playStore"
+            android:title="@string/pref_playStore"
+            android:summary="@string/pref_playStore_summary"
+            android:order="2" />
+        <!--<Preference
+            android:key="pref_allApps"
+            android:title="@string/pref_allApps"
+            android:summary="@string/pref_allApps_summary"
+            android:order="3" />-->
     </PreferenceCategory>
 </PreferenceScreen>
