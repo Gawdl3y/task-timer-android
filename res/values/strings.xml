@@ -25,6 +25,7 @@
     <string name="pref_generalSettings">General Settings</string>
     <string name="pref_taskSettings">Task Settings</string>
     <string name="pref_notifSettings">Notification Settings</string>
+    <string name="pref_about">About</string>
     
     <string name="pref_theme">Theme</string>
     <string name="pref_theme_default">2</string>
@@ -78,8 +79,6 @@
     <string name="pref_goalNotification_summary_off">A notification will not be made when a task reaches its goal</string>
 
     <string name="pref_notificationSound">Notification sound</string>
-
-    <string name="pref_about">About</string>
 
     <string name="pref_aboutApp">About Task Timer</string>
 
