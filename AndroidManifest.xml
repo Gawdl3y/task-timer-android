@@ -40,7 +40,7 @@
         </service>
         
         <!-- The receiver -->
-        <receiver android:name=".utilities.TaskTimerReceiver">
+        <receiver android:name=".util.TaskTimerReceiver">
             <action android:name="start_app" />
         </receiver>
         

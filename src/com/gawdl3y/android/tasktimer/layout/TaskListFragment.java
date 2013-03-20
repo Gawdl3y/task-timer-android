@@ -12,7 +12,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.adapters.TaskListAdapter;
 import com.gawdl3y.android.tasktimer.pojos.Group;
-import com.gawdl3y.android.tasktimer.utilities.Log;
+import com.gawdl3y.android.tasktimer.util.Log;
 
 /**
  * The fragment for displaying a list of Tasks

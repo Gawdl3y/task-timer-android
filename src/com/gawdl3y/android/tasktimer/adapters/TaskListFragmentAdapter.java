@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 import com.gawdl3y.android.tasktimer.pojos.Group;
-import com.gawdl3y.android.tasktimer.utilities.Log;
+import com.gawdl3y.android.tasktimer.util.Log;
 
 import java.util.ArrayList;
 

@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
-import com.gawdl3y.android.tasktimer.utilities.Log;
+import com.gawdl3y.android.tasktimer.util.Log;
 
 /**
  * The base application class for Task Timer

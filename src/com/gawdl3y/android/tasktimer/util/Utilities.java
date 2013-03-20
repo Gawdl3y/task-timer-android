@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer.utilities;
+package com.gawdl3y.android.tasktimer.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;

@@ -21,8 +21,8 @@ import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDia
 import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
-import com.gawdl3y.android.tasktimer.utilities.Log;
-import com.gawdl3y.android.tasktimer.utilities.TaskTimerReceiver;
+import com.gawdl3y.android.tasktimer.util.Log;
+import com.gawdl3y.android.tasktimer.util.TaskTimerReceiver;
 
 import java.util.ArrayList;
 

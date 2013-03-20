@@ -10,7 +10,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.adapters.TaskListFragmentAdapter;
 import com.gawdl3y.android.tasktimer.pojos.Group;
-import com.gawdl3y.android.tasktimer.utilities.Log;
+import com.gawdl3y.android.tasktimer.util.Log;
 
 import java.util.ArrayList;
 

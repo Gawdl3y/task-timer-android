@@ -14,7 +14,7 @@ import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.pojos.TaskTimerThread;
-import com.gawdl3y.android.tasktimer.utilities.Log;
+import com.gawdl3y.android.tasktimer.util.Log;
 
 /**
  * The fragment for list items in a TaskListFragment

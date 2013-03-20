@@ -88,7 +88,7 @@
         android:title="@string/pref_about"
         android:order="4">
 
-        <com.gawdl3y.android.tasktimer.utilities.DialogPreference
+        <com.gawdl3y.android.tasktimer.util.DialogPreference
             android:key="pref_aboutApp"
             android:title="@string/pref_aboutApp"
             android:dialogTitle="@string/pref_aboutApp"

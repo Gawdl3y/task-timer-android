@@ -7,7 +7,7 @@ import android.widget.BaseAdapter;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Task;
-import com.gawdl3y.android.tasktimer.utilities.Log;
+import com.gawdl3y.android.tasktimer.util.Log;
 
 import java.util.ArrayList;
 
