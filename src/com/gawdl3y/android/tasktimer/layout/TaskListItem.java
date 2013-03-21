@@ -6,10 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Task;
@@ -20,12 +17,13 @@ import com.gawdl3y.android.tasktimer.util.Log;
  * The fragment for list items in a TaskListFragment
  * @author Schuyler Cebulskie
  */
-public class TaskListItem extends LinearLayout implements TaskTimerThread.TickListener {
+public class TaskListItem extends LinearLayout implements Checkable, TaskTimerThread.TickListener {
     private static final String TAG = "TaskListItem";
 
     // Data
     private Task task;
     private TaskTimerThread timer;
+    private boolean checked;
 
     // Views
     private TextView name, time, goal;
@@ -53,7 +51,7 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
      * Constructor
      * @param context The context that the view is in
      * @param attrs   The AttributeSet
-     * @param task    THe task to display
+     * @param task    The task to display
      */
     public TaskListItem(Context context, AttributeSet attrs, Task task) {
         super(context, attrs);
@@ -81,6 +79,8 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
         // Set tags so we can figure out what task is being acted upon later
         setTag(task.getPosition());
         toggle.setTag(task.getPosition());
+
+        // Add long-press listener
 
         invalidate();
         buildTimer();
@@ -176,6 +176,35 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
         }
     }
 
+    /**
+     * Sets whether or not the item is checked
+     * @param checked Whether or not the item is checked
+     * @see android.widget.Checkable#setChecked(boolean)
+     */
+    @Override
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    /**
+     * Gets whether or not the item is checked
+     * @return Whether or not the item is checked
+     * @see android.widget.Checkable#isChecked()
+     */
+    @Override
+    public boolean isChecked() {
+        return checked;
+    }
+
+    /**
+     * Toggles the checked state of the item
+     * @see android.widget.Checkable#toggle()
+     */
+    @Override
+    public void toggle() {
+        checked = !checked;
+    }
+
     /* (non-Javadoc)
      * The timer has ticked
      * @see com.gawdl3y.android.tasktimer.pojos.TaskTimerThread.TickListener#onTick()
@@ -185,6 +214,7 @@ public class TaskListItem extends LinearLayout implements TaskTimerThread.TickLi
         task.setLastTick(System.currentTimeMillis());
         postInvalidate();
     }
+
 
     /**
      * Gets the task
