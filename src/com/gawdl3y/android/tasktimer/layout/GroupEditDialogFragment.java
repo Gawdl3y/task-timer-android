@@ -151,7 +151,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
      * @param group    The already-existing group, if any
      * @return A new instance of the fragment
      */
-    public static final GroupEditDialogFragment newInstance(ArrayList<Group> groups, int position, Group group) {
+    public static GroupEditDialogFragment newInstance(ArrayList<Group> groups, int position, Group group) {
         // Create the arguments for the fragment
         Bundle args = new Bundle();
         args.putParcelableArrayList("groups", groups);

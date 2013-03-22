@@ -179,7 +179,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
      * @param task   The already-existing task, if any
      * @return A new instance of the fragment
      */
-    public static final TaskEditDialogFragment newInstance(ArrayList<Group> groups, int group, Task task) {
+    public static TaskEditDialogFragment newInstance(ArrayList<Group> groups, int group, Task task) {
         // Create the arguments for the fragment
         Bundle args = new Bundle();
         args.putParcelableArrayList("groups", groups);

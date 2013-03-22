@@ -124,7 +124,7 @@ public class TaskListFragment extends SherlockListFragment {
      * @param group The group the fragment is for
      * @return A new instance of the fragment
      */
-    public static final TaskListFragment newInstance(Group group) {
+    public static TaskListFragment newInstance(Group group) {
         TaskListFragment fragment = new TaskListFragment();
         Bundle args = new Bundle();
         args.putParcelable("group", group);

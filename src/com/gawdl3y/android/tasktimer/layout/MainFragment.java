@@ -91,7 +91,7 @@ public class MainFragment extends SherlockFragment {
      * @param groups The groups
      * @return A new instance of MainFragment
      */
-    public static final MainFragment newInstance(ArrayList<Group> groups) {
+    public static MainFragment newInstance(ArrayList<Group> groups) {
         // Create the arguments for the fragment
         Bundle args = new Bundle();
         args.putParcelableArrayList("groups", groups);
