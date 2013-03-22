@@ -21,10 +21,11 @@ import java.util.ArrayList;
 public class MainFragment extends SherlockFragment {
     private static final String TAG = "MainFragment";
 
+    // Data
     private ArrayList<Group> groups;
 
-    public TaskListFragmentAdapter adapter;
-    public ViewPager pager;
+    // Stuff
+    private ViewPager pager;
 
     /* (non-Javadoc)
      * The fragment is being created
@@ -49,10 +50,11 @@ public class MainFragment extends SherlockFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Create the view and pager
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        adapter = new TaskListFragmentAdapter(getFragmentManager(), groups);
         pager = (ViewPager) view.findViewById(R.id.pager);
 
+        // Set the adapter of the pager
         new SetAdapterTask().execute();
 
         Log.v(TAG, "View created");
@@ -80,9 +82,26 @@ public class MainFragment extends SherlockFragment {
 
         @Override
         protected void onPostExecute(Void result) {
-            pager.setAdapter(adapter);
+            pager.setAdapter(new TaskListFragmentAdapter(getFragmentManager(), groups));
             Log.v(TAG, "Set ViewPager adapter");
         }
+    }
+
+
+    /**
+     * Gets the ViewPager
+     * @return The ViewPager
+     */
+    public ViewPager getPager() {
+        return pager;
+    }
+
+    /**
+     * Gets the adapter of the ViewPager
+     * @return The adapter of the ViewPager
+     */
+    public TaskListFragmentAdapter getAdapter() {
+        return (TaskListFragmentAdapter) pager.getAdapter();
     }
 
 

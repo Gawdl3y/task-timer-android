@@ -182,7 +182,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 
         switch(item.getItemId()) {
             case R.id.menu_new_task:
-                TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(groups, mainFragment.pager.getCurrentItem(), null);
+                TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(groups, mainFragment.getPager().getCurrentItem(), null);
                 taskEditDialog.show(getSupportFragmentManager(), "fragment_task_edit");
                 return true;
             case R.id.menu_new_group:
@@ -285,8 +285,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
                     }
 
                     // Update the main adapter's groups and scroll to the group that the task was added to
-                    mainFragment.adapter.groups = groups;
-                    mainFragment.pager.setCurrentItem(msg.arg1, true);
+                    mainFragment.getAdapter().setGroups(groups);
+                    mainFragment.getPager().setCurrentItem(msg.arg1, true);
                     break;
                 case TaskService.MSG_UPDATE_TASK:
                     // Set the task
@@ -306,7 +306,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
                 case TaskService.MSG_GET_GROUPS:
                     groups = data.getParcelableArrayList("groups");
                     buildList();
-                    if(msg.arg1 != -1) mainFragment.pager.setCurrentItem(msg.arg1, true);
+                    if(msg.arg1 != -1) mainFragment.getPager().setCurrentItem(msg.arg1, true);
                     break;
 
                 case TaskService.MSG_GET_ALL:
@@ -347,9 +347,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
      * Builds the list of groups and tasks
      */
     private void buildList() {
-        mainFragment.adapter.groups = groups;
-        mainFragment.adapter.notifyDataSetChanged();
-        mainFragment.pager.invalidate();
+        mainFragment.getAdapter().setGroups(groups);
+        mainFragment.getAdapter().notifyDataSetChanged();
+        mainFragment.getPager().invalidate();
     }
 
     /**

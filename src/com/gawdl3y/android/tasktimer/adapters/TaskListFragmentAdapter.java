@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
     private static final String TAG = "TaskListFragmentAdapter";
 
-    public ArrayList<Group> groups;
+    private ArrayList<Group> groups;
 
     /**
      * Fill constructor
@@ -104,5 +104,21 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
         Bundle bundle = (Bundle) state;
         super.restoreState(bundle.getParcelable("super"), loader);
         groups = bundle.getParcelableArrayList("groups");
+    }
+
+    /**
+     * Gets the groups
+     * @return The groups
+     */
+    public ArrayList<Group> getGroups() {
+        return groups;
+    }
+
+    /**
+     * Sets the groups
+     * @param groups The groups
+     */
+    public void setGroups(ArrayList<Group> groups) {
+        this.groups = groups;
     }
 }
