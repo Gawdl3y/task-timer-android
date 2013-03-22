@@ -16,6 +16,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
+import com.gawdl3y.android.tasktimer.adapters.TaskListAdapter;
 import com.gawdl3y.android.tasktimer.layout.*;
 import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener;
 import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener;
@@ -280,7 +281,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
                     fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
                     if(fragment != null) {
                         fragment.group = group;
-                        fragment.adapter.notifyDataSetChanged();
+                        ((TaskListAdapter) fragment.getListAdapter()).notifyDataSetChanged();
                     }
 
                     // Update the main adapter's groups and scroll to the group that the task was added to
