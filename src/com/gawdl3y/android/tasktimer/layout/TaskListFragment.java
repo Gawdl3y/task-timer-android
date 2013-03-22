@@ -21,7 +21,6 @@ import com.gawdl3y.android.tasktimer.util.Log;
 public class TaskListFragment extends SherlockListFragment {
     private static final String TAG = "TaskListFragment";
 
-    public TaskListAdapter adapter;
     public Group group;
 
     /* (non-Javadoc)
@@ -54,8 +53,7 @@ public class TaskListFragment extends SherlockListFragment {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
         view.setTag(group.getPosition());
 
-        adapter = new TaskListAdapter(inflater.getContext(), group.getTasks(), group.getPosition());
-        setListAdapter(adapter);
+        setListAdapter(new TaskListAdapter(inflater.getContext(), group.getTasks(), group.getPosition()));
 
         Log.v(TAG, "View created");
         return view;
@@ -70,8 +68,8 @@ public class TaskListFragment extends SherlockListFragment {
 
         getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                Toast.makeText(getActivity(), "Long press", Toast.LENGTH_SHORT).show();
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                onListItemLongClick(getListView(), view, position, id);
                 return true;
             }
         });
@@ -82,9 +80,32 @@ public class TaskListFragment extends SherlockListFragment {
      * @see android.support.v4.app.ListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
      */
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        // TODO Do stuff on click
-        Toast.makeText(getActivity(), getListView().getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+    public void onListItemClick(ListView list, View view, int position, long id) {
+        // Toggle the item if we've already toggled others
+        if(list.getCheckedItemCount() > 0) {
+            TaskListItem item = (TaskListItem) view;
+            item.toggle();
+            list.setItemChecked(position, item.isChecked());
+            Toast.makeText(getActivity(), Integer.toString(list.getCheckedItemCount()), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), getListView().getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+        }
+
+        Log.d(TAG, Integer.toString(list.getCheckedItemCount()));
+    }
+
+    /**
+     * A list item was long-clicked
+     * @param list     The ListView that the item is in
+     * @param view     The view of the item
+     * @param position The position of the item
+     * @param id       The ID of the item
+     */
+    public void onListItemLongClick(ListView list, View view, int position, long id) {
+        TaskListItem item = (TaskListItem) view;
+        item.toggle();
+        list.setItemChecked(position, item.isChecked());
+        Toast.makeText(getActivity(), Integer.toString(getListView().getCheckedItemCount()), Toast.LENGTH_SHORT).show();
     }
 
     /* (non-Javadoc)
