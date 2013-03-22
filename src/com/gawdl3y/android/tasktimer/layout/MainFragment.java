@@ -27,8 +27,9 @@ public class MainFragment extends SherlockFragment {
     // Stuff
     private ViewPager pager;
 
-    /* (non-Javadoc)
+    /**
      * The fragment is being created
+     * @param savedInstanceState The saved instance state
      * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
      */
     @Override
@@ -44,8 +45,11 @@ public class MainFragment extends SherlockFragment {
         }
     }
 
-    /* (non-Javadoc)
+    /**
      * The view for the fragment is being created
+     * @param inflater           The LayoutInflater to use
+     * @param container          The container
+     * @param savedInstanceState The saved instance state
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
     @Override
@@ -61,8 +65,9 @@ public class MainFragment extends SherlockFragment {
         return view;
     }
 
-    /* (non-Javadoc)
+    /**
      * The instance of the fragment is being saved
+     * @param savedInstanceState The saved instance state
      * @see android.support.v4.app.Fragment#onSaveInstanceState(android.os.Bundle)
      */
     @Override
@@ -75,11 +80,20 @@ public class MainFragment extends SherlockFragment {
      * @author Schuyler Cebulskie
      */
     private class SetAdapterTask extends AsyncTask<Void, Void, Void> {
+        /**
+         * Does absolutely nothing
+         * @param params Useless
+         * @return Nothing
+         */
         @Override
         protected Void doInBackground(Void... params) {
             return null;
         }
 
+        /**
+         * Sets the adapter of the ViewPager
+         * @param result Nothing
+         */
         @Override
         protected void onPostExecute(Void result) {
             pager.setAdapter(new TaskListFragmentAdapter(getFragmentManager(), groups));
