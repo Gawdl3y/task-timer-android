@@ -41,7 +41,9 @@
         
         <!-- The receiver -->
         <receiver android:name=".util.TaskTimerReceiver">
-            <action android:name="start_app" />
+            <intent-filter>
+                <action android:name="start_app" />
+            </intent-filter>
         </receiver>
         
     </application>
