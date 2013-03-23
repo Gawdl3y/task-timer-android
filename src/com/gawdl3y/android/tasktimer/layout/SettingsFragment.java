@@ -51,7 +51,6 @@ public class SettingsFragment extends PreferenceFragment {
      * @return a new instance of SettingsFragment
      */
     public static SettingsFragment newInstance() {
-        SettingsFragment fragment = new SettingsFragment();
-        return fragment;
+        return new SettingsFragment();
     }
 }
