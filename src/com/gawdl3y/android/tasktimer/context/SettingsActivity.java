@@ -83,26 +83,30 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                 // Make sure the new theme is different
                 if(themeIdent != app.theme) {
                     app.theme = themeIdent;
+                    TaskTimerApplication.THEME = themeIdent;
 
                     // Create a dialog to ask about restarting now or later
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
                     dialogBuilder.setTitle(R.string.dialog_restart_title).setMessage(R.string.dialog_restart_message);
+
+                    // Restart Now
                     dialogBuilder.setPositiveButton(R.string.dialog_restart_button_now, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-                            // Restart Now
                             dialog.dismiss();
+
+                            // Tell the main activity to restart
                             Intent intent = new Intent(getBaseContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             intent.putExtra("restart", true);
                             startActivity(intent);
-                            finish();
                         }
                     });
+
+                    // Restart Later
                     dialogBuilder.setNegativeButton(R.string.dialog_restart_button_later, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-                            // Restart Later
                             dialog.dismiss();
                         }
                     });
@@ -112,7 +116,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
                     dialog.show();
                 }
             }
-            // Ringtone preference changed
+        // Ringtone preference changed
         } else if(pref instanceof RingtonePreference) {
             // Change the summary to the name of the ringtone
             Uri ringtoneUri = Uri.parse(PreferenceManager.getDefaultSharedPreferences(this).getString(key, "content://settings/system/notification_sound"));
