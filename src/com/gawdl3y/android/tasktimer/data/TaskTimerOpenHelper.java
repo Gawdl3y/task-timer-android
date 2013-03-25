@@ -28,8 +28,8 @@ public class TaskTimerOpenHelper extends SQLiteOpenHelper {
             + TASK_ID + " TEXT, "
             + TASK_NAME + " TEXT, "
             + TASK_DESCRIPTION + " TEXT, "
-            + TASK_TIME + " BLOB, "
-            + TASK_GOAL + " BLOB, "
+            + TASK_TIME + " TEXT, "
+            + TASK_GOAL + " TEXT, "
             + TASK_INDEFINITE + " INTEGER, "
             + TASK_COMPLETE + " INTEGER, "
             + TASK_SETTINGS + " TEXT, "
@@ -43,7 +43,7 @@ public class TaskTimerOpenHelper extends SQLiteOpenHelper {
     private static final String GROUPS_TABLE_NAME = "categories";
     private static final String GROUPS_TABLE_CREATE = "CREATE TABLE "
             + GROUPS_TABLE_NAME + " ("
-            + GROUP_ID + " TEXT, "
+            + GROUP_ID + " INTEGER, "
             + GROUP_NAME + " TEXT);";
 
     TaskTimerOpenHelper(Context context) {
