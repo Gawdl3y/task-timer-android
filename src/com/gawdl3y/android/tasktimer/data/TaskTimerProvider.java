@@ -7,15 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import com.gawdl3y.android.tasktimer.pojos.Group;
-import com.gawdl3y.android.tasktimer.pojos.Task;
-import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
 import com.gawdl3y.android.tasktimer.util.Log;
-import com.gawdl3y.android.tasktimer.util.Utilities;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 
 /**
  * The ContentProvider for Task Timer
@@ -58,7 +50,19 @@ public class TaskTimerProvider extends ContentProvider {
      */
     @Override
     public String getType(Uri uri) {
-        return null;
+        int match = uriMatcher.match(uri);
+        switch(match) {
+            case TASKS:
+                return "vnd.android.cursor.dir/tasks";
+            case TASKS_ID:
+                return "vnd.android.cursor.item/tasks";
+            case GROUPS:
+                return "vnd.android.cursor.dir/groups";
+            case GROUPS_ID:
+                return "vnd.android.cursor.item/groups";
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
+        }
     }
 
     /**
