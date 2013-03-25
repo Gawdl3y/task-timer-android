@@ -1,7 +1,9 @@
 package com.gawdl3y.android.tasktimer.pojos;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.BaseColumns;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -22,6 +24,10 @@ public class Group implements Parcelable {
         this("EMPTY NAME", -1, -1, null);
     }
 
+    /**
+     * Name constructor
+     * @param name The name of the Group
+     */
     public Group(String name) {
         this(name, -1, -1, null);
     }
@@ -226,4 +232,25 @@ public class Group implements Parcelable {
             return 0;
         }
     };
+
+    /**
+     * Database columns for Groups
+     * @author Schuyler Cebulskie
+     */
+    public static final class Columns implements BaseColumns {
+        /**
+         * The content:// URL for the table
+         */
+        public static final Uri CONTENT_URI = Uri.parse("content://com.gawdl3y.android.tasktimer/groups");
+
+        /**
+         * The name of the Group (Type: STRING)
+         */
+        public static final String NAME = "name";
+
+        /**
+         * The position of the Group (Type: INTEGER)
+         */
+        public static final String POSITION = "position";
+    }
 }

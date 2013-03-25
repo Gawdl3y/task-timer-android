@@ -1,7 +1,9 @@
 package com.gawdl3y.android.tasktimer.pojos;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.BaseColumns;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,15 +23,6 @@ public class Task implements Parcelable {
     // Non-data utility properties
     private int alert;
     private long lastTick;
-
-    // Static properties
-    public static final HashMap<String, Object> DEFAULT_SETTINGS = new HashMap<String, Object>();
-
-    // Static constructor
-    static {
-        DEFAULT_SETTINGS.put("stop", true);
-        DEFAULT_SETTINGS.put("overtime", false);
-    }
 
     /**
      * Default constructor
@@ -529,4 +522,83 @@ public class Task implements Parcelable {
             return 0;
         }
     };
+
+    /**
+     * The default settings for new Tasks
+     */
+    public static final HashMap<String, Object> DEFAULT_SETTINGS = new HashMap<String, Object>();
+
+    /**
+     * Whether or not the Task should stop at its goal (Type: BOOLEAN)
+     */
+    public static final String SETTING_STOP_AT_GOAL = "stop";
+
+    /**
+     * Whether or not the Task can go over its goal (Type: BOOLEAN)
+     */
+    public static final String SETTING_OVERTIME = "overtime";
+
+    /**
+     * Database columns for Tasks
+     * @author Schuyler Cebulskie
+     */
+    public static class Columns implements BaseColumns {
+        /**
+         * The content:// URL for the table
+         */
+        public static final Uri CONTENT_URI = Uri.parse("content://com.gawdl3y.android.tasktimer/tasks");
+
+        /**
+         * Name of the Task (Type: STRING)
+         */
+        public static final String NAME = "name";
+
+        /**
+         * Description for the Task (Type: STRING)
+         */
+        public static final String DESCRIPTION = "description";
+
+        /**
+         * Current time of the Task (JSON) (Type: STRING)
+         */
+        public static final String TIME = "time";
+
+        /**
+         * Goal time of the Task (JSON) (Type: STRING)
+         */
+        public static final String GOAL = "goal";
+
+        /**
+         * Whether or not the Task's goal is indefinite (Type: BOOLEAN)
+         */
+        public static final String INDEFINITE = "indefinite";
+
+        /**
+         * Whether or not the Task is complete (Type: BOOLEAN)
+         */
+        public static final String COMPLETE = "complete";
+
+        /**
+         * The settings for the Task (JSON) (Type: STRING)
+         */
+        public static final String SETTINGS = "settings";
+
+        /**
+         * The position of the Task (Type: INTEGER)
+         */
+        public static final String POSITION = "position";
+
+        /**
+         * The ID of the Group that the Task is in (Type: INTEGER)
+         */
+        public static final String GROUP = "group";
+    }
+
+    /**
+     * Static constructor
+     */
+    static {
+        DEFAULT_SETTINGS.put(SETTING_STOP_AT_GOAL, true);
+        DEFAULT_SETTINGS.put(SETTING_OVERTIME, false);
+    }
 }
