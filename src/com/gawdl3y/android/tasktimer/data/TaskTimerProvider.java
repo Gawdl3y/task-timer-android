@@ -12,6 +12,7 @@ import com.gawdl3y.android.tasktimer.util.Log;
 /**
  * The ContentProvider for Task Timer
  * <p>Handles Task/Group data
+ * @author Schuyler Cebulskie
  */
 public class TaskTimerProvider extends ContentProvider {
     public static final String TAG = "TaskTimerProvider";
@@ -35,6 +36,7 @@ public class TaskTimerProvider extends ContentProvider {
     /**
      * The content provider has been created
      * @return Good or not ;)
+     * @see android.content.ContentProvider#onCreate()
      */
     @Override
     public boolean onCreate() {
@@ -53,13 +55,13 @@ public class TaskTimerProvider extends ContentProvider {
         int match = uriMatcher.match(uri);
         switch(match) {
             case TASKS:
-                return "vnd.android.cursor.dir/tasks";
+                return "vnd.android.cursor.dir/vnd.com.gawdl3y.android.tasktimer.provider.tasks";
             case TASKS_ID:
-                return "vnd.android.cursor.item/tasks";
+                return "vnd.android.cursor.item/vnd.com.gawdl3y.android.tasktimer.provider.tasks";
             case GROUPS:
-                return "vnd.android.cursor.dir/groups";
+                return "vnd.android.cursor.dir/vnd.com.gawdl3y.android.tasktimer.provider.groups";
             case GROUPS_ID:
-                return "vnd.android.cursor.item/groups";
+                return "vnd.android.cursor.item/vnd.com.gawdl3y.android.tasktimer.provider.groups";
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -98,7 +100,7 @@ public class TaskTimerProvider extends ContentProvider {
                 qb.appendWhere(uri.getPathSegments().get(1));
                 break;
             default:
-                throw new IllegalArgumentException("Unkown URI " + uri);
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         SQLiteDatabase db = openHelper.getReadableDatabase();
