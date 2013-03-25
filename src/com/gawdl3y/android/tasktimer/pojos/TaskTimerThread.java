@@ -56,7 +56,7 @@ public class TaskTimerThread extends Thread {
                     int difference = (int) Math.ceil(task.getGoal().toDouble() * 3600 - task.getTime().toDouble() * 3600);
 
                     // Delay and increment time
-                    if(difference >= delay || difference < 1 || !task.getBooleanSetting("stop")) {
+                    if(difference >= delay || difference < 1 || !task.getBooleanSetting(Task.Settings.STOP_AT_GOAL)) {
                         Thread.sleep(delay * 1000);
                         task.incrementTime(delay);
                     } else {

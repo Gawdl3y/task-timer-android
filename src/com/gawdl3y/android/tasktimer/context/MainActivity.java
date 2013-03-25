@@ -241,7 +241,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
         Message msg;
 
         if(view.getId() == R.id.task_toggle) {
-            if(!task.isComplete() || task.getBooleanSetting("overtime")) {
+            if(!task.isComplete() || task.getBooleanSetting(Task.Settings.OVERTIME)) {
                 task.toggle();
                 item.invalidate(task);
                 item.buildTimer();

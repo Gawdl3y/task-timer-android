@@ -132,7 +132,7 @@ public class TaskService extends Service {
                     task.setComplete(true);
 
                     // Stop the task if necessary
-                    if(task.getBooleanSetting("stop") || !task.getBooleanSetting("overtime")) {
+                    if(task.getBooleanSetting(Task.Settings.STOP_AT_GOAL) || !task.getBooleanSetting(Task.Settings.OVERTIME)) {
                         task.setRunning(false);
                         task.setLastTick(-1);
                     }
