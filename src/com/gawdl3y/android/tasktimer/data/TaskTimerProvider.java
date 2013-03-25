@@ -63,6 +63,12 @@ public class TaskTimerProvider extends ContentProvider {
 
     /**
      * Perform a query
+     * @param uri The URI of the query
+     * @param projection The list of columns to put into the cursor, or all columns if null
+     * @param selection Selection to restrict to, or all rows if null
+     * @param selectionArgs Values to replace placeholders with in selection
+     * @param sortOrder How the rows should be sorted
+     * @return Cursor for the data
      * @see android.content.ContentProvider#query(android.net.Uri, String[], String, String[], String)
      */
     @Override
@@ -114,7 +120,7 @@ public class TaskTimerProvider extends ContentProvider {
      * Delete row(s)
      * @param uri The URI for the query
      * @param selection The selection to restrict to
-     * @param selectionArgs Arguments for the selection
+     * @param selectionArgs Values to replace placeholders with in selection
      * @return The number of rows affected
      * @see android.content.ContentProvider#delete(android.net.Uri, String, String[])
      */
@@ -128,7 +134,7 @@ public class TaskTimerProvider extends ContentProvider {
      * @param uri The URI for the query
      * @param values The values to update
      * @param selection The selection to restrict to
-     * @param selectionArgs Arguments for the selection
+     * @param selectionArgs Values to replace placeholders with in selection
      * @return The number of rows affected
      * @see android.content.ContentProvider#update(android.net.Uri, android.content.ContentValues, String, String[])
      */
