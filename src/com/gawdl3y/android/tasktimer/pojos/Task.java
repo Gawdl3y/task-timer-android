@@ -523,20 +523,22 @@ public class Task implements Parcelable {
         }
     };
 
-    /**
-     * The default settings for new Tasks
-     */
-    public static final HashMap<String, Object> DEFAULT_SETTINGS = new HashMap<String, Object>();
 
     /**
-     * Whether or not the Task should stop at its goal (Type: BOOLEAN)
+     * Task settings
+     * @author Schuyler Cebulskie
      */
-    public static final String SETTING_STOP_AT_GOAL = "stop";
+    public static class Settings {
+        /**
+         * Whether or not the Task should stop at its goal (Type: BOOLEAN)
+         */
+        public static final String STOP_AT_GOAL = "stop";
 
-    /**
-     * Whether or not the Task can go over its goal (Type: BOOLEAN)
-     */
-    public static final String SETTING_OVERTIME = "overtime";
+        /**
+         * Whether or not the Task can go over its goal (Type: BOOLEAN)
+         */
+        public static final String OVERTIME = "overtime";
+    }
 
     /**
      * Database columns for Tasks
@@ -595,10 +597,15 @@ public class Task implements Parcelable {
     }
 
     /**
+     * The default settings for new Tasks
+     */
+    public static final HashMap<String, Object> DEFAULT_SETTINGS = new HashMap<String, Object>();
+
+    /**
      * Static constructor
      */
     static {
-        DEFAULT_SETTINGS.put(SETTING_STOP_AT_GOAL, true);
-        DEFAULT_SETTINGS.put(SETTING_OVERTIME, false);
+        DEFAULT_SETTINGS.put(Settings.STOP_AT_GOAL, true);
+        DEFAULT_SETTINGS.put(Settings.OVERTIME, false);
     }
 }
