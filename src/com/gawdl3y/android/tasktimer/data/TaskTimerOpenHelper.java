@@ -1,16 +1,17 @@
-package com.gawdl3y.android.tasktimer.util;
+package com.gawdl3y.android.tasktimer.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
 
-public class TaskOpenHelper extends SQLiteOpenHelper {
+public class TaskTimerOpenHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "TaskTimer";
 
     // Task columns
-    private static final String TASK_ID = "_ID";
+    private static final String TASK_ID = BaseColumns._ID;
     private static final String TASK_NAME = "name";
     private static final String TASK_DESCRIPTION = "description";
     private static final String TASK_TIME = "time";
@@ -34,18 +35,18 @@ public class TaskOpenHelper extends SQLiteOpenHelper {
             + TASK_SETTINGS + " TEXT, "
             + TASK_GROUP + " INTEGER);";
 
-    // Category columns
-    private static final String GROUP_ID = "_ID";
+    // Group columns
+    private static final String GROUP_ID = BaseColumns._ID;
     private static final String GROUP_NAME = "name";
 
-    // Category table
+    // Group table
     private static final String GROUPS_TABLE_NAME = "categories";
     private static final String GROUPS_TABLE_CREATE = "CREATE TABLE "
             + GROUPS_TABLE_NAME + " ("
             + GROUP_ID + " TEXT, "
             + GROUP_NAME + " TEXT);";
 
-    TaskOpenHelper(Context context) {
+    TaskTimerOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -57,7 +58,6 @@ public class TaskOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
 
     }
 }

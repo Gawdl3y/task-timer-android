@@ -15,7 +15,7 @@ import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
 import com.gawdl3y.android.tasktimer.util.Log;
-import com.gawdl3y.android.tasktimer.util.TaskTimerReceiver;
+import com.gawdl3y.android.tasktimer.data.TaskTimerReceiver;
 import com.gawdl3y.android.tasktimer.util.Utilities;
 
 import java.util.ArrayList;

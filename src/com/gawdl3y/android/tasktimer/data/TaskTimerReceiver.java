@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer.util;
+package com.gawdl3y.android.tasktimer.data;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

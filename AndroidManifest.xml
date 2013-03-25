@@ -13,6 +13,9 @@
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme"
         android:allowBackup="true">
+
+        <!-- The content provider -->
+        <provider android:name=".data.TaskTimerProvider" android:authorities="com.gawdl3y.android.tasktimer" />
         
         <!-- The main activity -->
         <activity android:name=".context.MainActivity"
@@ -39,7 +42,7 @@
         </service>
         
         <!-- The receiver -->
-        <receiver android:name=".util.TaskTimerReceiver">
+        <receiver android:name=".data.TaskTimerReceiver">
             <intent-filter>
                 <action android:name="start_app" />
             </intent-filter>
