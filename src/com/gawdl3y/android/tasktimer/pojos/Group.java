@@ -252,5 +252,18 @@ public class Group implements Parcelable {
          * The position of the Group (Type: INTEGER)
          */
         public static final String POSITION = "position";
+
+        /*
+         * These save calls to cursor.getColumnIndexOrThrow()
+         * THEY MUST BE KEPT IN SYNC WITH ABOVE QUERY COLUMNS
+         */
+        public static final int ID_INDEX = 0;
+        public static final int NAME_INDEX = 1;
+        public static final int POSITION_INDEX = 2;
+
+        /**
+         * The default sort order for queries
+         */
+        public static final String DEFAULT_SORT_ORDER = POSITION + " ASC";
     }
 }

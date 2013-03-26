@@ -594,6 +594,26 @@ public class Task implements Parcelable {
          * The ID of the Group that the Task is in (Type: INTEGER)
          */
         public static final String GROUP = "group";
+
+        /*
+         * These save calls to cursor.getColumnIndexOrThrow()
+         * THEY MUST BE KEPT IN SYNC WITH ABOVE QUERY COLUMNS
+         */
+        public static final int ID_INDEX = 0;
+        public static final int NAME_INDEX = 1;
+        public static final int DESCRIPTION_INDEX = 2;
+        public static final int TIME_INDEX = 3;
+        public static final int GOAL_INDEX = 4;
+        public static final int INDEFINITE_INDEX = 5;
+        public static final int COMPLETE_INDEX = 6;
+        public static final int SETTINGS_INDEX = 7;
+        public static final int POSITION_INDEX = 8;
+        public static final int GROUP_INDEX = 9;
+
+        /**
+         * The default sort order for queries
+         */
+        public static final String DEFAULT_SORT_ORDER = POSITION + " ASC";
     }
 
     /**

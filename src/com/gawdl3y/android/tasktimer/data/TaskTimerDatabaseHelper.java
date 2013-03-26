@@ -8,7 +8,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
-import android.provider.BaseColumns;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.util.Log;
@@ -24,7 +23,7 @@ public class TaskTimerDatabaseHelper extends SQLiteOpenHelper {
     private static final String TASKS_TABLE_NAME = "tasks";
     private static final String TASKS_TABLE_CREATE = "CREATE TABLE "
             + TASKS_TABLE_NAME + " ("
-            + Task.Columns._ID + " INTEGER, "
+            + Task.Columns._ID + " INTEGER PRIMARY KEY, "
             + Task.Columns.NAME + " TEXT, "
             + Task.Columns.DESCRIPTION + " TEXT, "
             + Task.Columns.TIME + " TEXT, "
@@ -39,7 +38,7 @@ public class TaskTimerDatabaseHelper extends SQLiteOpenHelper {
     private static final String GROUPS_TABLE_NAME = "groups";
     private static final String GROUPS_TABLE_CREATE = "CREATE TABLE "
             + GROUPS_TABLE_NAME + " ("
-            + Group.Columns._ID + " INTEGER, "
+            + Group.Columns._ID + " INTEGER PRIMARY KEY, "
             + Group.Columns.NAME + " TEXT"
             + Group.Columns.POSITION + " INTEGER);";
 
@@ -58,8 +57,27 @@ public class TaskTimerDatabaseHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Create tables
         db.execSQL(TASKS_TABLE_CREATE);
         db.execSQL(GROUPS_TABLE_CREATE);
+
+        // Insert default data
+        String insertGroup = "INSERT INTO groups (" + Group.Columns.NAME + ", " + Group.Columns.POSITION + ") VALUES ";
+        String insertTask = "INSERT INTO tasks ("
+                + Task.Columns.NAME + ", "
+                + Task.Columns.DESCRIPTION + ", "
+                + Task.Columns.TIME + ", "
+                + Task.Columns.GOAL + ", "
+                + Task.Columns.INDEFINITE + ", "
+                + Task.Columns.COMPLETE + ", "
+                + Task.Columns.SETTINGS + ", "
+                + Task.Columns.POSITION + ", "
+                + Task.Columns.GROUP + ") VALUES ";
+
+        db.execSQL(insertGroup + "('A group', 0);");
+        db.execSQL(insertTask + "('A task', '', '{}', '{\"h\":\"2\",\"m\":\"30\"}', 0, 0, '{}', 0, 0);");
+        db.execSQL(insertTask + "('An indefinite task', '', '{}', '{\"h\":\"4\"}', 1, 0, '{}', 1, 0);");
+        db.execSQL(insertTask + "('A short task', 'This task has a really short goal so you can test the notifications.', '{\"s\":\"45\"}', '{\"m\":\"1\"}', 0, 0, '{}', 0, 0);");
     }
 
     /**

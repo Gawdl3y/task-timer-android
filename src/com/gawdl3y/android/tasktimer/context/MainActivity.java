@@ -2,40 +2,44 @@ package com.gawdl3y.android.tasktimer.context;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.*;
+import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.View;
-import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
-import com.gawdl3y.android.tasktimer.adapters.TaskListAdapter;
 import com.gawdl3y.android.tasktimer.data.TaskTimerReceiver;
-import com.gawdl3y.android.tasktimer.layout.*;
+import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment;
 import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener;
+import com.gawdl3y.android.tasktimer.layout.MainFragment;
+import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener;
+import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.util.Log;
+import com.gawdl3y.android.tasktimer.util.Utilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * The main activity of Task Timer
  * @author Schuyler Cebulskie
  */
-public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener {
+public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "MainActivity";
-
-    // Messenger
-    private Messenger messenger = new Messenger(new IncomingHandler()), serviceMessenger;
+    private static final int GROUPS_LOADER_ID = 0x01;
+    private static final int TASKS_LOADER_ID = 0x02;
 
     // Stuff
     private TaskTimerApplication app;
@@ -43,35 +47,6 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 
     // Data
     private ArrayList<Group> groups;
-    private boolean fetchedData = false;
-
-    /**
-     * The service connection
-     */
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.v(TAG, "Service connected: " + name);
-
-            // Set the service messenger
-            MainActivity.this.serviceMessenger = new Messenger(service);
-
-            // Retrieve ALL THE THINGS
-            Message msg = Message.obtain(null, TaskService.MSG_GET_ALL);
-            sendMessageToService(msg);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.v(TAG, "Service disconnected: " + name);
-
-            // Reset the service messenger
-            MainActivity.this.serviceMessenger = null;
-
-            // Stop the activity
-            finish();
-        }
-    };
 
     /* (non-Javadoc)
      * The activity is being created
@@ -86,13 +61,12 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
         // Call the superclass' method
         super.onCreate(savedInstanceState);
 
+        // Load data from saved instance state
+        if(savedInstanceState != null && groups == null) groups = savedInstanceState.getParcelableArrayList("groups");
+
         // Display
         try { requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); } catch(Exception e) {}
         setContentView(R.layout.activity_main);
-
-        // Start the service
-        Intent intent = new Intent(app, TaskService.class);
-        app.startService(intent);
 
         Log.v(TAG, "Created");
     }
@@ -118,17 +92,10 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
             return;
         }
 
-        // Show the loading indicator if we don't have the groups or tasks yet
-        if(!fetchedData) setSupportProgressBarIndeterminateVisibility(true);
-
-        // Bind the service
-        Intent intent = new Intent(app, TaskService.class);
-        if(bindService(intent, serviceConnection, Context.BIND_ABOVE_CLIENT | Context.BIND_ADJUST_WITH_ACTIVITY)) {
-            Log.v(TAG, "Service bound");
-        } else {
-            Toast.makeText(this, app.resources.getString(R.string.error_serviceNotBound), Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Service couldn't be bound");
-            finish();
+        // Fetch the data if we don't already have it
+        if(groups == null) {
+            setSupportProgressBarIndeterminateVisibility(true);
+            getSupportLoaderManager().initLoader(GROUPS_LOADER_ID, null, this);
         }
 
         Log.v(TAG, "Started");
@@ -141,13 +108,6 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
     @Override
     protected void onStop() {
         super.onStop();
-
-        // Unbind service
-        try {
-            unbindService(serviceConnection);
-        } catch(IllegalArgumentException e) {
-        }
-
         Log.v(TAG, "Stopped");
     }
 
@@ -159,6 +119,91 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
     protected void onDestroy() {
         super.onDestroy();
         Log.v(TAG, "Destroyed");
+    }
+
+    /**
+     * A Loader is being created
+     * @param id   The ID for the Loader
+     * @param args Arguments
+     * @return
+     */
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch(id) {
+            case GROUPS_LOADER_ID:
+                return new CursorLoader(this, Group.Columns.CONTENT_URI, null, null, null, Group.Columns.DEFAULT_SORT_ORDER);
+            case TASKS_LOADER_ID:
+                return new CursorLoader(this, Task.Columns.CONTENT_URI, null, null, null, Task.Columns.DEFAULT_SORT_ORDER);
+            default:
+                throw new IllegalArgumentException("Invalid loader ID");
+        }
+    }
+
+    /**
+     * A Loader has finished
+     * @param loader The Loader
+     * @param cursor The cursor for the data
+     */
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if(loader.getId() == GROUPS_LOADER_ID) {
+            groups = new ArrayList<Group>();
+
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                // Create the group object
+                Group group = new Group(cursor.getInt(Group.Columns.ID_INDEX));
+                group.setName(cursor.getString(Group.Columns.NAME_INDEX));
+                group.setPosition(cursor.getInt(Group.Columns.POSITION_INDEX));
+
+                // Add it
+                groups.add(group);
+            }
+
+            // Re-position groups
+            Utilities.reposition(groups);
+
+            // Get tasks
+            getSupportLoaderManager().initLoader(TASKS_LOADER_ID, null, this);
+        } else if(loader.getId() == TASKS_LOADER_ID) {
+            HashMap<Integer, Group> groupMap = new HashMap<Integer, Group>();
+
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()) {
+                // Create the task object
+                Task task = new Task(cursor.getInt(Task.Columns.ID_INDEX));
+                task.setName(cursor.getString(Task.Columns.NAME_INDEX));
+                task.setDescription(cursor.getString(Task.Columns.NAME_INDEX));
+                task.setIndefinite(cursor.getInt(Task.Columns.INDEFINITE_INDEX) == 1);
+                task.setComplete(cursor.getInt(Task.Columns.COMPLETE_INDEX) == 1);
+                task.setPosition(cursor.getInt(Task.Columns.POSITION_INDEX));
+                task.setGroup(cursor.getInt(Task.Columns.GROUP_INDEX));
+
+                // Add it to its group
+                if(groupMap.get(task.getGroup()) == null) groupMap.put(task.getGroup(), Utilities.getGroupByID(task.getGroup(), groups));
+                if(groupMap.get(task.getGroup()).getTasks() == null) groupMap.get(task.getGroup()).setTasks(new ArrayList<Task>());
+                groupMap.get(task.getGroup()).getTasks().add(task);
+            }
+
+            // Re-position tasks
+            for(Group g : groups) Utilities.reposition(g.getTasks());
+
+            // We finally get to display!
+            mainFragment = MainFragment.newInstance(groups);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.activity_main, mainFragment);
+            transaction.commit();
+            setSupportProgressBarIndeterminateVisibility(false);
+        }
+    }
+
+    /**
+     * The Loader has been reset
+     * @param loader The Loader
+     */
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        // Nothing to do here
     }
 
     /* (non-Javadoc)
@@ -193,11 +238,6 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
                 intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
-            case R.id.menu_exit:
-                Message msg = Message.obtain(null, TaskService.MSG_EXIT);
-                sendMessageToService(msg);
-                finish();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -209,12 +249,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
      */
     @Override
     public void onFinishEditDialog(Group group) {
-        Message msg = Message.obtain(null, TaskService.MSG_ADD_GROUP);
-        Bundle contents = new Bundle();
-        contents.putParcelable("group", group);
-        msg.setData(contents);
-        msg.arg1 = group.getPosition();
-        sendMessageToService(msg);
+        mainFragment.onFinishEditDialog(group);
     }
 
     /* (non-Javadoc)
@@ -222,13 +257,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
      * @see com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.pojos.Task)
      */
     @Override
-    public void onFinishEditDialog(Task task, int group) {
-        Message msg = Message.obtain(null, TaskService.MSG_ADD_TASK);
-        Bundle contents = new Bundle();
-        contents.putParcelable("task", task);
-        msg.setData(contents);
-        msg.arg1 = group;
-        sendMessageToService(msg);
+    public void onFinishEditDialog(Task task, int groupIndex) {
+        mainFragment.onFinishEditDialog(task, groupIndex);
     }
 
     /**
@@ -238,137 +268,14 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
     public void onTaskButtonClick(View view) {
         TaskListItem item = (TaskListItem) view.getParent().getParent();
         Task task = groups.get((Integer) item.getTag(R.id.tag_group)).getTasks().get((Integer) item.getTag(R.id.tag_task));
-        Message msg;
 
         if(view.getId() == R.id.task_toggle) {
+            // Toggle the task
             if(!task.isComplete() || task.getBooleanSetting(Task.Settings.OVERTIME)) {
                 task.toggle();
                 item.invalidate(task);
                 item.buildTimer();
-
-                msg = Message.obtain(null, TaskService.MSG_TOGGLE_TASK);
-                msg.arg1 = (Integer) item.getTag(R.id.tag_group);
-                msg.arg2 = (Integer) item.getTag(R.id.tag_task);
-                sendMessageToService(msg);
             }
         }
-    }
-
-    /**
-     * The handler for the activity to receive messages from the service
-     * @author Schuyler Cebulskie
-     */
-    private final class IncomingHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            Log.v(TAG, "Received message: " + msg);
-
-            Bundle data = msg.getData();
-            data.setClassLoader(getClassLoader());
-
-            Task task;
-            TaskListFragment fragment;
-            TaskListItem view;
-
-            switch(msg.what) {
-                case TaskService.MSG_ADD_TASK:
-                    // Set the containing group
-                    task = (Task) data.getParcelable("task");
-                    Group group = groups.get(msg.arg1);
-                    group.getTasks().add(task.getPosition(), task);
-
-                    // Update the task list fragment adapter for the group
-                    fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
-                    if(fragment != null) {
-                        fragment.group = group;
-                        ((TaskListAdapter) fragment.getListAdapter()).notifyDataSetChanged();
-                    }
-
-                    // Update the main adapter's groups and scroll to the group that the task was added to
-                    mainFragment.getAdapter().setGroups(groups);
-                    mainFragment.getPager().setCurrentItem(msg.arg1, true);
-                    break;
-                case TaskService.MSG_UPDATE_TASK:
-                    // Set the task
-                    task = (Task) data.getParcelable("task");
-                    groups.get(msg.arg1).getTasks().set(task.getPosition(), task);
-
-                    // Update the view of the task
-                    try {
-                        fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + msg.arg1);
-                        view = (TaskListItem) fragment.getView().findViewWithTag(task.getPosition());
-                        view.invalidate(task);
-                        view.buildTimer();
-                    } catch(Exception e) {
-                    }
-                    break;
-
-                case TaskService.MSG_GET_GROUPS:
-                    groups = data.getParcelableArrayList("groups");
-                    buildList();
-                    if(msg.arg1 != -1) mainFragment.getPager().setCurrentItem(msg.arg1, true);
-                    break;
-
-                case TaskService.MSG_GET_ALL:
-                    // Get the data
-                    groups = data.getParcelableArrayList("groups");
-
-                    // Add the main fragment to the activity
-                    mainFragment = MainFragment.newInstance(groups);
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.activity_main, mainFragment);
-                    transaction.commit();
-
-                    // Update all of the views if they're already there
-                    for(Group g : groups) {
-                        fragment = (TaskListFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + g.getPosition());
-
-                        for(Task t : g.getTasks()) {
-                            try {
-                                view = (TaskListItem) fragment.getView().findViewWithTag(t.getPosition());
-                                view.invalidate(t);
-                                view.buildTimer();
-                            } catch(Exception e) {
-                            }
-                        }
-                    }
-
-                    // Hide the loading indicator
-                    fetchedData = true;
-                    setSupportProgressBarIndeterminateVisibility(false);
-                    break;
-                default:
-                    super.handleMessage(msg);
-            }
-        }
-    }
-
-    /**
-     * Builds the list of groups and tasks
-     */
-    private void buildList() {
-        mainFragment.getAdapter().setGroups(groups);
-        mainFragment.getAdapter().notifyDataSetChanged();
-        mainFragment.getPager().invalidate();
-    }
-
-    /**
-     * Sends a message to the service
-     * @param msg The message to send
-     */
-    private void sendMessageToService(Message msg) {
-        // Set who to reply to
-        msg.replyTo = messenger;
-
-        // Send the message
-        try {
-            serviceMessenger.send(msg);
-            Log.v(TAG, "Sent message: " + msg);
-        } catch(android.os.RemoteException e) {
-            Log.w(TAG, "Failed to send message: " + msg + " (" + e.getLocalizedMessage() + " caused by " + e.getCause() + ")");
-        }
-
-        // Return the message to the global pool
-        msg.recycle();
     }
 }

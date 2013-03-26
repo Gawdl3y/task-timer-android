@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * General utility methods for Task Timer
@@ -16,10 +16,10 @@ import java.util.ArrayList;
  */
 public final class Utilities {
     /**
-     * Sets the positions of tasks or groups in an ArrayList to the position in the array
+     * Sets the positions of tasks or groups in a List to the position in the array
      * @param arr The ArrayList to reorder
      */
-    public static final void reposition(ArrayList<?> arr) {
+    public static final void reposition(List<?> arr) {
         for(int i = 0; i < arr.size(); i++) {
             Object thing = arr.get(i);
 
@@ -32,12 +32,12 @@ public final class Utilities {
     }
 
     /**
-     * Finds and returns a task by an ID in an ArrayList of tasks
+     * Finds and returns a task by an ID in a List of tasks
      * @param id    The ID to search for
      * @param tasks The tasks to search in
      * @return The task with the specified ID
      */
-    public static final Task getTaskByID(int id, ArrayList<Task> tasks) {
+    public static final Task getTaskByID(int id, List<Task> tasks) {
         for(Task t : tasks) {
             if(t.getId() == id) return t;
         }
@@ -46,19 +46,17 @@ public final class Utilities {
     }
 
     /**
-     * Finds and returns a task by an ID in an ArrayList of groups
-     * @param id     The ID to search for
-     * @param groups The groups to search in
-     * @return The task with the specified ID
+     * Finds and returns the index of a Task in a List by ID
+     * @param id    The ID of the Task to search for
+     * @param tasks The List of Tasks to search in
+     * @return The index of the Task found, or -1 if no match
      */
-    public static final Task getGroupedTaskByID(int id, ArrayList<Group> groups) {
-        for(Group g : groups) {
-            for(Task t : g.getTasks()) {
-                if(t.getId() == id) return t;
-            }
+    public static final int getTaskIndexByID(int id, List<Task> tasks) {
+        for(int t = 0; t < tasks.size(); t++) {
+            if(tasks.get(t).getId() == id) return t;
         }
 
-        return null;
+        return -1;
     }
 
     /**
@@ -67,9 +65,39 @@ public final class Utilities {
      * @param groups The groups to search in
      * @return The group with the specified ID
      */
-    public static final Group getGroupByID(int id, ArrayList<Group> groups) {
+    public static final Group getGroupByID(int id, List<Group> groups) {
         for(Group g : groups) {
             if(g.getId() == id) return g;
+        }
+
+        return null;
+    }
+
+    /**
+     * Finds and returns the index of a Group in a List by ID
+     * @param id The ID of the Group to search for
+     * @param groups The List of Groups to search in
+     * @return The index of the Group found, or -1 if no match
+     */
+    public static final int getGroupIndexByID(int id, List<Group> groups) {
+        for(int t = 0; t < groups.size(); t++) {
+            if(groups.get(t).getId() == id) return t;
+        }
+
+        return -1;
+    }
+
+    /**
+     * Finds and returns a task by an ID in a List of groups
+     * @param id     The ID to search for
+     * @param groups The groups to search in
+     * @return The task with the specified ID
+     */
+    public static final Task getGroupedTaskByID(int id, List<Group> groups) {
+        for(Group g : groups) {
+            for(Task t : g.getTasks()) {
+                if(t.getId() == id) return t;
+            }
         }
 
         return null;

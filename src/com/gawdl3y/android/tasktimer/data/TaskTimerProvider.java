@@ -16,22 +16,22 @@ import com.gawdl3y.android.tasktimer.util.Log;
  * @author Schuyler Cebulskie
  */
 public class TaskTimerProvider extends ContentProvider {
-    public static final String TAG = "TaskTimerProvider";
+    private static final String TAG = "Provider";
+    private static final String AUTHORITY = "com.gawdl3y.android.tasktimer.provider";
+    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     private static final int TASKS = 1;
     private static final int TASKS_ID = 2;
     private static final int GROUPS = 3;
     private static final int GROUPS_ID = 4;
 
-    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-
     private TaskTimerDatabaseHelper dbHelper;
 
     static {
-        uriMatcher.addURI("com.gawdl3y.android.tasktimer", "tasks", TASKS);
-        uriMatcher.addURI("com.gawdl3y.android.tasktimer", "tasks/#", TASKS_ID);
-        uriMatcher.addURI("com.gawdl3y.android.tasktimer", "groups", GROUPS);
-        uriMatcher.addURI("com.gawdl3y.android.tasktimer", "groups/#", GROUPS_ID);
+        uriMatcher.addURI(AUTHORITY, "tasks", TASKS);
+        uriMatcher.addURI(AUTHORITY, "tasks/#", TASKS_ID);
+        uriMatcher.addURI(AUTHORITY, "groups", GROUPS);
+        uriMatcher.addURI(AUTHORITY, "groups/#", GROUPS_ID);
     }
 
     /**
@@ -42,6 +42,7 @@ public class TaskTimerProvider extends ContentProvider {
     @Override
     public boolean onCreate() {
         dbHelper = new TaskTimerDatabaseHelper(getContext());
+        Log.v(TAG, "Created");
         return true;
     }
 
@@ -53,16 +54,17 @@ public class TaskTimerProvider extends ContentProvider {
      */
     @Override
     public String getType(Uri uri) {
+        Log.v(TAG, "Getting type for URI " + uri.toString());
         int match = uriMatcher.match(uri);
         switch(match) {
             case TASKS:
-                return "vnd.android.cursor.dir/vnd.com.gawdl3y.android.tasktimer.provider.tasks";
+                return "vnd.android.cursor.dir/vnd." + AUTHORITY + ".tasks";
             case TASKS_ID:
-                return "vnd.android.cursor.item/vnd.com.gawdl3y.android.tasktimer.provider.tasks";
+                return "vnd.android.cursor.item/vnd." + AUTHORITY + ".tasks";
             case GROUPS:
-                return "vnd.android.cursor.dir/vnd.com.gawdl3y.android.tasktimer.provider.groups";
+                return "vnd.android.cursor.dir/vnd." + AUTHORITY + ".groups";
             case GROUPS_ID:
-                return "vnd.android.cursor.item/vnd.com.gawdl3y.android.tasktimer.provider.groups";
+                return "vnd.android.cursor.item/vnd." + AUTHORITY + ".groups";
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }

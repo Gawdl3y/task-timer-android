@@ -17,6 +17,7 @@ import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;
+import com.gawdl3y.android.tasktimer.pojos.Task;
 
 import java.util.ArrayList;
 
@@ -117,6 +118,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
         if(actionId == EditorInfo.IME_ACTION_DONE) {
             // Create/modify the Group
             if(group == null) group = new Group();
+            if(group.getTasks() == null) group.setTasks(new ArrayList<Task>());
             group.setName(nameView.getText().toString());
             group.setPosition(positionView.getSelectedItemPosition());
 

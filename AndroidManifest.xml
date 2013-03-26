@@ -8,6 +8,7 @@
     <!-- Minimum Android version 2.1 -->
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17" />
 
+    <!-- The application -->
     <application android:name=".TaskTimerApplication"
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher"
@@ -15,7 +16,9 @@
         android:allowBackup="true">
 
         <!-- The content provider -->
-        <provider android:name=".data.TaskTimerProvider" android:authorities="com.gawdl3y.android.tasktimer.provider" />
+        <provider android:name=".data.TaskTimerProvider"
+            android:authorities="com.gawdl3y.android.tasktimer.provider"
+            android:exported="false" />
         
         <!-- The main activity -->
         <activity android:name=".context.MainActivity"
@@ -34,17 +37,11 @@
             android:excludeFromRecents="true">
         </activity>
         
-        <!-- The task service -->
-        <service android:name=".context.TaskService"
-            android:label="@string/service_label"
-            android:description="@string/service_description"
-            android:process=":TaskService">
-        </service>
-        
         <!-- The receiver -->
         <receiver android:name=".data.TaskTimerReceiver">
             <intent-filter>
                 <action android:name="start_app" />
+                <action android:name="task_goal_reached" />
             </intent-filter>
         </receiver>
         
