@@ -548,7 +548,7 @@ public class Task implements Parcelable {
         /**
          * The content:// URL for the table
          */
-        public static final Uri CONTENT_URI = Uri.parse("content://com.gawdl3y.android.tasktimer/tasks");
+        public static final Uri CONTENT_URI = Uri.parse("content://com.gawdl3y.android.tasktimer.provider/tasks");
 
         /**
          * Name of the Task (Type: STRING)

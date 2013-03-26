@@ -241,7 +241,7 @@ public class Group implements Parcelable {
         /**
          * The content:// URL for the table
          */
-        public static final Uri CONTENT_URI = Uri.parse("content://com.gawdl3y.android.tasktimer/groups");
+        public static final Uri CONTENT_URI = Uri.parse("content://com.gawdl3y.android.tasktimer.provider/groups");
 
         /**
          * The name of the Group (Type: STRING)
