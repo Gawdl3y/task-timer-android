@@ -4,7 +4,10 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.util.Log;
+
+import java.util.ArrayList;
 
 /**
  * The base application class for Task Timer
@@ -19,12 +22,8 @@ public class TaskTimerApplication extends Application {
     public static SharedPreferences PREFERENCES;
     public static int THEME = R.style.Theme_Dark;
 
-    // Properties
-    public final boolean debug = DEBUG;
-    public String packageName = PACKAGE;
-    public Resources resources = RESOURCES;
-    public SharedPreferences preferences = PREFERENCES;
-    public int theme = THEME;
+    // Data
+    public static ArrayList<Group> GROUPS;
 
     /* (non-Javadoc)
      * The application is being created
@@ -40,15 +39,9 @@ public class TaskTimerApplication extends Application {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         PREFERENCES = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Set properties
-        packageName = PACKAGE;
-        resources = RESOURCES;
-        preferences = PREFERENCES;
-
         // Set theme
         String themeStr = PREFERENCES.getString("pref_theme", "0");
         THEME = themeStr.equals("2") ? R.style.Theme_Light_DarkActionBar : (themeStr.equals("1") ? R.style.Theme_Light : R.style.Theme_Dark);
-        theme = THEME;
 
         Log.v(TAG, "Created");
     }

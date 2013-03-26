@@ -24,8 +24,6 @@ import com.gawdl3y.android.tasktimer.layout.SettingsFragment;
 import java.util.Map;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
-    private TaskTimerApplication app;
-
     /* (non-Javadoc)
      * The activity is created
      * @see android.preference.PreferenceActivity#onCreate(android.os.Bundle)
@@ -34,15 +32,14 @@ public class SettingsActivity extends SherlockPreferenceActivity {
     @SuppressWarnings("deprecation")
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        app = (TaskTimerApplication) getApplication();
-        setTheme(app.theme);
+        setTheme(TaskTimerApplication.THEME);
         super.onCreate(savedInstanceState);
 
         // Display the settings
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             // Use the old preference activity methods for devices older than Honeycomb
             addPreferencesFromResource(R.xml.preferences);
-            app.preferences.registerOnSharedPreferenceChangeListener(changeListener);
+            TaskTimerApplication.PREFERENCES.registerOnSharedPreferenceChangeListener(changeListener);
             updateSummaries();
         } else {
             // Use the fragment for Honeycomb and newer
@@ -60,7 +57,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
     @Override
     public void onStop() {
         super.onStop();
-        app.preferences.unregisterOnSharedPreferenceChangeListener(changeListener);
+        TaskTimerApplication.PREFERENCES.unregisterOnSharedPreferenceChangeListener(changeListener);
     }
 
     /**
@@ -77,12 +74,11 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
             // See if the theme was changed
             if(key.equals("pref_theme")) {
-                String theme = app.preferences.getString("pref_theme", "0");
+                String theme = TaskTimerApplication.PREFERENCES.getString("pref_theme", "0");
                 int themeIdent = theme.equals("2") ? R.style.Theme_Light_DarkActionBar : (theme.equals("1") ? R.style.Theme_Light : R.style.Theme_Dark);
 
                 // Make sure the new theme is different
-                if(themeIdent != app.theme) {
-                    app.theme = themeIdent;
+                if(themeIdent != TaskTimerApplication.THEME) {
                     TaskTimerApplication.THEME = themeIdent;
 
                     // Create a dialog to ask about restarting now or later
@@ -149,7 +145,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
      */
     @SuppressWarnings("deprecation")
     public void updateSummaries() {
-        for(Map.Entry<String, ?> entry : app.preferences.getAll().entrySet()) {
+        for(Map.Entry<String, ?> entry : TaskTimerApplication.PREFERENCES.getAll().entrySet()) {
             Preference pref = findPreference(entry.getKey());
             if(pref != null) onPreferenceChange(pref);
         }
@@ -161,7 +157,7 @@ public class SettingsActivity extends SherlockPreferenceActivity {
      */
     @TargetApi(11)
     public void updateSummaries(SettingsFragment fragment) {
-        for(Map.Entry<String, ?> entry : app.preferences.getAll().entrySet()) {
+        for(Map.Entry<String, ?> entry : TaskTimerApplication.PREFERENCES.getAll().entrySet()) {
             Preference pref = fragment.findPreference(entry.getKey());
             if(pref != null) onPreferenceChange(pref);
         }

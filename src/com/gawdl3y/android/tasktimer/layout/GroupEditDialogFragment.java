@@ -26,8 +26,6 @@ import java.util.ArrayList;
  * @author Schuyler Cebulskie
  */
 public class GroupEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
-    private TaskTimerApplication app;
-
     private ArrayList<Group> groups;
     private Group group;
 
@@ -53,7 +51,6 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (TaskTimerApplication) getActivity().getApplication();
 
         if(savedInstanceState != null) {
             // Load from saved instance
@@ -82,9 +79,9 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 
         // Add the possible positions to the spinner
         String[] opts = new String[groups.size() + 1];
-        opts[groups.size()] = app.resources.getString(R.string.position_end);
+        opts[groups.size()] = TaskTimerApplication.RESOURCES.getString(R.string.position_end);
         for(int i = 0; i < groups.size(); i++)
-            opts[i] = String.format(app.resources.getString(R.string.position_before), groups.get(i).getName());
+            opts[i] = String.format(TaskTimerApplication.RESOURCES.getString(R.string.position_before), groups.get(i).getName());
         ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
         positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         positionView.setAdapter(positionAdapter);

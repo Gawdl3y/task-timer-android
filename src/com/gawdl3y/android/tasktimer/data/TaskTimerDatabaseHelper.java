@@ -13,7 +13,7 @@ import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.util.Log;
 
 public class TaskTimerDatabaseHelper extends SQLiteOpenHelper {
-    public static final String TAG = "TaskTimerDatabaseHelper";
+    private static final String TAG = "TaskTimerDatabaseHelper";
 
     // General database info
     private static final int DATABASE_VERSION = 1;

@@ -41,11 +41,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     private static final int TASKS_LOADER_ID = 2;
 
     // Stuff
-    private TaskTimerApplication app;
     private MainFragment mainFragment;
-
-    // Data
-    private ArrayList<Group> groups;
 
     /* (non-Javadoc)
      * The activity is being created
@@ -53,23 +49,20 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Set app and switch theme (we do this before calling the super method so that the theme properly applies)
-        app = (TaskTimerApplication) getApplication();
-        setTheme(app.theme);
-
-        // Call the superclass' method
+        // Switch theme (we do this before calling the super method so that the theme properly applies)
+        setTheme(TaskTimerApplication.THEME);
         super.onCreate(savedInstanceState);
 
         // Load data if we don't already have it
-        if(savedInstanceState != null && groups == null) groups = savedInstanceState.getParcelableArrayList("groups");
-        if(groups == null) getSupportLoaderManager().initLoader(GROUPS_LOADER_ID, null, this);
+        if(savedInstanceState != null && TaskTimerApplication.GROUPS == null) TaskTimerApplication.GROUPS = savedInstanceState.getParcelableArrayList("groups");
+        if(TaskTimerApplication.GROUPS == null) getSupportLoaderManager().initLoader(GROUPS_LOADER_ID, null, this);
 
-        // Display
+        // Initialize activity
         try { requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); } catch(Exception e) {}
         setContentView(R.layout.activity_main);
 
         // Display the main fragment
-        mainFragment = MainFragment.newInstance(groups);
+        mainFragment = MainFragment.newInstance(TaskTimerApplication.GROUPS);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activity_main, mainFragment);
         transaction.commit();
@@ -99,7 +92,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         }
 
         // Show the loading indicator if we don't have the data
-        if(groups == null) setSupportProgressBarIndeterminateVisibility(true);
+        if(TaskTimerApplication.GROUPS == null) setSupportProgressBarIndeterminateVisibility(true);
 
         Log.v(TAG, "Started");
     }
@@ -131,7 +124,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("groups", groups);
+        outState.putParcelableArrayList("groups", TaskTimerApplication.GROUPS);
     }
 
     /**
@@ -162,7 +155,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if(loader.getId() == GROUPS_LOADER_ID) {
-            groups = new ArrayList<Group>();
+            TaskTimerApplication.GROUPS = new ArrayList<Group>();
 
             cursor.moveToFirst();
             while(!cursor.isAfterLast()) {
@@ -172,14 +165,14 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
                 group.setPosition(cursor.getInt(Group.Columns.POSITION_INDEX));
 
                 // Add it
-                groups.add(group);
+                TaskTimerApplication.GROUPS.add(group);
 
                 Log.d(TAG, "Group loaded: " + group.toString());
                 cursor.moveToNext();
             }
 
             // Re-position groups
-            Utilities.reposition(groups);
+            Utilities.reposition(TaskTimerApplication.GROUPS);
 
             // Get tasks
             getSupportLoaderManager().initLoader(TASKS_LOADER_ID, null, this);
@@ -198,7 +191,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
                 task.setGroup(cursor.getInt(Task.Columns.GROUP_INDEX));
 
                 // Add it to its group
-                if(groupMap.get(task.getGroup()) == null) groupMap.put(task.getGroup(), Utilities.getGroupByID(task.getGroup(), groups));
+                if(groupMap.get(task.getGroup()) == null) groupMap.put(task.getGroup(), Utilities.getGroupByID(task.getGroup(), TaskTimerApplication.GROUPS));
                 if(groupMap.get(task.getGroup()).getTasks() == null) groupMap.get(task.getGroup()).setTasks(new ArrayList<Task>());
                 groupMap.get(task.getGroup()).getTasks().add(task);
 
@@ -207,10 +200,10 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
             }
 
             // Re-position tasks
-            for(Group g : groups) Utilities.reposition(g.getTasks());
+            for(Group g : TaskTimerApplication.GROUPS) Utilities.reposition(g.getTasks());
 
             // We finally get to display!
-            mainFragment.setGroups(groups);
+            mainFragment.setGroups(TaskTimerApplication.GROUPS);
             setSupportProgressBarIndeterminateVisibility(false);
         }
 
@@ -247,11 +240,11 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
 
         switch(item.getItemId()) {
             case R.id.menu_new_task:
-                TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(groups, mainFragment.getPager().getCurrentItem(), null);
+                TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(TaskTimerApplication.GROUPS, mainFragment.getPager().getCurrentItem(), null);
                 taskEditDialog.show(getSupportFragmentManager(), "fragment_task_edit");
                 return true;
             case R.id.menu_new_group:
-                GroupEditDialogFragment groupEditDialog = GroupEditDialogFragment.newInstance(groups, 0, null);
+                GroupEditDialogFragment groupEditDialog = GroupEditDialogFragment.newInstance(TaskTimerApplication.GROUPS, 0, null);
                 groupEditDialog.show(getSupportFragmentManager(), "fragment_group_edit");
                 return true;
             case R.id.menu_settings:
