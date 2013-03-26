@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.SparseArray;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -38,8 +39,8 @@ import java.util.HashMap;
  */
 public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "MainActivity";
-    private static final int GROUPS_LOADER_ID = 0x01;
-    private static final int TASKS_LOADER_ID = 0x02;
+    private static final int GROUPS_LOADER_ID = 1;
+    private static final int TASKS_LOADER_ID = 2;
 
     // Stuff
     private TaskTimerApplication app;
@@ -63,6 +64,9 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 
         // Load data from saved instance state
         if(savedInstanceState != null && groups == null) groups = savedInstanceState.getParcelableArrayList("groups");
+
+        // Fetch the data if we don't already have it
+        if(groups == null) getSupportLoaderManager().initLoader(GROUPS_LOADER_ID, null, this);
 
         // Display
         try { requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); } catch(Exception e) {}
@@ -92,11 +96,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
             return;
         }
 
-        // Fetch the data if we don't already have it
-        if(groups == null) {
-            setSupportProgressBarIndeterminateVisibility(true);
-            getSupportLoaderManager().initLoader(GROUPS_LOADER_ID, null, this);
-        }
+        // Show the loading indicator if we don't have the data
+        if(groups == null) setSupportProgressBarIndeterminateVisibility(true);
 
         Log.v(TAG, "Started");
     }
@@ -125,10 +126,12 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
      * A Loader is being created
      * @param id   The ID for the Loader
      * @param args Arguments
-     * @return
+     * @return The Loader to use
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.v(TAG, "Loader created with ID " + id);
+
         switch(id) {
             case GROUPS_LOADER_ID:
                 return new CursorLoader(this, Group.Columns.CONTENT_URI, null, null, null, Group.Columns.DEFAULT_SORT_ORDER);
@@ -158,6 +161,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 
                 // Add it
                 groups.add(group);
+                cursor.moveToNext();
             }
 
             // Re-position groups
@@ -166,7 +170,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
             // Get tasks
             getSupportLoaderManager().initLoader(TASKS_LOADER_ID, null, this);
         } else if(loader.getId() == TASKS_LOADER_ID) {
-            HashMap<Integer, Group> groupMap = new HashMap<Integer, Group>();
+            SparseArray<Group> groupMap = new SparseArray<Group>();
 
             cursor.moveToFirst();
             while(!cursor.isAfterLast()) {
@@ -183,6 +187,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
                 if(groupMap.get(task.getGroup()) == null) groupMap.put(task.getGroup(), Utilities.getGroupByID(task.getGroup(), groups));
                 if(groupMap.get(task.getGroup()).getTasks() == null) groupMap.get(task.getGroup()).setTasks(new ArrayList<Task>());
                 groupMap.get(task.getGroup()).getTasks().add(task);
+                cursor.moveToNext();
             }
 
             // Re-position tasks
@@ -195,6 +200,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
             transaction.commit();
             setSupportProgressBarIndeterminateVisibility(false);
         }
+
+        Log.v(TAG, "Loader " + loader.getId() + " finished");
     }
 
     /**
