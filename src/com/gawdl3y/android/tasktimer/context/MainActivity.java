@@ -20,10 +20,8 @@ import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.data.TaskTimerReceiver;
 import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment;
-import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener;
 import com.gawdl3y.android.tasktimer.layout.MainFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
-import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener;
 import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
@@ -37,7 +35,7 @@ import java.util.HashMap;
  * The main activity of Task Timer
  * @author Schuyler Cebulskie
  */
-public class MainActivity extends SherlockFragmentActivity implements GroupEditDialogListener, TaskEditDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends SherlockFragmentActivity implements TaskListItem.TaskButtonListener, GroupEditDialogFragment.GroupEditDialogListener, TaskEditDialogFragment.TaskEditDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "MainActivity";
     private static final int GROUPS_LOADER_ID = 1;
     private static final int TASKS_LOADER_ID = 2;
@@ -265,6 +263,15 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
         }
     }
 
+    /**
+     * A task button is clicked
+     * @param view The view of the button that was clicked
+     */
+    @Override
+    public void onTaskButtonClick(View view) {
+        mainFragment.onTaskButtonClick(view);
+    }
+
     /* (non-Javadoc)
      * The add group dialog is finished
      * @see com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.pojos.Group, int)
@@ -281,23 +288,5 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
     @Override
     public void onFinishEditDialog(Task task, int groupIndex) {
         mainFragment.onFinishEditDialog(task, groupIndex);
-    }
-
-    /**
-     * A task button is clicked
-     * @param view The view of the button that was clicked
-     */
-    public void onTaskButtonClick(View view) {
-        TaskListItem item = (TaskListItem) view.getParent().getParent();
-        Task task = groups.get((Integer) item.getTag(R.id.tag_group)).getTasks().get((Integer) item.getTag(R.id.tag_task));
-
-        if(view.getId() == R.id.task_toggle) {
-            // Toggle the task
-            if(!task.isComplete() || task.getBooleanSetting(Task.Settings.OVERTIME)) {
-                task.toggle();
-                item.invalidate(task);
-                item.buildTimer();
-            }
-        }
     }
 }

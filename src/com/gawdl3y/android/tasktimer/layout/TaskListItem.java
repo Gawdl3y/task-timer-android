@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.*;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
@@ -29,6 +30,18 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
     private TextView name, time, goal;
     private ProgressBar progress;
     private ImageView toggle;
+
+    /**
+     * The interface for listening to task button interactions
+     * @author Schuyler Cebulskie
+     */
+    public static interface TaskButtonListener {
+        /**
+         * A task button was clicked
+         * @param view The view of the button
+         */
+        public void onTaskButtonClick(View view);
+    }
 
     /**
      * Constructor

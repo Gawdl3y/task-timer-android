@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * The main fragment for Task Timer; contains a TaskListFragmentAdapter
  * @author Schuyler Cebulskie
  */
-public class MainFragment extends SherlockFragment implements GroupEditDialogFragment.GroupEditDialogListener, TaskEditDialogFragment.TaskEditDialogListener {
+public class MainFragment extends SherlockFragment implements TaskListItem.TaskButtonListener, GroupEditDialogFragment.GroupEditDialogListener, TaskEditDialogFragment.TaskEditDialogListener {
     private static final String TAG = "MainFragment";
 
     // Data
@@ -101,6 +101,25 @@ public class MainFragment extends SherlockFragment implements GroupEditDialogFra
             updateTask(groupIndex, Utilities.getTaskIndexByID(task.getId(), tasks), task);
         } else {
             addTask(task, groupIndex);
+        }
+    }
+
+    /**
+     * A task button is clicked
+     * @param view The view of the button that was clicked
+     */
+    @Override
+    public void onTaskButtonClick(View view) {
+        TaskListItem item = (TaskListItem) view.getParent().getParent();
+        Task task = groups.get((Integer) item.getTag(R.id.tag_group)).getTasks().get((Integer) item.getTag(R.id.tag_task));
+
+        if(view.getId() == R.id.task_toggle) {
+            // Toggle the task
+            if(!task.isComplete() || task.getBooleanSetting(Task.Settings.OVERTIME)) {
+                task.toggle();
+                item.invalidate(task);
+                item.buildTimer();
+            }
         }
     }
 
