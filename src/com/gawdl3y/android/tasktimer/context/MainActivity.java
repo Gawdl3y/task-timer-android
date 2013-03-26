@@ -25,11 +25,11 @@ import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
+import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
 import com.gawdl3y.android.tasktimer.util.Log;
 import com.gawdl3y.android.tasktimer.util.Utilities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * The main activity of Task Timer
@@ -198,6 +198,9 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
                 Log.d(TAG, "Task loaded: " + task.toString());
                 cursor.moveToNext();
             }
+
+            TaskTimerApplication.GROUPS.get(0).getTasks().get(2).setTime(new TimeAmount(0, 0, 45));
+            TaskTimerApplication.GROUPS.get(0).getTasks().get(2).setGoal(new TimeAmount(0, 1, 0));
 
             // Re-position tasks
             for(Group g : TaskTimerApplication.GROUPS) Utilities.reposition(g.getTasks());

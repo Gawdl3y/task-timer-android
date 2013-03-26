@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.adapters.TaskListAdapter;
 import com.gawdl3y.android.tasktimer.adapters.TaskListFragmentAdapter;
 import com.gawdl3y.android.tasktimer.pojos.Group;
@@ -119,6 +120,11 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
                 task.toggle();
                 item.invalidate(task);
                 item.buildTimer();
+
+                // Update the running task count, create a system alarm, and update the ongoing notification
+                if(task.isRunning()) TaskTimerApplication.RUNNING_TASKS++; else TaskTimerApplication.RUNNING_TASKS--;
+                TaskTimerApplication.createTaskGoalReachedAlarm(getActivity(), task);
+                TaskTimerApplication.showOngoingNotification(getActivity());
             }
         }
     }
