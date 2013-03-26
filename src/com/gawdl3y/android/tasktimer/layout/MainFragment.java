@@ -186,9 +186,14 @@ public class MainFragment extends SherlockFragment implements GroupEditDialogFra
      * Builds/rebuilds the list of groups and tasks
      */
     public void buildList() {
-        getAdapter().setGroups(groups);
-        getAdapter().notifyDataSetChanged();
-        pager.invalidate();
+        if(groups == null) {
+            pager.setVisibility(View.GONE);
+        } else {
+            getAdapter().setGroups(groups);
+            getAdapter().notifyDataSetChanged();
+            pager.setVisibility(View.VISIBLE);
+            pager.invalidate();
+        }
     }
 
 
@@ -209,6 +214,14 @@ public class MainFragment extends SherlockFragment implements GroupEditDialogFra
         }
     }
 
+
+    /**
+     * Sets the Groups
+     */
+    public void setGroups(ArrayList<Group> groups) {
+        this.groups = groups;
+        buildList();
+    }
 
     /**
      * Gets the ViewPager

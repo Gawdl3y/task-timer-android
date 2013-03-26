@@ -62,15 +62,19 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
         // Call the superclass' method
         super.onCreate(savedInstanceState);
 
-        // Load data from saved instance state
+        // Load data if we don't already have it
         if(savedInstanceState != null && groups == null) groups = savedInstanceState.getParcelableArrayList("groups");
-
-        // Fetch the data if we don't already have it
         if(groups == null) getSupportLoaderManager().initLoader(GROUPS_LOADER_ID, null, this);
 
         // Display
         try { requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); } catch(Exception e) {}
         setContentView(R.layout.activity_main);
+
+        // Display the main fragment
+        mainFragment = MainFragment.newInstance(groups);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.activity_main, mainFragment);
+        transaction.commit();
 
         Log.v(TAG, "Created");
     }
@@ -123,6 +127,16 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
     }
 
     /**
+     * The instance is being saved
+     * @param outState The saved instance state to save to
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("groups", groups);
+    }
+
+    /**
      * A Loader is being created
      * @param id   The ID for the Loader
      * @param args Arguments
@@ -161,6 +175,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
 
                 // Add it
                 groups.add(group);
+
+                Log.d(TAG, "Group loaded: " + group.toString());
                 cursor.moveToNext();
             }
 
@@ -187,6 +203,8 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
                 if(groupMap.get(task.getGroup()) == null) groupMap.put(task.getGroup(), Utilities.getGroupByID(task.getGroup(), groups));
                 if(groupMap.get(task.getGroup()).getTasks() == null) groupMap.get(task.getGroup()).setTasks(new ArrayList<Task>());
                 groupMap.get(task.getGroup()).getTasks().add(task);
+
+                Log.d(TAG, "Task loaded: " + task.toString());
                 cursor.moveToNext();
             }
 
@@ -194,10 +212,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
             for(Group g : groups) Utilities.reposition(g.getTasks());
 
             // We finally get to display!
-            mainFragment = MainFragment.newInstance(groups);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.activity_main, mainFragment);
-            transaction.commit();
+            mainFragment.setGroups(groups);
             setSupportProgressBarIndeterminateVisibility(false);
         }
 
@@ -210,7 +225,7 @@ public class MainActivity extends SherlockFragmentActivity implements GroupEditD
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        // Nothing to do here
+        Log.v(TAG, "Loader " + loader.getId() + " reset");
     }
 
     /* (non-Javadoc)
