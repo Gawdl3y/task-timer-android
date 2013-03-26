@@ -38,7 +38,12 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
      * @author Schuyler Cebulskie
      */
     public interface TaskEditDialogListener {
-        void onFinishEditDialog(Task task, int group);
+        /**
+         * The task edit dialog was finished
+         * @param task       The resulting task object
+         * @param groupIndex The index of the group the task is in
+         */
+        void onFinishEditDialog(Task task, int groupIndex);
     }
 
     /* (non-Javadoc)

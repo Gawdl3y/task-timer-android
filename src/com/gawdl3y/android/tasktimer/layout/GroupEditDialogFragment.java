@@ -39,6 +39,10 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
      * @author Schuyler Cebulskie
      */
     public interface GroupEditDialogListener {
+        /**
+         * The group edit dialog was finished
+         * @param group The resulting group object
+         */
         void onFinishEditDialog(Group group);
     }
 
