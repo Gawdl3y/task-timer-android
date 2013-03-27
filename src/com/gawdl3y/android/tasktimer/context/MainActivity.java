@@ -57,7 +57,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         if(savedInstanceState != null && TaskTimerApplication.GROUPS == null) TaskTimerApplication.GROUPS = savedInstanceState.getParcelableArrayList("groups");
         if(TaskTimerApplication.GROUPS == null) getSupportLoaderManager().initLoader(GROUPS_LOADER_ID, null, this);
 
-        // Initialize activity
+        // Initialize activity view
         try { requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); } catch(Exception e) {}
         setContentView(R.layout.activity_main);
 
@@ -66,6 +66,9 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activity_main, mainFragment);
         transaction.commit();
+
+        // Show ongoing notification
+        TaskTimerApplication.showOngoingNotification(this);
 
         Log.v(TAG, "Created");
     }
@@ -114,6 +117,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(TaskTimerApplication.RUNNING_TASKS <= 0) TaskTimerApplication.cancelOngoingNotification(this);
         Log.v(TAG, "Destroyed");
     }
 

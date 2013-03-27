@@ -89,7 +89,7 @@ public class TaskTimerApplication extends Application {
 
     /**
      * Shows the main ongoing notification
-     * @param context      The context we're coming from
+     * @param context The context we're coming from
      */
     public static void showOngoingNotification(Context context) {
         // Create the intent to launch the app
@@ -105,6 +105,7 @@ public class TaskTimerApplication extends Application {
                 .setLargeIcon(Utilities.drawableToBitmap(RESOURCES.getDrawable(R.drawable.ic_launcher)))
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(stackBuilder.getPendingIntent(Integer.MAX_VALUE, PendingIntent.FLAG_UPDATE_CURRENT))
+                .setOngoing(true)
                 .build();
 
         // Show the notification
