@@ -21,14 +21,13 @@ public class Task implements Parcelable {
     private HashMap<String, Object> settings;
 
     // Non-data utility properties
-    private int alert;
     private long lastTick;
 
     /**
      * Default constructor
      */
     public Task() {
-        this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, -1, -1, -1, null, -1, -1);
+        this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, -1, -1, -1, null, -1);
     }
 
     /**
@@ -36,7 +35,7 @@ public class Task implements Parcelable {
      * @param name The name of the Task
      */
     public Task(String name) {
-        this(name, "", new TimeAmount(), new TimeAmount(), false, false, false, -1, -1, -1, null, -1, -1);
+        this(name, "", new TimeAmount(), new TimeAmount(), false, false, false, -1, -1, -1, null, -1);
     }
 
     /**
@@ -44,7 +43,7 @@ public class Task implements Parcelable {
      * @param id The ID of the Task
      */
     public Task(int id) {
-        this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, id, -1, -1, null, -1, -1);
+        this("EMPTY NAME", "", new TimeAmount(), new TimeAmount(), false, false, false, id, -1, -1, null, -1);
     }
 
     /**
@@ -59,10 +58,9 @@ public class Task implements Parcelable {
      * @param position   The position of the Task in the array/ViewList
      * @param group      The ID of the group that the task is in
      * @param settings   Key-value-pairs of settings
-     * @param alert      The pseudo-ID of the alert that is handling the task reaching its goal
      * @param lastTick   The time (in milliseconds) the task's time was last incremented
      */
-    public Task(String name, String description, TimeAmount time, TimeAmount goal, boolean indefinite, boolean complete, boolean running, int id, int position, int group, HashMap<String, Object> settings, int alert, long lastTick) {
+    public Task(String name, String description, TimeAmount time, TimeAmount goal, boolean indefinite, boolean complete, boolean running, int id, int position, int group, HashMap<String, Object> settings, long lastTick) {
         this.name = name;
         this.description = description;
         this.time = time;
@@ -75,7 +73,6 @@ public class Task implements Parcelable {
         this.group = group;
         this.settings = settings;
 
-        this.alert = alert;
         this.lastTick = lastTick;
     }
 
@@ -284,23 +281,6 @@ public class Task implements Parcelable {
      */
     public void setSettings(HashMap<String, Object> settings) {
         this.settings = settings;
-    }
-
-
-    /**
-     * Sets the pseudo-ID of the alert that is handling the task reaching its goal
-     * @param alert The pseudo-ID
-     */
-    public void setAlert(int alert) {
-        this.alert = alert;
-    }
-
-    /**
-     * Gets the pseudo-ID of the alert that is handling the task reaching its goal
-     * @return The pseudo-ID
-     */
-    public int getAlert() {
-        return alert;
     }
 
     /**

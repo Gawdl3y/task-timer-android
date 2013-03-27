@@ -39,7 +39,7 @@ public class TaskTimerReceiver extends BroadcastReceiver {
             Task task = Utilities.getGroupedTaskByID(data.getInt("task"), TaskTimerApplication.GROUPS);
 
             // Make sure the task is still going
-            if(task != null && task.getAlert() == data.getInt("alert") && task.isRunning() && !task.isIndefinite()) {
+            if(task != null && task.isRunning() && !task.isIndefinite()) {
                 // Finish the task
                 task.setTime(task.getGoal());
                 task.setComplete(true);

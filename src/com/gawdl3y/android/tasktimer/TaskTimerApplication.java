@@ -71,19 +71,16 @@ public class TaskTimerApplication extends Application {
         // Set a future alarm for the task reaching its goal
         if(task.isRunning() && !task.isComplete() && !task.isIndefinite()) {
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            int alarmID = task.getAlert() + 1;
             long alarmTime = System.currentTimeMillis() + (long) ((task.getGoal().toDouble() - task.getTime().toDouble()) * 3600 * 1000);
 
             // Create the alarm
             Intent alarmIntent = new Intent(context, TaskTimerReceiver.class);
             alarmIntent.setAction(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED);
             alarmIntent.putExtra("task", task.getId());
-            alarmIntent.putExtra("alarm", alarmID);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, task.getId(), alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
 
-            task.setAlert(alarmID);
-            Log.v(TAG, "Set alarm for task " + task.getId() + " in " + (alarmTime - System.currentTimeMillis()) / 1000 + " seconds with ID " + alarmID);
+            Log.v(TAG, "Set alarm for task " + task.getId() + " in " + (alarmTime - System.currentTimeMillis()) / 1000 + " seconds");
         }
     }
 
