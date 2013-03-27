@@ -379,7 +379,7 @@ public class Task implements Parcelable {
         time.increment(secs);
         if(time.compareTo(goal) >= 0) {
             if(shouldStop()) running = false;
-            complete = true;
+            if(!indefinite) complete = true;
         }
     }
 
