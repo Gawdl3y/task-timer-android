@@ -122,16 +122,6 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     }
 
     /**
-     * The instance is being saved
-     * @param outState The saved instance state to save to
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("groups", TaskTimerApplication.GROUPS);
-    }
-
-    /**
      * A Loader is being created
      * @param id   The ID for the Loader
      * @param args Arguments
