@@ -38,8 +38,10 @@ public final class Utilities {
      * @return The task with the specified ID
      */
     public static final Task getTaskByID(int id, List<Task> tasks) {
-        for(Task t : tasks) {
-            if(t.getId() == id) return t;
+        if(tasks != null) {
+            for(Task t : tasks) {
+                if(t.getId() == id) return t;
+            }
         }
 
         return null;
@@ -52,8 +54,10 @@ public final class Utilities {
      * @return The index of the Task found, or -1 if no match
      */
     public static final int getTaskIndexByID(int id, List<Task> tasks) {
-        for(int t = 0; t < tasks.size(); t++) {
-            if(tasks.get(t).getId() == id) return t;
+        if(tasks != null) {
+            for(int t = 0; t < tasks.size(); t++) {
+                if(tasks.get(t).getId() == id) return t;
+            }
         }
 
         return -1;
@@ -66,8 +70,10 @@ public final class Utilities {
      * @return The group with the specified ID
      */
     public static final Group getGroupByID(int id, List<Group> groups) {
-        for(Group g : groups) {
-            if(g.getId() == id) return g;
+        if(groups != null) {
+            for(Group g : groups) {
+                if(g.getId() == id) return g;
+            }
         }
 
         return null;
@@ -80,8 +86,10 @@ public final class Utilities {
      * @return The index of the Group found, or -1 if no match
      */
     public static final int getGroupIndexByID(int id, List<Group> groups) {
-        for(int t = 0; t < groups.size(); t++) {
-            if(groups.get(t).getId() == id) return t;
+        if(groups != null) {
+            for(int t = 0; t < groups.size(); t++) {
+                if(groups.get(t).getId() == id) return t;
+            }
         }
 
         return -1;
@@ -94,9 +102,13 @@ public final class Utilities {
      * @return The task with the specified ID
      */
     public static final Task getGroupedTaskByID(int id, List<Group> groups) {
-        for(Group g : groups) {
-            for(Task t : g.getTasks()) {
-                if(t.getId() == id) return t;
+        if(groups != null) {
+            for(Group g : groups) {
+                if(g.getTasks() != null) {
+                    for(Task t : g.getTasks()) {
+                        if(t.getId() == id) return t;
+                    }
+                }
             }
         }
 
