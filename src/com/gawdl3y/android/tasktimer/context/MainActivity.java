@@ -62,7 +62,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         setContentView(R.layout.activity_main);
 
         // Display the main fragment
-        mainFragment = MainFragment.newInstance(TaskTimerApplication.GROUPS);
+        mainFragment = MainFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activity_main, mainFragment);
         transaction.commit();

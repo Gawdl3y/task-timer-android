@@ -26,28 +26,10 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
     private static final String TAG = "MainFragment";
 
     // Data
-    private ArrayList<Group> groups;
+    private ArrayList<Group> groups = TaskTimerApplication.GROUPS;
 
     // Stuff
     private ViewPager pager;
-
-    /**
-     * The fragment is being created
-     * @param savedInstanceState The saved instance state
-     * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
-     */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if(savedInstanceState != null) {
-            // Load from saved instance
-            groups = savedInstanceState.getParcelableArrayList("groups");
-        } else if(getArguments() != null) {
-            // Load from arguments
-            groups = getArguments().getParcelableArrayList("groups");
-        }
-    }
 
     /**
      * The view for the fragment is being created
@@ -70,13 +52,27 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
     }
 
     /**
-     * The instance of the fragment is being saved
-     * @param savedInstanceState The saved instance state
-     * @see android.support.v4.app.Fragment#onSaveInstanceState(android.os.Bundle)
+     * A task button is clicked
+     * @param view The view of the button that was clicked
      */
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelableArrayList("groups", groups);
+    public void onTaskButtonClick(View view) {
+        TaskListItem item = (TaskListItem) view.getParent().getParent();
+        Task task = groups.get((Integer) item.getTag(R.id.tag_group)).getTasks().get((Integer) item.getTag(R.id.tag_task));
+
+        if(view.getId() == R.id.task_toggle) {
+            // Toggle the task
+            if(!task.isComplete() || task.getBooleanSetting(Task.Settings.OVERTIME)) {
+                task.toggle();
+                item.invalidate(task);
+                item.buildTimer();
+
+                // Update the running task count, create a system alarm, and update the ongoing notification
+                if(task.isRunning()) TaskTimerApplication.RUNNING_TASKS++; else TaskTimerApplication.RUNNING_TASKS--;
+                TaskTimerApplication.createTaskGoalReachedAlarm(getActivity(), task);
+                TaskTimerApplication.showOngoingNotification(getActivity());
+            }
+        }
     }
 
     /**
@@ -102,30 +98,6 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
             updateTask(groupIndex, Utilities.getTaskIndexByID(task.getId(), tasks), task);
         } else {
             addTask(task, groupIndex);
-        }
-    }
-
-    /**
-     * A task button is clicked
-     * @param view The view of the button that was clicked
-     */
-    @Override
-    public void onTaskButtonClick(View view) {
-        TaskListItem item = (TaskListItem) view.getParent().getParent();
-        Task task = groups.get((Integer) item.getTag(R.id.tag_group)).getTasks().get((Integer) item.getTag(R.id.tag_task));
-
-        if(view.getId() == R.id.task_toggle) {
-            // Toggle the task
-            if(!task.isComplete() || task.getBooleanSetting(Task.Settings.OVERTIME)) {
-                task.toggle();
-                item.invalidate(task);
-                item.buildTimer();
-
-                // Update the running task count, create a system alarm, and update the ongoing notification
-                if(task.isRunning()) TaskTimerApplication.RUNNING_TASKS++; else TaskTimerApplication.RUNNING_TASKS--;
-                TaskTimerApplication.createTaskGoalReachedAlarm(getActivity(), task);
-                TaskTimerApplication.showOngoingNotification(getActivity());
-            }
         }
     }
 
@@ -267,17 +239,9 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
 
     /**
      * Creates a new instance of MainFragment
-     * @param groups The groups
      * @return A new instance of MainFragment
      */
-    public static MainFragment newInstance(ArrayList<Group> groups) {
-        // Create the arguments for the fragment
-        Bundle args = new Bundle();
-        args.putParcelableArrayList("groups", groups);
-
-        // Create the fragment
-        MainFragment fragment = new MainFragment();
-        fragment.setArguments(args);
-        return fragment;
+    public static MainFragment newInstance() {
+        return new MainFragment();
     }
 }
