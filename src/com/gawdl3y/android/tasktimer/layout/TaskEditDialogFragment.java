@@ -24,8 +24,6 @@ import java.util.ArrayList;
  * @author Schuyler Cebulskie
  */
 public class TaskEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
-    private TaskTimerApplication app;
-
     private ArrayList<Group> groups;
     private Task task;
 
@@ -53,7 +51,6 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = (TaskTimerApplication) getActivity().getApplication();
 
         if(savedInstanceState != null) {
             // Load from saved instance
@@ -95,11 +92,11 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
                 String[] opts = new String[tasks.size() + 1];
 
                 // Set the final item
-                opts[tasks.size()] = app.resources.getString(R.string.position_end);
+                opts[tasks.size()] = TaskTimerApplication.RESOURCES.getString(R.string.position_end);
 
                 // Add an item for each task
                 for(int i = 0; i < tasks.size(); i++)
-                    opts[i] = String.format(app.resources.getString(R.string.position_before), tasks.get(i).getName());
+                    opts[i] = String.format(TaskTimerApplication.RESOURCES.getString(R.string.position_before), tasks.get(i).getName());
 
                 // Set the adapter and stuff
                 positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
