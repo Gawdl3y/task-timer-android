@@ -108,7 +108,8 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
      * @param group      The Group
      */
     public void updateGroup(int groupIndex, Group group) {
-
+        groups.set(groupIndex, group);
+        buildList();
     }
 
     /**
