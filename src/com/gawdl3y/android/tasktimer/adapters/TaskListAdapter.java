@@ -20,6 +20,7 @@ public class TaskListAdapter extends BaseAdapter {
     private static final String TAG = "TaskListAdapter";
 
     private Context context;
+
     private ArrayList<Task> tasks;
     private int group;
     private SparseBooleanArray itemsChecked = new SparseBooleanArray();
