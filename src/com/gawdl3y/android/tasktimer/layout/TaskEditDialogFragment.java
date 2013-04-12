@@ -26,6 +26,7 @@ import java.util.ArrayList;
 public class TaskEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
     private ArrayList<Group> groups;
     private Task task;
+    private boolean isNew;
 
     private EditText nameView, descriptionView;
     private Spinner groupView, positionView;
@@ -40,8 +41,9 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
          * The task edit dialog was finished
          * @param task       The resulting task object
          * @param groupIndex The index of the group the task is in
+         * @param isNew      Whether or not the task is new
          */
-        void onFinishEditDialog(Task task, int groupIndex);
+        void onFinishEditDialog(Task task, int groupIndex, boolean isNew);
     }
 
     /* (non-Javadoc)
@@ -61,6 +63,8 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
             groups = getArguments().getParcelableArrayList("groups");
             task = (Task) getArguments().getParcelable("task");
         }
+
+        if(task == null) isNew = true;
     }
 
     /* (non-Javadoc)
@@ -152,7 +156,7 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
 
             // Return task to activity
             TaskEditDialogListener activity = (TaskEditDialogListener) getActivity();
-            activity.onFinishEditDialog(task, groupView.getSelectedItemPosition());
+            activity.onFinishEditDialog(task, groupView.getSelectedItemPosition(), isNew);
             dismiss();
             return true;
         }

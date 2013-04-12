@@ -33,7 +33,7 @@ public class TaskTimerApplication extends Application {
     public static String PACKAGE;
     public static Resources RESOURCES;
     public static SharedPreferences PREFERENCES;
-    public static int THEME = R.style.Theme_Dark;
+    public static int THEME = R.style.Theme_Light_DarkActionBar;
 
     // Data
     public static ArrayList<Group> GROUPS;

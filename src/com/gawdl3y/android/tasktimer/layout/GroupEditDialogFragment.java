@@ -28,6 +28,7 @@ import java.util.ArrayList;
 public class GroupEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
     private ArrayList<Group> groups;
     private Group group;
+    private boolean isNew;
 
     private EditText nameView;
     private Spinner positionView;
@@ -40,8 +41,9 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
         /**
          * The group edit dialog was finished
          * @param group The resulting group object
+         * @param isNew Whether or not the group is new
          */
-        void onFinishEditDialog(Group group);
+        void onFinishEditDialog(Group group, boolean isNew);
     }
 
     /* (non-Javadoc)
@@ -62,7 +64,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
             group = (Group) getArguments().getParcelable("group");
         }
 
-        // Load from saved instance state
+        if(group == null) isNew = true;
     }
 
     /* (non-Javadoc)
@@ -125,7 +127,7 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
 
             // Return group to activity
             GroupEditDialogListener activity = (GroupEditDialogListener) getActivity();
-            activity.onFinishEditDialog(group);
+            activity.onFinishEditDialog(group, isNew);
             dismiss();
             return true;
         }

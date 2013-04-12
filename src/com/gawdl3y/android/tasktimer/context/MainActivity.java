@@ -54,7 +54,6 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         super.onCreate(savedInstanceState);
 
         // Load data if we don't already have it
-        if(savedInstanceState != null && TaskTimerApplication.GROUPS == null) TaskTimerApplication.GROUPS = savedInstanceState.getParcelableArrayList("groups");
         if(TaskTimerApplication.GROUPS == null) getSupportLoaderManager().initLoader(GROUPS_LOADER_ID, null, this);
 
         // Initialize activity view
@@ -267,8 +266,8 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
      * @see com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.pojos.Group, int)
      */
     @Override
-    public void onFinishEditDialog(Group group) {
-        mainFragment.onFinishEditDialog(group);
+    public void onFinishEditDialog(Group group, boolean isNew) {
+        mainFragment.onFinishEditDialog(group, isNew);
     }
 
     /* (non-Javadoc)
@@ -276,7 +275,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
      * @see com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.pojos.Task)
      */
     @Override
-    public void onFinishEditDialog(Task task, int groupIndex) {
-        mainFragment.onFinishEditDialog(task, groupIndex);
+    public void onFinishEditDialog(Task task, int groupIndex, boolean isNew) {
+        mainFragment.onFinishEditDialog(task, groupIndex, isNew);
     }
 }

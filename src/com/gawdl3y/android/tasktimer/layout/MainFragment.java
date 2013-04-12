@@ -80,7 +80,7 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
      * @param group The resulting Group
      */
     @Override
-    public void onFinishEditDialog(Group group) {
+    public void onFinishEditDialog(Group group, boolean isNew) {
         groups.add(group.getPosition(), group);
         Utilities.reposition(groups);
         buildList();
@@ -92,7 +92,7 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
      * @param groupIndex The index of the Group the Task is in
      */
     @Override
-    public void onFinishEditDialog(Task task, int groupIndex) {
+    public void onFinishEditDialog(Task task, int groupIndex, boolean isNew) {
         ArrayList<Task> tasks = groups.get(groupIndex).getTasks();
         if(tasks.contains(task)) {
             updateTask(groupIndex, Utilities.getTaskIndexByID(task.getId(), tasks), task);
