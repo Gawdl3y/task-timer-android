@@ -2,6 +2,9 @@ package com.gawdl3y.android.tasktimer.pojos;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.gson.*;
+
+import java.lang.reflect.Type;
 
 /**
  * A simple class that contains hours, minutes, and seconds
@@ -225,7 +228,38 @@ public class TimeAmount implements Parcelable, Comparable<TimeAmount> {
 
 
     /**
-     * The Parcel creator used to create new instances of the Time from a parcel
+     * JSON Serializer
+     * @author Schuyler Cebulskie
+     */
+    public static class Serializer implements JsonSerializer<TimeAmount> {
+        @Override
+        public JsonElement serialize(TimeAmount timeAmount, Type type, JsonSerializationContext jsonSerializationContext) {
+            JsonObject obj = new JsonObject();
+            obj.addProperty("h", timeAmount.getHours());
+            obj.addProperty("m", timeAmount.getMins());
+            obj.addProperty("s", timeAmount.getSecs());
+            return obj;
+        }
+    }
+
+    /**
+     * JSON Deserializer
+     * @author Schuyler Cebulskie
+     */
+    public static class Deserializer implements JsonDeserializer<TimeAmount> {
+        @Override
+        public TimeAmount deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            TimeAmount timeAmount = new TimeAmount();
+            if(jsonObject.has("h")) timeAmount.setHours(jsonObject.get("h").getAsInt());
+            if(jsonObject.has("m")) timeAmount.setMins(jsonObject.get("m").getAsInt());
+            if(jsonObject.has("s")) timeAmount.setSecs(jsonObject.get("s").getAsInt());
+            return timeAmount;
+        }
+    }
+
+    /**
+     * The Parcel creator used to create new instances of TimeAmount from a parcel
      */
     public static final Parcelable.Creator<TimeAmount> CREATOR = new Parcelable.Creator<TimeAmount>() {
         /* (non-Javadoc)

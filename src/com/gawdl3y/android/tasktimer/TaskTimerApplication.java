@@ -5,18 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.SparseArray;
 import com.gawdl3y.android.tasktimer.context.MainActivity;
 import com.gawdl3y.android.tasktimer.data.TaskTimerReceiver;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
+import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
 import com.gawdl3y.android.tasktimer.util.Log;
 import com.gawdl3y.android.tasktimer.util.Utilities;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 
@@ -34,9 +39,11 @@ public class TaskTimerApplication extends Application {
     public static Resources RESOURCES;
     public static SharedPreferences PREFERENCES;
     public static int THEME = R.style.Theme_Light_DarkActionBar;
+    public static Gson GSON;
 
     // Data
     public static ArrayList<Group> GROUPS;
+    //public static SparseArray<Group> GROUPS_MAP;
     public static int RUNNING_TASKS;
 
     /* (non-Javadoc)
@@ -59,7 +66,71 @@ public class TaskTimerApplication extends Application {
         String themeStr = PREFERENCES.getString("pref_theme", "0");
         THEME = themeStr.equals("2") ? R.style.Theme_Light_DarkActionBar : (themeStr.equals("1") ? R.style.Theme_Light : R.style.Theme_Dark);
 
+        // Create GSON object
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(TimeAmount.class, new TimeAmount.Serializer());
+        gsonBuilder.registerTypeAdapter(TimeAmount.class, new TimeAmount.Deserializer());
+        GSON = gsonBuilder.create();
+
         Log.v(TAG, "Created");
+    }
+
+    /**
+     * Load Groups from a Cursor
+     * @param cursor The Cursor
+     */
+    public static void loadGroups(Cursor cursor) {
+        GROUPS = new ArrayList<Group>();
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()) {
+            // Create the group object
+            Group group = new Group(cursor.getInt(Group.Columns.ID_INDEX));
+            group.setName(cursor.getString(Group.Columns.NAME_INDEX));
+            group.setPosition(cursor.getInt(Group.Columns.POSITION_INDEX));
+
+            // Add it
+            GROUPS.add(group);
+            //GROUPS_MAP.put(group.getId(), GROUPS.get(group.getPosition()));
+
+            Log.d(TAG, "Group loaded: " + group.toString());
+            cursor.moveToNext();
+        }
+
+        // Re-position groups
+        Utilities.reposition(TaskTimerApplication.GROUPS);
+    }
+
+    /**
+     * Load Tasks from a Cursor
+     * @param cursor The Cursor
+     */
+    public static void loadTasks(Cursor cursor) {
+        SparseArray<Group> groupMap = new SparseArray<Group>();
+
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()) {
+            // Create the task object
+            Task task = new Task(cursor.getInt(Task.Columns.ID_INDEX));
+            task.setName(cursor.getString(Task.Columns.NAME_INDEX));
+            task.setDescription(cursor.getString(Task.Columns.NAME_INDEX));
+            task.setTime(GSON.fromJson(cursor.getString(Task.Columns.TIME_INDEX), TimeAmount.class));
+            task.setGoal(GSON.fromJson(cursor.getString(Task.Columns.GOAL_INDEX), TimeAmount.class));
+            task.setIndefinite(cursor.getInt(Task.Columns.INDEFINITE_INDEX) == 1);
+            task.setComplete(cursor.getInt(Task.Columns.COMPLETE_INDEX) == 1);
+            task.setPosition(cursor.getInt(Task.Columns.POSITION_INDEX));
+            task.setGroup(cursor.getInt(Task.Columns.GROUP_INDEX));
+
+            // Add it to its group
+            if(groupMap.get(task.getGroup()) == null) groupMap.put(task.getGroup(), Utilities.getGroupByID(task.getGroup(), GROUPS));
+            if(groupMap.get(task.getGroup()).getTasks() == null) groupMap.get(task.getGroup()).setTasks(new ArrayList<Task>());
+            groupMap.get(task.getGroup()).getTasks().add(task);
+
+            Log.d(TAG, "Task loaded: " + task.toString());
+            cursor.moveToNext();
+        }
+
+        // Re-position tasks
+        for(Group g : GROUPS) Utilities.reposition(g.getTasks());
     }
 
     /**

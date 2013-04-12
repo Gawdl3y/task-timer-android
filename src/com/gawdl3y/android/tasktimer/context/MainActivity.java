@@ -148,57 +148,10 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if(loader.getId() == GROUPS_LOADER_ID) {
-            TaskTimerApplication.GROUPS = new ArrayList<Group>();
-
-            cursor.moveToFirst();
-            while(!cursor.isAfterLast()) {
-                // Create the group object
-                Group group = new Group(cursor.getInt(Group.Columns.ID_INDEX));
-                group.setName(cursor.getString(Group.Columns.NAME_INDEX));
-                group.setPosition(cursor.getInt(Group.Columns.POSITION_INDEX));
-
-                // Add it
-                TaskTimerApplication.GROUPS.add(group);
-
-                Log.d(TAG, "Group loaded: " + group.toString());
-                cursor.moveToNext();
-            }
-
-            // Re-position groups
-            Utilities.reposition(TaskTimerApplication.GROUPS);
-
-            // Get tasks
+            TaskTimerApplication.loadGroups(cursor);
             getSupportLoaderManager().initLoader(TASKS_LOADER_ID, null, this);
         } else if(loader.getId() == TASKS_LOADER_ID) {
-            SparseArray<Group> groupMap = new SparseArray<Group>();
-
-            cursor.moveToFirst();
-            while(!cursor.isAfterLast()) {
-                // Create the task object
-                Task task = new Task(cursor.getInt(Task.Columns.ID_INDEX));
-                task.setName(cursor.getString(Task.Columns.NAME_INDEX));
-                task.setDescription(cursor.getString(Task.Columns.NAME_INDEX));
-                task.setIndefinite(cursor.getInt(Task.Columns.INDEFINITE_INDEX) == 1);
-                task.setComplete(cursor.getInt(Task.Columns.COMPLETE_INDEX) == 1);
-                task.setPosition(cursor.getInt(Task.Columns.POSITION_INDEX));
-                task.setGroup(cursor.getInt(Task.Columns.GROUP_INDEX));
-
-                // Add it to its group
-                if(groupMap.get(task.getGroup()) == null) groupMap.put(task.getGroup(), Utilities.getGroupByID(task.getGroup(), TaskTimerApplication.GROUPS));
-                if(groupMap.get(task.getGroup()).getTasks() == null) groupMap.get(task.getGroup()).setTasks(new ArrayList<Task>());
-                groupMap.get(task.getGroup()).getTasks().add(task);
-
-                Log.d(TAG, "Task loaded: " + task.toString());
-                cursor.moveToNext();
-            }
-
-            TaskTimerApplication.GROUPS.get(0).getTasks().get(2).setTime(new TimeAmount(0, 0, 45));
-            TaskTimerApplication.GROUPS.get(0).getTasks().get(2).setGoal(new TimeAmount(0, 1, 0));
-
-            // Re-position tasks
-            for(Group g : TaskTimerApplication.GROUPS) Utilities.reposition(g.getTasks());
-
-            // We finally get to display!
+            TaskTimerApplication.loadTasks(cursor);
             mainFragment.setGroups(TaskTimerApplication.GROUPS);
             setSupportProgressBarIndeterminateVisibility(false);
         }
@@ -268,6 +221,10 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     @Override
     public void onFinishEditDialog(Group group, boolean isNew) {
         mainFragment.onFinishEditDialog(group, isNew);
+
+        if(isNew) {
+
+        }
     }
 
     /* (non-Javadoc)
@@ -277,5 +234,9 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     @Override
     public void onFinishEditDialog(Task task, int groupIndex, boolean isNew) {
         mainFragment.onFinishEditDialog(task, groupIndex, isNew);
+
+        if(isNew) {
+
+        }
     }
 }
