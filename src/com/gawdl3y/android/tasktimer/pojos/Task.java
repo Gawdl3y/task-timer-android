@@ -368,7 +368,15 @@ public class Task implements Parcelable {
      * Increments the Task's time by 1 second
      */
     public synchronized void incrementTime() {
-        incrementTime(1);
+        incrementTime(1, true);
+    }
+
+    /**
+     * Increments the Task's time by 1 second
+     * @param checkFinished Whether or not to check if the task is finished
+     */
+    public synchronized void incrementTime(boolean checkFinished) {
+        incrementTime(1, checkFinished);
     }
 
     /**
@@ -376,8 +384,17 @@ public class Task implements Parcelable {
      * @param secs The seconds to increment the time by
      */
     public synchronized void incrementTime(int secs) {
+        incrementTime(secs, true);
+    }
+
+    /**
+     * Increments the Task's time
+     * @param secs          The seconds to increment the time by
+     * @param checkFinished Whether or not to check if the task is finished
+     */
+    public synchronized void incrementTime(int secs, boolean checkFinished) {
         time.increment(secs);
-        if(time.compareTo(goal) >= 0) {
+        if(checkFinished && time.compareTo(goal) >= 0) {
             if(shouldStop()) running = false;
             if(!indefinite) complete = true;
         }

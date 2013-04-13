@@ -58,10 +58,10 @@ public class TaskTimerThread extends Thread {
                     // Delay and increment time
                     if(difference >= delay || difference < 1 || !task.getBooleanSetting(Task.Settings.STOP_AT_GOAL)) {
                         Thread.sleep(delay * 1000);
-                        if(task.isRunning()) task.incrementTime(delay);
+                        if(task.isRunning()) task.incrementTime(delay, false);
                     } else {
                         Thread.sleep(difference * 1000);
-                        if(task.isRunning()) task.incrementTime(difference);
+                        if(task.isRunning()) task.incrementTime(difference, false);
                     }
 
                     // Call the listener
