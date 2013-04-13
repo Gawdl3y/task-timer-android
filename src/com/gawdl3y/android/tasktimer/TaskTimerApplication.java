@@ -97,7 +97,7 @@ public class TaskTimerApplication extends Application {
         }
 
         // Re-position groups
-        Utilities.reposition(TaskTimerApplication.GROUPS);
+        Utilities.reposition(GROUPS);
     }
 
     /**
@@ -106,7 +106,6 @@ public class TaskTimerApplication extends Application {
      */
     public static void loadTasks(Cursor cursor) {
         SparseArray<Group> groupMap = new SparseArray<Group>();
-
         cursor.moveToFirst();
         while(!cursor.isAfterLast()) {
             // Create the task object

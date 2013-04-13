@@ -20,6 +20,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.layout.SettingsFragment;
+import com.gawdl3y.android.tasktimer.util.Utilities;
 
 import java.util.Map;
 
@@ -41,6 +42,15 @@ public class SettingsActivity extends SherlockPreferenceActivity {
             addPreferencesFromResource(R.xml.preferences);
             TaskTimerApplication.PREFERENCES.registerOnSharedPreferenceChangeListener(changeListener);
             updateSummaries();
+
+            // Add click listener to the Play Store preference
+            Preference playStorePref = findPreference("pref_playStore");
+            playStorePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    Utilities.openPlayStore(SettingsActivity.this);
+                    return true;
+                }
+            });
         } else {
             // Use the fragment for Honeycomb and newer
             getFragmentManager().beginTransaction().replace(android.R.id.content, SettingsFragment.newInstance()).commit();

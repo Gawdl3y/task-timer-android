@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.SparseArray;
 import android.view.View;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -25,11 +24,7 @@ import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
-import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
 import com.gawdl3y.android.tasktimer.util.Log;
-import com.gawdl3y.android.tasktimer.util.Utilities;
-
-import java.util.ArrayList;
 
 /**
  * The main activity of Task Timer

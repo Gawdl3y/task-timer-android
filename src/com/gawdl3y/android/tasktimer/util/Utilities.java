@@ -1,10 +1,14 @@
 package com.gawdl3y.android.tasktimer.util;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 
@@ -17,7 +21,7 @@ import java.util.List;
 public final class Utilities {
     /**
      * Sets the positions of tasks or groups in a List to the position in the array
-     * @param arr The ArrayList to reorder
+     * @param arr The List to reorder
      */
     public static final void reposition(List<?> arr) {
         for(int i = 0; i < arr.size(); i++) {
@@ -131,4 +135,24 @@ public final class Utilities {
         return bitmap;
     }
 
+    /**
+     * Opens the Play Store item for the app
+     * @param context The context we're coming from
+     */
+    public static final void openPlayStore(Context context) {
+        openPlayStore(context, TaskTimerApplication.PACKAGE);
+    }
+
+    /**
+     * Opens the Play Store item for a specified app package
+     * @param context    The context we're coming from
+     * @param appPackage The package of the target app
+     */
+    public static final void openPlayStore(Context context, String appPackage) {
+        try {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackage)));
+        } catch(android.content.ActivityNotFoundException e) {
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackage)));
+        }
+    }
 }
