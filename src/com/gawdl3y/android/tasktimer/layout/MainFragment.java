@@ -1,6 +1,5 @@
 package com.gawdl3y.android.tasktimer.layout;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -32,6 +31,17 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
     private ViewPager pager;
 
     /**
+     * The fragment is being created
+     * @param savedInstanceState The saved instance state
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        Log.v(TAG, "Created");
+    }
+
+    /**
      * The view for the fragment is being created
      * @param inflater           The LayoutInflater to use
      * @param container          The container
@@ -45,7 +55,7 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
         pager = (ViewPager) view.findViewById(R.id.pager);
 
         // Set the adapter of the pager
-        new SetAdapterTask().execute();
+        pager.setAdapter(new TaskListFragmentAdapter(getFragmentManager(), groups));
 
         Log.v(TAG, "View created");
         return view;
@@ -191,24 +201,6 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
             getAdapter().notifyDataSetChanged();
             pager.setVisibility(View.VISIBLE);
             pager.invalidate();
-        }
-    }
-
-
-    /**
-     * Sets the adapter of the ViewPager
-     * @author Schuyler Cebulskie
-     */
-    private class SetAdapterTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            pager.setAdapter(new TaskListFragmentAdapter(getFragmentManager(), groups));
-            Log.v(TAG, "Set ViewPager adapter");
         }
     }
 
