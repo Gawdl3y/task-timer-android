@@ -21,7 +21,7 @@ import com.gawdl3y.android.tasktimer.util.Log;
 public class TaskListFragment extends SherlockListFragment {
     private static final String TAG = "TaskListFragment";
 
-    public Group group;
+    private Group group;
 
     /* (non-Javadoc)
      * The fragment is being created
@@ -120,6 +120,23 @@ public class TaskListFragment extends SherlockListFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable("group", group);
+    }
+
+
+    /**
+     * Sets the Group that the fragment is displaying
+     * @param group The Group
+     */
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    /**
+     * Gets the Group that the fragment is displaying
+     * @return The Group
+     */
+    public Group getGroup() {
+        return group;
     }
 
 

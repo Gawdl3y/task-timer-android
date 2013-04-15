@@ -91,7 +91,7 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
         // Update the task list fragment adapter for the group
         TaskListFragment fragment = (TaskListFragment) getFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + group.getPosition());
         if(fragment != null) {
-            fragment.group = group;
+            fragment.setGroup(group);
             ((TaskListAdapter) fragment.getListAdapter()).notifyDataSetChanged();
         }
 
