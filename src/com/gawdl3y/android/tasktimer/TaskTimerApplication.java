@@ -139,6 +139,7 @@ public class TaskTimerApplication extends Application {
      */
     public static void addGroup(Group group) {
         GROUPS.add(group.getPosition(), group);
+        Utilities.reposition(GROUPS);
         if(TaskTimerEvents.getGroupListener() != null) TaskTimerEvents.getGroupListener().onGroupAdd(group);
     }
 
@@ -148,6 +149,7 @@ public class TaskTimerApplication extends Application {
      */
     public static void removeGroup(int groupPosition) {
         Group group = GROUPS.remove(groupPosition);
+        Utilities.reposition(GROUPS);
         if(TaskTimerEvents.getGroupListener() != null) TaskTimerEvents.getGroupListener().onGroupRemove(group);
     }
 
@@ -169,6 +171,7 @@ public class TaskTimerApplication extends Application {
     public static void addTask(int groupPosition, Task task) {
         Group group = GROUPS.get(groupPosition);
         group.getTasks().add(task.getPosition(), task);
+        Utilities.reposition(group.getTasks());
         if(TaskTimerEvents.getTaskListener() != null) TaskTimerEvents.getTaskListener().onTaskAdd(task, group);
     }
 
@@ -180,6 +183,7 @@ public class TaskTimerApplication extends Application {
     public static void removeTask(int groupPosition, int taskPosition) {
         Group group = GROUPS.get(groupPosition);
         Task task = group.getTasks().remove(taskPosition);
+        Utilities.reposition(group.getTasks());
         if(TaskTimerEvents.getTaskListener() != null) TaskTimerEvents.getTaskListener().onTaskRemove(task, group);
     }
 
