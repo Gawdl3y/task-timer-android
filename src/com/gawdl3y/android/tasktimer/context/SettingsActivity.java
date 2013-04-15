@@ -25,10 +25,6 @@ import com.gawdl3y.android.tasktimer.util.Utilities;
 import java.util.Map;
 
 public class SettingsActivity extends SherlockPreferenceActivity {
-    /* (non-Javadoc)
-     * The activity is created
-     * @see android.preference.PreferenceActivity#onCreate(android.os.Bundle)
-     */
     @SuppressLint("NewApi")
     @SuppressWarnings("deprecation")
     @Override
@@ -60,10 +56,6 @@ public class SettingsActivity extends SherlockPreferenceActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    /* (non-Javadoc)
-     * The activity is stopped
-     * @see com.actionbarsherlock.app.SherlockPreferenceActivity#onStop()
-     */
     @Override
     public void onStop() {
         super.onStop();

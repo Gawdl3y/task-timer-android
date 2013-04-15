@@ -39,10 +39,6 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     // Stuff
     private MainFragment mainFragment;
 
-    /* (non-Javadoc)
-     * The activity is being created
-     * @see android.app.Activity#onCreate(android.os.Bundle)
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Switch theme (we do this before calling the super method so that the theme properly applies)
@@ -62,16 +58,9 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         transaction.replace(R.id.activity_main, mainFragment);
         transaction.commit();
 
-        // Show ongoing notification
-        TaskTimerApplication.showOngoingNotification(this);
-
         Log.v(TAG, "Created");
     }
 
-    /* (non-Javadoc)
-     * The activity is being started
-     * @see android.support.v4.app.FragmentActivity#onStart()
-     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -89,30 +78,22 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
             return;
         }
 
-        // Show the loading indicator if we don't have the data
+        // Show the loading indicator if we don't have the data, register as the event listener, and show the ongoing notification
         if(TaskTimerApplication.GROUPS == null) setSupportProgressBarIndeterminateVisibility(true);
-
-        // Register as the Group/TaskListeners
         TaskTimerEvents.setListener(this);
+        TaskTimerApplication.showOngoingNotification(this);
 
         Log.v(TAG, "Started");
     }
 
-    /* (non-Javadoc)
-     * The activity is being stopped
-     * @see com.actionbarsherlock.app.SherlockFragmentActivity#onStop()
-     */
     @Override
     protected void onStop() {
         super.onStop();
         TaskTimerEvents.setListener(null);
+        if(TaskTimerApplication.RUNNING_TASKS <= 0) TaskTimerApplication.cancelOngoingNotification(this);
         Log.v(TAG, "Stopped");
     }
 
-    /* (non-Javadoc)
-     * The activity is being destroyed
-     * @see com.actionbarsherlock.app.SherlockFragmentActivity#onStop()
-     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -120,12 +101,6 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         Log.v(TAG, "Destroyed");
     }
 
-    /**
-     * A Loader is being created
-     * @param id   The ID for the Loader
-     * @param args Arguments
-     * @return The Loader to use
-     */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(TAG, "Loader created with ID " + id);
@@ -140,11 +115,6 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         }
     }
 
-    /**
-     * A Loader has finished
-     * @param loader The Loader
-     * @param cursor The cursor for the data
-     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if(loader.getId() == GROUPS_LOADER_ID) {
@@ -159,19 +129,11 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         Log.v(TAG, "Loader " + loader.getId() + " finished");
     }
 
-    /**
-     * The Loader has been reset
-     * @param loader The Loader
-     */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.v(TAG, "Loader " + loader.getId() + " reset");
     }
 
-    /* (non-Javadoc)
-     * The action bar was created
-     * @see com.actionbarsherlock.app.SherlockActivity#onCreateOptionsMenu(android.view.Menu)
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -179,10 +141,6 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         return true;
     }
 
-    /* (non-Javadoc)
-     * An action bar menu button was pressed
-     * @see com.actionbarsherlock.app.SherlockActivity#onOptionsItemSelected(android.view.MenuItem)
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;

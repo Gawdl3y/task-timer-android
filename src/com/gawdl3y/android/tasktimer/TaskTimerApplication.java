@@ -49,10 +49,6 @@ public class TaskTimerApplication extends Application {
     public static int CURRENT_GROUP_ID;
     public static int CURRENT_TASK_ID;
 
-    /* (non-Javadoc)
-     * The application is being created
-     * @see android.app.Application#onCreate()
-     */
     @Override
     public void onCreate() {
         super.onCreate();

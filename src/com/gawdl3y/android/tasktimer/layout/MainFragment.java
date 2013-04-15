@@ -30,10 +30,6 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
     // Stuff
     private ViewPager pager;
 
-    /**
-     * The fragment is being created
-     * @param savedInstanceState The saved instance state
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,13 +37,6 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
         Log.v(TAG, "Created");
     }
 
-    /**
-     * The view for the fragment is being created
-     * @param inflater           The LayoutInflater to use
-     * @param container          The container
-     * @param savedInstanceState The saved instance state
-     * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
-     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Create the view and pager
@@ -61,10 +50,6 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
         return view;
     }
 
-    /**
-     * A task button is clicked
-     * @param view The view of the button that was clicked
-     */
     @Override
     public void onTaskButtonClick(View view) {
         TaskListItem item = (TaskListItem) view.getParent().getParent();
