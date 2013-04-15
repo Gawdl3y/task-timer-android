@@ -72,10 +72,10 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
     @Override
     public int getItemPosition(Object o) {
         TaskListFragment item = (TaskListFragment) o;
-        int position = groups.indexOf(item.group);
+        int position = groups.indexOf(item.getGroup());
 
         if(position >= 0) {
-            Log.v(TAG, "Item found at index " + position + ": " + item.group.toString());
+            Log.v(TAG, "Item found at index " + position + ": " + item.getGroup().toString());
             return position;
         } else {
             Log.v(TAG, "Item not found");
