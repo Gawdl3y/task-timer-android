@@ -12,6 +12,7 @@ import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,16 +24,28 @@ public final class Utilities {
      * Sets the positions of tasks or groups in a List to the position in the array
      * @param arr The List to reorder
      */
-    public static final void reposition(List<?> arr) {
+    public static final ArrayList<Object> reposition(List<?> arr) {
+        ArrayList<Object> modifiedEntries = new ArrayList<Object>();
+
         for(int i = 0; i < arr.size(); i++) {
             Object thing = arr.get(i);
 
             if(thing instanceof Task) {
-                ((Task) thing).setPosition(i);
+                Task task = (Task) thing;
+                if(task.getPosition() != i) {
+                    task.setPosition(i);
+                    modifiedEntries.add(task);
+                }
             } else if(thing instanceof Group) {
-                ((Group) thing).setPosition(i);
+                Group group = (Group) thing;
+                if(group.getPosition() != i) {
+                    group.setPosition(i);
+                    modifiedEntries.add(group);
+                }
             }
         }
+
+        return modifiedEntries;
     }
 
     /**
