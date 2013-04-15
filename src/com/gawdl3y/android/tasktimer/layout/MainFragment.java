@@ -18,7 +18,7 @@ import com.gawdl3y.android.tasktimer.util.Log;
 import java.util.ArrayList;
 
 /**
- * The main fragment for Task Timer; contains a TaskListFragmentAdapter
+ * The main fragment for Task Timer; contains a {@code TaskListFragmentAdapter}
  * @author Schuyler Cebulskie
  */
 public class MainFragment extends SherlockFragment implements TaskListItem.TaskButtonListener, TaskTimerEvents.GroupListener, TaskTimerEvents.TaskListener {

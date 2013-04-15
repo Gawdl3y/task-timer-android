@@ -23,6 +23,7 @@ public final class Utilities {
     /**
      * Sets the positions of tasks or groups in a List to the position in the array
      * @param arr The List to reorder
+     * @return An {@code ArrayList} of modified elements
      */
     public static final ArrayList<Object> reposition(List<?> arr) {
         ArrayList<Object> modifiedEntries = new ArrayList<Object>();
