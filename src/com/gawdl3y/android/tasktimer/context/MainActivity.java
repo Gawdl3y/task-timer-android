@@ -24,13 +24,14 @@ import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
 import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
+import com.gawdl3y.android.tasktimer.pojos.TaskTimerEvents;
 import com.gawdl3y.android.tasktimer.util.Log;
 
 /**
  * The main activity of Task Timer
  * @author Schuyler Cebulskie
  */
-public class MainActivity extends SherlockFragmentActivity implements TaskListItem.TaskButtonListener, GroupEditDialogFragment.GroupEditDialogListener, TaskEditDialogFragment.TaskEditDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends SherlockFragmentActivity implements TaskListItem.TaskButtonListener, TaskTimerEvents.GroupListener, TaskTimerEvents.TaskListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "MainActivity";
     private static final int GROUPS_LOADER_ID = 1;
     private static final int TASKS_LOADER_ID = 2;
@@ -52,7 +53,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         if(TaskTimerApplication.GROUPS == null) getSupportLoaderManager().initLoader(GROUPS_LOADER_ID, null, this);
 
         // Initialize activity view
-        try { requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); } catch(Exception e) {}
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
 
         // Display the main fragment
@@ -91,6 +92,9 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         // Show the loading indicator if we don't have the data
         if(TaskTimerApplication.GROUPS == null) setSupportProgressBarIndeterminateVisibility(true);
 
+        // Register as the Group/TaskListeners
+        TaskTimerEvents.setListener(this);
+
         Log.v(TAG, "Started");
     }
 
@@ -101,6 +105,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     @Override
     protected void onStop() {
         super.onStop();
+        TaskTimerEvents.setListener(null);
         Log.v(TAG, "Stopped");
     }
 
@@ -200,38 +205,38 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         }
     }
 
-    /**
-     * A task button is clicked
-     * @param view The view of the button that was clicked
-     */
     @Override
     public void onTaskButtonClick(View view) {
         mainFragment.onTaskButtonClick(view);
     }
 
-    /* (non-Javadoc)
-     * The add group dialog is finished
-     * @see com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment.GroupEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.pojos.Group, int)
-     */
     @Override
-    public void onFinishEditDialog(Group group, boolean isNew) {
-        mainFragment.onFinishEditDialog(group, isNew);
-
-        if(isNew) {
-
-        }
+    public void onGroupAdd(Group group) {
+        mainFragment.onGroupAdd(group);
     }
 
-    /* (non-Javadoc)
-     * The add task dialog is finished
-     * @see com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment.TaskEditDialogListener#onFinishEditDialog(com.gawdl3y.android.tasktimer.pojos.Task)
-     */
     @Override
-    public void onFinishEditDialog(Task task, int groupIndex, boolean isNew) {
-        mainFragment.onFinishEditDialog(task, groupIndex, isNew);
+    public void onGroupRemove(Group group) {
+        mainFragment.onGroupRemove(group);
+    }
 
-        if(isNew) {
+    @Override
+    public void onGroupUpdate(Group group, Group oldGroup) {
+        mainFragment.onGroupUpdate(group, oldGroup);
+    }
 
-        }
+    @Override
+    public void onTaskAdd(Task task, Group group) {
+        mainFragment.onTaskAdd(task, group);
+    }
+
+    @Override
+    public void onTaskRemove(Task task, Group group) {
+        mainFragment.onTaskRemove(task, group);
+    }
+
+    @Override
+    public void onTaskUpdate(Task task, Task oldTask, Group group) {
+        mainFragment.onTaskUpdate(task, oldTask, group);
     }
 }

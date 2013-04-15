@@ -12,8 +12,8 @@ import com.gawdl3y.android.tasktimer.adapters.TaskListAdapter;
 import com.gawdl3y.android.tasktimer.adapters.TaskListFragmentAdapter;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
+import com.gawdl3y.android.tasktimer.pojos.TaskTimerEvents;
 import com.gawdl3y.android.tasktimer.util.Log;
-import com.gawdl3y.android.tasktimer.util.Utilities;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * The main fragment for Task Timer; contains a TaskListFragmentAdapter
  * @author Schuyler Cebulskie
  */
-public class MainFragment extends SherlockFragment implements TaskListItem.TaskButtonListener, GroupEditDialogFragment.GroupEditDialogListener, TaskEditDialogFragment.TaskEditDialogListener {
+public class MainFragment extends SherlockFragment implements TaskListItem.TaskButtonListener, TaskTimerEvents.GroupListener, TaskTimerEvents.TaskListener {
     private static final String TAG = "MainFragment";
 
     // Data
@@ -85,92 +85,25 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
         }
     }
 
-    /**
-     * The Group edit dialog has finished
-     * @param group The resulting Group
-     */
     @Override
-    public void onFinishEditDialog(Group group, boolean isNew) {
-        groups.add(group.getPosition(), group);
-        Utilities.reposition(groups);
+    public void onGroupAdd(Group group) {
         buildList();
     }
 
-    /**
-     * The Task edit dialog has finished
-     * @param task       The resulting Task
-     * @param groupIndex The index of the Group the Task is in
-     */
     @Override
-    public void onFinishEditDialog(Task task, int groupIndex, boolean isNew) {
-        ArrayList<Task> tasks = groups.get(groupIndex).getTasks();
-        if(tasks.contains(task)) {
-            updateTask(groupIndex, Utilities.getTaskIndexByID(task.getId(), tasks), task);
-        } else {
-            addTask(task, groupIndex);
-        }
-    }
-
-
-    /**
-     * Update a Group
-     * @param groupIndex The index of the Group to update
-     * @param group      The Group
-     */
-    public void updateGroup(int groupIndex, Group group) {
-        groups.set(groupIndex, group);
+    public void onGroupRemove(Group group) {
         buildList();
     }
 
-    /**
-     * Add a Group
-     * @param group The Group to add
-     */
-    public void addGroup(Group group) {
-        groups.add(group.getPosition(), group);
+    @Override
+    public void onGroupUpdate(Group group, Group oldGroup) {
         buildList();
     }
 
-    /**
-     * Remove a Group
-     * @param groupIndex The index of the Group to remove
-     */
-    public void removeGroup(int groupIndex) {
-
-    }
-
-    /**
-     * Update a Task
-     * @param groupIndex The index of the Group the Task is in
-     * @param taskIndex  The index of the Task in the Group
-     * @param task       The Task
-     */
-    public void updateTask(int groupIndex, int taskIndex, Task task) {
-        // Set the task
-        groups.get(groupIndex).getTasks().set(taskIndex, task);
-
-        // Update the view for the task
-        try {
-            TaskListFragment fragment = (TaskListFragment) getFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + groupIndex);
-            TaskListItem item = (TaskListItem) fragment.getView().findViewWithTag(task.getPosition());
-            item.invalidate(task);
-            item.buildTimer();
-        } catch(Exception e) {
-            Log.v(TAG, "Couldn't update view of task #" + taskIndex + " in group #" + groupIndex);
-        }
-    }
-
-    /**
-     * Add a Task
-     * @param task       The Task to add
-     * @param groupIndex The index of the Group to add it to
-     */
-    public void addTask(Task task, int groupIndex) {
-        Group group = groups.get(groupIndex);
-        group.getTasks().add(task.getPosition(), task);
-
+    @Override
+    public void onTaskAdd(Task task, Group group) {
         // Update the task list fragment adapter for the group
-        TaskListFragment fragment = (TaskListFragment) getFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + groupIndex);
+        TaskListFragment fragment = (TaskListFragment) getFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + group.getPosition());
         if(fragment != null) {
             fragment.group = group;
             ((TaskListAdapter) fragment.getListAdapter()).notifyDataSetChanged();
@@ -178,17 +111,27 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
 
         // Update the adapter's groups and scroll to the group that the task was added to
         getAdapter().setGroups(groups);
-        pager.setCurrentItem(groupIndex, true);
+        pager.setCurrentItem(group.getPosition(), true);
     }
 
-    /**
-     * Remove a Task
-     * @param groupIndex The index of the Group the Task is in
-     * @param taskIndex  The index of the Task in the Group
-     */
-    public void removeTask(int groupIndex, int taskIndex) {
-
+    @Override
+    public void onTaskRemove(Task task, Group group) {
+        buildList();
     }
+
+    @Override
+    public void onTaskUpdate(Task task, Task oldTask, Group group) {
+        // Update the view for the task
+        try {
+            TaskListFragment fragment = (TaskListFragment) getFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + group.getPosition());
+            TaskListItem item = (TaskListItem) fragment.getView().findViewWithTag(task.getPosition());
+            item.invalidate(task);
+            item.buildTimer();
+        } catch(Exception e) {
+            Log.v(TAG, "Couldn't update view of task " + task.getId());
+        }
+    }
+
 
     /**
      * Builds/rebuilds the list of groups and tasks

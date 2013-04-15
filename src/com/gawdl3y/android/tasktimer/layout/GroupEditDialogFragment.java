@@ -33,19 +33,6 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
     private EditText nameView;
     private Spinner positionView;
 
-    /**
-     * Interface used for listening for the changes to be completed on a Group
-     * @author Schuyler Cebulskie
-     */
-    public interface GroupEditDialogListener {
-        /**
-         * The group edit dialog was finished
-         * @param group The resulting group object
-         * @param isNew Whether or not the group is new
-         */
-        void onFinishEditDialog(Group group, boolean isNew);
-    }
-
     /* (non-Javadoc)
      * The fragment is being created
      * @see android.support.v4.app.DialogFragment#onCreate(android.os.Bundle)
@@ -124,10 +111,8 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
             if(group.getTasks() == null) group.setTasks(new ArrayList<Task>());
             group.setName(nameView.getText().toString());
             group.setPosition(positionView.getSelectedItemPosition());
-
-            // Return group to activity
-            GroupEditDialogListener activity = (GroupEditDialogListener) getActivity();
-            activity.onFinishEditDialog(group, isNew);
+            // TODO: fix reordering
+            if(isNew) TaskTimerApplication.addGroup(group); else TaskTimerApplication.updateGroup(group);
             dismiss();
             return true;
         }

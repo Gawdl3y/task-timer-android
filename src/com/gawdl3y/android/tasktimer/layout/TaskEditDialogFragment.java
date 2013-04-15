@@ -32,20 +32,6 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
     private Spinner groupView, positionView;
     private ArrayAdapter<String> groupAdapter, positionAdapter;
 
-    /**
-     * Interface used for listening for the changes to be completed on a Task
-     * @author Schuyler Cebulskie
-     */
-    public interface TaskEditDialogListener {
-        /**
-         * The task edit dialog was finished
-         * @param task       The resulting task object
-         * @param groupIndex The index of the group the task is in
-         * @param isNew      Whether or not the task is new
-         */
-        void onFinishEditDialog(Task task, int groupIndex, boolean isNew);
-    }
-
     /* (non-Javadoc)
      * The fragment is being created
      * @see android.support.v4.app.DialogFragment#onCreate(android.os.Bundle)
@@ -153,10 +139,9 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
             task.setName(nameView.getText().toString());
             task.setDescription(descriptionView.getText().toString());
             task.setPosition(positionView.getSelectedItemPosition());
-
-            // Return task to activity
-            TaskEditDialogListener activity = (TaskEditDialogListener) getActivity();
-            activity.onFinishEditDialog(task, groupView.getSelectedItemPosition(), isNew);
+            int groupPosition = groupView.getSelectedItemPosition();
+            // TODO: fix reordering
+            if(isNew) TaskTimerApplication.addTask(groupPosition, task); else TaskTimerApplication.updateTask(groupPosition, task);
             dismiss();
             return true;
         }

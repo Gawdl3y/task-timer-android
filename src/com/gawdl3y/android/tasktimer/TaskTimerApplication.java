@@ -17,6 +17,7 @@ import com.gawdl3y.android.tasktimer.context.MainActivity;
 import com.gawdl3y.android.tasktimer.data.TaskTimerReceiver;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
+import com.gawdl3y.android.tasktimer.pojos.TaskTimerEvents;
 import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
 import com.gawdl3y.android.tasktimer.util.Log;
 import com.gawdl3y.android.tasktimer.util.Utilities;
@@ -130,6 +131,68 @@ public class TaskTimerApplication extends Application {
 
         // Re-position tasks
         for(Group g : GROUPS) Utilities.reposition(g.getTasks());
+    }
+
+    /**
+     * Add a Group
+     * @param group The Group to add
+     */
+    public static void addGroup(Group group) {
+        GROUPS.add(group.getPosition(), group);
+        if(TaskTimerEvents.getGroupListener() != null) TaskTimerEvents.getGroupListener().onGroupAdd(group);
+    }
+
+    /**
+     * Remove a Group
+     * @param groupPosition The index of the Group to remove
+     */
+    public static void removeGroup(int groupPosition) {
+        Group group = GROUPS.remove(groupPosition);
+        if(TaskTimerEvents.getGroupListener() != null) TaskTimerEvents.getGroupListener().onGroupRemove(group);
+    }
+
+    /**
+     * Update a Group
+     * <p>The position <strong>cannot</strong> change</p>
+     * @param group The new Group object
+     */
+    public static void updateGroup(Group group) {
+        Group oldGroup = GROUPS.set(group.getPosition(), group);
+        if(TaskTimerEvents.getGroupListener() != null) TaskTimerEvents.getGroupListener().onGroupUpdate(group, oldGroup);
+    }
+
+    /**
+     * Add a Task
+     * @param groupPosition The index of the Group the Task will go in
+     * @param task          The Task to add
+     */
+    public static void addTask(int groupPosition, Task task) {
+        Group group = GROUPS.get(groupPosition);
+        group.getTasks().add(task.getPosition(), task);
+        if(TaskTimerEvents.getTaskListener() != null) TaskTimerEvents.getTaskListener().onTaskAdd(task, group);
+    }
+
+    /**
+     * Remove a Task
+     * @param groupPosition The index of the Group the Task is in
+     * @param taskPosition  The index of the Task to remove
+     */
+    public static void removeTask(int groupPosition, int taskPosition) {
+        Group group = GROUPS.get(groupPosition);
+        Task task = group.getTasks().remove(taskPosition);
+        if(TaskTimerEvents.getTaskListener() != null) TaskTimerEvents.getTaskListener().onTaskRemove(task, group);
+    }
+
+    /**
+     * Update a Task
+     * <p>The position <strong>cannot</strong> change</p>
+     * @param groupPosition The index of the Group the Task is in
+     * @param task          The new Task object
+     */
+    public static void updateTask(int groupPosition, Task task) {
+        Group group = GROUPS.get(groupPosition);
+        Task oldTask = group.getTasks().set(task.getPosition(), task);
+        if(TaskTimerEvents.getTaskListener() != null) TaskTimerEvents.getTaskListener().onTaskUpdate(task, oldTask, group);
     }
 
     /**
