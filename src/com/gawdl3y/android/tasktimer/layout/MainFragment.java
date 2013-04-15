@@ -62,9 +62,16 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
                 item.invalidate(task);
                 item.buildTimer();
 
-                // Update the running task count, create a system alarm, and update the ongoing notification
-                if(task.isRunning()) TaskTimerApplication.RUNNING_TASKS++; else TaskTimerApplication.RUNNING_TASKS--;
-                TaskTimerApplication.createTaskGoalReachedAlarm(getActivity(), task);
+                // Update the running task count and create/cancel a system alarm
+                if(task.isRunning()) {
+                    TaskTimerApplication.RUNNING_TASKS++;
+                    TaskTimerApplication.createTaskGoalReachedAlarm(getActivity(), task);
+                } else {
+                    TaskTimerApplication.RUNNING_TASKS--;
+                    TaskTimerApplication.cancelTaskGoalReachedAlarm(getActivity(), task);
+                }
+
+                // Update the ongoing notification
                 TaskTimerApplication.showOngoingNotification(getActivity());
             }
         }
