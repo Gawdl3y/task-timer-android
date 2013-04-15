@@ -208,7 +208,7 @@ public class TaskTimerApplication extends Application {
     }
 
     /**
-     * Creates a system alarm for a task reaching its goal
+     * Sets a system alarm for a task reaching its goal
      * @param context The context we're coming from
      * @param task    The task to create the alarm for
      */
@@ -218,13 +218,14 @@ public class TaskTimerApplication extends Application {
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             long alarmTime = System.currentTimeMillis() + (long) ((task.getGoal().toDouble() - task.getTime().toDouble()) * 3600 * 1000);
 
-            // Create the alarm
+            // Create the pending intent for the alarm
             Intent alarmIntent = new Intent(context, TaskTimerReceiver.class);
             alarmIntent.setAction(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED);
             alarmIntent.putExtra("task", task.getId());
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, task.getId(), alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
 
+            // Set the alarm
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
             Log.v(TAG, "Set alarm for task " + task.getId() + " in " + (alarmTime - System.currentTimeMillis()) / 1000.0 + " seconds");
         }
     }
@@ -235,14 +236,15 @@ public class TaskTimerApplication extends Application {
      * @param task    The task to cancel the alarm for
      */
     public static void cancelTaskGoalReachedAlarm(Context context, Task task) {
-        // Cancel the future alarm for the task
+        // Create the pending intent for the alarm
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent alarmIntent = new Intent(context, TaskTimerReceiver.class);
         alarmIntent.setAction(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED);
         alarmIntent.putExtra("task", task.getId());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, task.getId(), alarmIntent, PendingIntent.FLAG_NO_CREATE);
-        alarmManager.cancel(pendingIntent);
 
+        // Cancel the alarm
+        alarmManager.cancel(pendingIntent);
         Log.v(TAG, "Cancelled alarm for task " + task.getId());
     }
 
