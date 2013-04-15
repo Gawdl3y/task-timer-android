@@ -88,6 +88,7 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
     @Override
     public void onGroupAdd(Group group) {
         buildList();
+        pager.setCurrentItem(group.getPosition(), true);
     }
 
     @Override
@@ -127,6 +128,7 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
             TaskListItem item = (TaskListItem) fragment.getView().findViewWithTag(task.getPosition());
             item.invalidate(task);
             item.buildTimer();
+            getAdapter().setGroups(groups);
         } catch(Exception e) {
             Log.v(TAG, "Couldn't update view of task " + task.getId());
         }
