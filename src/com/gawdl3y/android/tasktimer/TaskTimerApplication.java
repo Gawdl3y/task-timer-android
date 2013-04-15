@@ -46,6 +46,8 @@ public class TaskTimerApplication extends Application {
     public static ArrayList<Group> GROUPS;
     //public static SparseArray<Group> GROUPS_MAP;
     public static int RUNNING_TASKS;
+    public static int CURRENT_GROUP_ID;
+    public static int CURRENT_TASK_ID;
 
     /* (non-Javadoc)
      * The application is being created
@@ -92,6 +94,7 @@ public class TaskTimerApplication extends Application {
             // Add it
             GROUPS.add(group);
             //GROUPS_MAP.put(group.getId(), GROUPS.get(group.getPosition()));
+            if(group.getId() > CURRENT_GROUP_ID) CURRENT_GROUP_ID = group.getId();
 
             Log.d(TAG, "Group loaded: " + group.toString());
             cursor.moveToNext();
@@ -124,6 +127,7 @@ public class TaskTimerApplication extends Application {
             if(groupMap.get(task.getGroup()) == null) groupMap.put(task.getGroup(), Utilities.getGroupByID(task.getGroup(), GROUPS));
             if(groupMap.get(task.getGroup()).getTasks() == null) groupMap.get(task.getGroup()).setTasks(new ArrayList<Task>());
             groupMap.get(task.getGroup()).getTasks().add(task);
+            if(task.getId() > CURRENT_TASK_ID) CURRENT_TASK_ID = task.getId();
 
             Log.d(TAG, "Task loaded: " + task.toString());
             cursor.moveToNext();
@@ -138,6 +142,9 @@ public class TaskTimerApplication extends Application {
      * @param group The Group to add
      */
     public static void addGroup(Group group) {
+        CURRENT_GROUP_ID++;
+        group.setId(CURRENT_GROUP_ID);
+
         GROUPS.add(group.getPosition(), group);
         Utilities.reposition(GROUPS);
         if(TaskTimerEvents.getGroupListener() != null) TaskTimerEvents.getGroupListener().onGroupAdd(group);
@@ -170,6 +177,11 @@ public class TaskTimerApplication extends Application {
      */
     public static void addTask(int groupPosition, Task task) {
         Group group = GROUPS.get(groupPosition);
+
+        CURRENT_TASK_ID++;
+        task.setId(CURRENT_TASK_ID);
+        task.setGroup(group.getId());
+
         group.getTasks().add(task.getPosition(), task);
         Utilities.reposition(group.getTasks());
         if(TaskTimerEvents.getTaskListener() != null) TaskTimerEvents.getTaskListener().onTaskAdd(task, group);
