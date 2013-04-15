@@ -230,6 +230,23 @@ public class TaskTimerApplication extends Application {
     }
 
     /**
+     * Cancels a system alarm for a task reaching its goal
+     * @param context The context we're coming from
+     * @param task    The task to cancel the alarm for
+     */
+    public static void cancelTaskGoalReachedAlarm(Context context, Task task) {
+        // Cancel the future alarm for the task
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent alarmIntent = new Intent(context, TaskTimerReceiver.class);
+        alarmIntent.setAction(TaskTimerReceiver.ACTION_TASK_GOAL_REACHED);
+        alarmIntent.putExtra("task", task.getId());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, task.getId(), alarmIntent, PendingIntent.FLAG_NO_CREATE);
+        alarmManager.cancel(pendingIntent);
+
+        Log.v(TAG, "Cancelled alarm for task " + task.getId());
+    }
+
+    /**
      * Shows the main ongoing notification
      * @param context The context we're coming from
      */
