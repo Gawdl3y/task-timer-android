@@ -26,7 +26,7 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
     // Data
     private Task task;
     private TaskTimerThread timer;
-    private boolean checked;
+    private boolean checked = false;
 
     // Views
     private TextView name, description, time, goal;
@@ -43,23 +43,6 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
          * @param view The view of the button
          */
         public void onTaskButtonClick(View view);
-    }
-
-    /**
-     * Constructor
-     * @param context The context for the list item
-     */
-    public TaskListItem(Context context) {
-        this(context, null, null);
-    }
-
-    /**
-     * Constructor
-     * @param context The context for the list item
-     * @param task    The task to display
-     */
-    public TaskListItem(Context context, Task task) {
-        this(context, null, task);
     }
 
     /**
@@ -85,8 +68,6 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        // Set the views
         name = (TextView) findViewById(R.id.task_name);
         description = (TextView) findViewById(R.id.task_description);
         time = (TextView) findViewById(R.id.task_time);
@@ -94,14 +75,7 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
         progress = (ProgressBar) findViewById(R.id.task_progress);
         toggle = (ImageView) findViewById(R.id.task_toggle);
 
-        // Set tags so we can figure out what task is being acted upon later
-        setTag(task.getPosition());
-        toggle.setTag(task.getPosition());
-
-        // Set the typefaces
         name.setTypeface(ROBOTO_LIGHT);
-
-        // Add long-press listener
 
         invalidate();
         buildTimer();

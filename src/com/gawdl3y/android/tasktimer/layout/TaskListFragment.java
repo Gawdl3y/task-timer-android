@@ -5,6 +5,7 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
@@ -48,16 +49,14 @@ public class TaskListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
         view.setTag(group.getPosition());
-
         setListAdapter(new TaskListAdapter(inflater.getContext(), group.getTasks(), group.getPosition()));
-
         Log.v(TAG, "View created");
         return view;
     }
 
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -70,11 +69,15 @@ public class TaskListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView list, View view, int position, long id) {
         // Toggle the item if we've already toggled others
-        if(list.getCheckedItemCount() > 0) {
-            TaskListItem item = (TaskListItem) view;
-            item.toggle();
-            list.setItemChecked(position, item.isChecked());
-            Toast.makeText(getActivity(), Integer.toString(list.getCheckedItemCount()), Toast.LENGTH_SHORT).show();
+        if(list.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE) {
+            if(list.getCheckedItemCount() > 0) {
+                TaskListItem item = (TaskListItem) view;
+                item.toggle();
+                ((TaskListAdapter) getListAdapter()).setItemChecked(position, item.isChecked());
+                Toast.makeText(getActivity(), Integer.toString(list.getCheckedItemCount()), Toast.LENGTH_SHORT).show();
+            } else {
+                list.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
+            }
         } else {
             Toast.makeText(getActivity(), getListView().getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
         }
@@ -90,10 +93,13 @@ public class TaskListFragment extends ListFragment {
      * @param id       The ID of the item
      */
     public void onListItemLongClick(ListView list, View view, int position, long id) {
+        if(list.getChoiceMode() != AbsListView.CHOICE_MODE_MULTIPLE && list.getCheckedItemCount() == 0) list.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         TaskListItem item = (TaskListItem) view;
         item.toggle();
         list.setItemChecked(position, item.isChecked());
+        ((TaskListAdapter) getListAdapter()).setItemChecked(position, item.isChecked());
         Toast.makeText(getActivity(), Integer.toString(getListView().getCheckedItemCount()), Toast.LENGTH_SHORT).show();
+        if(list.getCheckedItemCount() == 0) list.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
     }
 
     @Override
@@ -130,7 +136,6 @@ public class TaskListFragment extends ListFragment {
         Bundle args = new Bundle();
         args.putParcelable("group", group);
         fragment.setArguments(args);
-
         return fragment;
     }
 }

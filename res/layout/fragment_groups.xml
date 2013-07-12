@@ -17,7 +17,6 @@
         android:clipToPadding="false"
         android:divider="@android:color/transparent"
         android:dividerHeight="18dp"
-        android:choiceMode="multipleChoice"
         android:drawSelectorOnTop="true"
         android:scrollbarStyle="outsideOverlay" />
 

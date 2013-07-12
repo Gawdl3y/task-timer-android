@@ -159,8 +159,8 @@
         <item quantity="one">One task running</item>
         <item quantity="other">%d tasks running</item>
     </plurals>
-    
-    
+
+
     <!--  View tag IDs -->
     <item type="id" name="tag_task" />
     <item type="id" name="tag_group" />

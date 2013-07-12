@@ -37,44 +37,39 @@ public class TaskListAdapter extends BaseAdapter {
         this.group = group;
     }
 
-    /* (non-Javadoc)
-     * Gets the number of items
-     * @see android.widget.Adapter#getCount()
-     */
     @Override
     public int getCount() {
         return tasks.size();
     }
 
-    /* (non-Javadoc)
-     * Gets the item at the specified position
-     * @see android.widget.Adapter#getItem(int)
-     */
     @Override
     public Object getItem(int position) {
         Log.v(TAG, "Getting item #" + position);
         return tasks.get(position);
     }
 
-    /* (non-Javadoc)
-     * Gets the unique ID for the item at the specified position
-     * @see android.widget.Adapter#getItemId(int)
-     */
     @Override
     public long getItemId(int position) {
         if(position >= 0 && position < tasks.size()) return tasks.get(position).getId();
         return 0;
     }
 
-    /* (non-Javadoc)
-     * Gets the view for the item at the specified position
-     * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
-     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.v(TAG, "Getting view");
+        TaskListItem v;
+        if(convertView != null && convertView instanceof TaskListItem) {
+            Log.v(TAG, "Converting old view");
+            v = (TaskListItem) convertView;
+            v.setTask((Task) getItem(position));
+            v.setChecked(itemsChecked.get(position));
+            v.invalidate();
+            v.buildTimer();
+        } else {
+            Log.v(TAG, "Getting new view");
+            v = new TaskListItem(context, null, (Task) getItem(position));
+            v.setChecked(itemsChecked.get(position));
+        }
 
-        TaskListItem v = new TaskListItem(context, (Task) getItem(position));
         v.setTag(R.id.tag_task, position);
         v.setTag(R.id.tag_group, group);
         return v;
