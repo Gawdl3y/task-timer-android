@@ -51,8 +51,16 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
         pager = (ViewPager) view.findViewById(R.id.pager);
 
-        // Set the adapter of the pager
+        // Set the adapter and page change listener of the pager
         pager.setAdapter(new TaskListFragmentAdapter(getFragmentManager(), groups));
+        pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            public void onPageSelected(int position) {
+                TaskTimerApplication.PREFERENCES.edit().putInt("currentTasksPage", position).apply();
+            }
+        });
+
+        // Switch to the previously selected page
+        pager.setCurrentItem(TaskTimerApplication.PREFERENCES.getInt("currentTasksPage", 0));
 
         Log.v(TAG, "View created");
         return view;

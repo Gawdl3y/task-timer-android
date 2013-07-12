@@ -42,6 +42,7 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView mainDrawer;
+    private String[] mainDrawerItems;
     private LinearLayout taskDrawer;
 
     @Override
@@ -63,14 +64,11 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
         //drawerLayout.setDrawerShadow(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.drawable.drawer_shadow_dark : R.drawable.drawer_shadow_light, Gravity.END);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
         mainDrawer = (ListView) findViewById(R.id.activity_main_drawer_left);
-        mainDrawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, getResources().getStringArray(R.array.drawer_main_items)));
+        mainDrawerItems = getResources().getStringArray(R.array.drawer_main_items);
+        mainDrawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mainDrawerItems));
         mainDrawer.setItemChecked(0, true);
         mainDrawer.setOnItemClickListener(new DrawerItemClickListener());
         taskDrawer = (LinearLayout) findViewById(R.id.activity_main_drawer_right);
-
-        // Do action bar stuff
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, TaskTimerApplication.THEME == R.style.Theme_Light ? R.drawable.ic_drawer_light : R.drawable.ic_drawer_dark, R.string.menu_drawer_open, R.string.menu_drawer_close) {
             @Override
             public void onDrawerClosed(View view) {
@@ -83,6 +81,12 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
+
+        // Do action bar stuff
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setTitle(mainDrawerItems[mainDrawer.getCheckedItemPosition()]);
+        setTitle(mainDrawerItems[mainDrawer.getCheckedItemPosition()]);
 
         // Display the main fragment
         tasksFragment = TasksFragment.newInstance();
@@ -242,6 +246,8 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
                     }
             }
 
+            setTitle(mainDrawerItems[position]);
+            getActionBar().setTitle(mainDrawerItems[position]);
             drawerLayout.closeDrawer(mainDrawer);
         }
     }
