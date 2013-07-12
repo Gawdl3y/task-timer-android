@@ -2,6 +2,7 @@ package com.gawdl3y.android.tasktimer.layout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -20,6 +21,7 @@ import com.gawdl3y.android.tasktimer.util.Log;
  */
 public class TaskListItem extends LinearLayout implements Checkable, TaskTimerThread.TickListener {
     private static final String TAG = "TaskListItem";
+    private static Typeface ROBOTO_LIGHT;
 
     // Data
     private Task task;
@@ -27,7 +29,7 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
     private boolean checked;
 
     // Views
-    private TextView name, time, goal;
+    private TextView name, description, time, goal;
     private ProgressBar progress;
     private ImageView toggle;
 
@@ -68,22 +70,25 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
      */
     public TaskListItem(Context context, AttributeSet attrs, Task task) {
         super(context, attrs);
+
+        // Define the typefaces
+        if(ROBOTO_LIGHT == null) {
+            ROBOTO_LIGHT = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Light.ttf");
+        }
+
         this.task = task;
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutInflater.inflate(R.layout.task_list_item, this);
-        if(name == null) onFinishInflate(); // onFinishInflate isn't being called by the LayoutInflater for some reason
+        if(name == null) onFinishInflate(); // onFinishInflate isn't ever being called by the LayoutInflater for some reason
     }
 
-    /* (non-Javadoc)
-     * The view has finished inflating
-     * @see android.view.View#onFinishInflate()
-     */
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
         // Set the views
         name = (TextView) findViewById(R.id.task_name);
+        description = (TextView) findViewById(R.id.task_description);
         time = (TextView) findViewById(R.id.task_time);
         goal = (TextView) findViewById(R.id.task_goal);
         progress = (ProgressBar) findViewById(R.id.task_progress);
@@ -93,6 +98,9 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
         setTag(task.getPosition());
         toggle.setTag(task.getPosition());
 
+        // Set the typefaces
+        name.setTypeface(ROBOTO_LIGHT);
+
         // Add long-press listener
 
         invalidate();
@@ -100,20 +108,12 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
         Log.v(TAG, "Inflated");
     }
 
-    /* (non-Javadoc)
-     * The view has been removed
-     * @see android.view.View#onDetachedFromWindow()
-     */
     @Override
     protected void onDetachedFromWindow() {
         if(timer != null) timer.interrupt();
         Log.v(TAG, "Detached");
     }
 
-    /* (non-Javadoc)
-     * The instance is being saved
-     * @see android.view.View#onSaveInstanceState()
-     */
     @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = (Bundle) super.onSaveInstanceState();
@@ -121,10 +121,6 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
         return bundle;
     }
 
-    /* (non-Javadoc)
-     * The instance is being restored
-     * @see android.view.View#onRestoreInstanceState(android.os.Parcelable)
-     */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(state);
@@ -133,16 +129,13 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
         buildTimer();
     }
 
-    /* (non-Javadoc)
-     * Trigger a re-draw of the view
-     * @see android.view.View#invalidate()
-     */
     @Override
     public void invalidate() {
         super.invalidate();
 
         // Set the view values
         name.setText(task.getName());
+        description.setText(task.getDescription());
         time.setText(task.getTime().toString());
         goal.setText(task.isIndefinite() ? TaskTimerApplication.RESOURCES.getString(R.string.task_indefinite) : task.getGoal().toString());
         progress.setProgress(task.getProgress());
@@ -152,15 +145,6 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
         TypedArray ta = getContext().obtainStyledAttributes(new int[]{task.isRunning() ? R.attr.ic_pause : R.attr.ic_start});
         toggle.setImageDrawable(ta.getDrawable(0));
         ta.recycle();
-    }
-
-    /**
-     * Trigger a re-draw of the view
-     * @param task The task to use
-     */
-    public void invalidate(Task task) {
-        this.task = task;
-        invalidate();
     }
 
     /**
@@ -189,39 +173,21 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
         }
     }
 
-    /**
-     * Sets whether or not the item is checked
-     * @param checked Whether or not the item is checked
-     * @see android.widget.Checkable#setChecked(boolean)
-     */
     @Override
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
 
-    /**
-     * Gets whether or not the item is checked
-     * @return Whether or not the item is checked
-     * @see android.widget.Checkable#isChecked()
-     */
     @Override
     public boolean isChecked() {
         return checked;
     }
 
-    /**
-     * Toggles the checked state of the item
-     * @see android.widget.Checkable#toggle()
-     */
     @Override
     public void toggle() {
         checked = !checked;
     }
 
-    /* (non-Javadoc)
-     * The timer has ticked
-     * @see com.gawdl3y.android.tasktimer.pojos.TaskTimerThread.TickListener#onTick()
-     */
     @Override
     public void onTick() {
         task.setLastTick(System.currentTimeMillis());

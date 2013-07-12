@@ -4,24 +4,25 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.view.View;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
+import android.support.v4.widget.DrawerLayout;
+import android.view.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.data.TaskTimerReceiver;
-import com.gawdl3y.android.tasktimer.layout.GroupEditDialogFragment;
-import com.gawdl3y.android.tasktimer.layout.MainFragment;
-import com.gawdl3y.android.tasktimer.layout.TaskEditDialogFragment;
-import com.gawdl3y.android.tasktimer.layout.TaskListItem;
+import com.gawdl3y.android.tasktimer.layout.*;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.pojos.TaskTimerEvents;
@@ -31,13 +32,18 @@ import com.gawdl3y.android.tasktimer.util.Log;
  * The main activity of Task Timer
  * @author Schuyler Cebulskie
  */
-public class MainActivity extends SherlockFragmentActivity implements TaskListItem.TaskButtonListener, TaskTimerEvents.GroupListener, TaskTimerEvents.TaskListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends FragmentActivity implements TaskListItem.TaskButtonListener, TaskTimerEvents.GroupListener, TaskTimerEvents.TaskListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "MainActivity";
     private static final int GROUPS_LOADER_ID = 1;
     private static final int TASKS_LOADER_ID = 2;
 
     // Stuff
-    private MainFragment mainFragment;
+    private TasksFragment tasksFragment;
+    private GroupsFragment groupsFragment;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle drawerToggle;
+    private ListView mainDrawer;
+    private LinearLayout taskDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +58,37 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
 
+        // Do drawer stuff
+        drawerLayout = (DrawerLayout) findViewById(R.id.activity_main);
+        drawerLayout.setDrawerShadow(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.drawable.drawer_shadow_dark : R.drawable.drawer_shadow_light, Gravity.START);
+        //drawerLayout.setDrawerShadow(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.drawable.drawer_shadow_dark : R.drawable.drawer_shadow_light, Gravity.END);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
+        mainDrawer = (ListView) findViewById(R.id.activity_main_drawer_left);
+        mainDrawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, getResources().getStringArray(R.array.drawer_main_items)));
+        mainDrawer.setItemChecked(0, true);
+        mainDrawer.setOnItemClickListener(new DrawerItemClickListener());
+        taskDrawer = (LinearLayout) findViewById(R.id.activity_main_drawer_right);
+
+        // Do action bar stuff
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, TaskTimerApplication.THEME == R.style.Theme_Light ? R.drawable.ic_drawer_light : R.drawable.ic_drawer_dark, R.string.menu_drawer_open, R.string.menu_drawer_close) {
+            @Override
+            public void onDrawerClosed(View view) {
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                invalidateOptionsMenu();
+            }
+        };
+        drawerLayout.setDrawerListener(drawerToggle);
+
         // Display the main fragment
-        mainFragment = MainFragment.newInstance();
+        tasksFragment = TasksFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_main, mainFragment);
+        transaction.replace(R.id.activity_main_content, tasksFragment);
         transaction.commit();
 
         Log.v(TAG, "Created");
@@ -79,7 +112,7 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
         }
 
         // Show the loading indicator if we don't have the data, register as the event listener, and show the ongoing notification
-        if(TaskTimerApplication.GROUPS == null) setSupportProgressBarIndeterminateVisibility(true);
+        if(TaskTimerApplication.GROUPS == null) setProgressBarIndeterminateVisibility(true);
         TaskTimerEvents.setListener(this);
         TaskTimerApplication.showOngoingNotification(this);
 
@@ -102,9 +135,20 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(TAG, "Loader created with ID " + id);
-
         switch(id) {
             case GROUPS_LOADER_ID:
                 return new CursorLoader(this, Group.Columns.CONTENT_URI, null, null, null, Group.Columns.DEFAULT_SORT_ORDER);
@@ -122,8 +166,8 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
             getSupportLoaderManager().initLoader(TASKS_LOADER_ID, null, this);
         } else if(loader.getId() == TASKS_LOADER_ID) {
             TaskTimerApplication.loadTasks(cursor);
-            mainFragment.setGroups(TaskTimerApplication.GROUPS);
-            setSupportProgressBarIndeterminateVisibility(false);
+            tasksFragment.setGroups(TaskTimerApplication.GROUPS);
+            setProgressBarIndeterminateVisibility(false);
         }
 
         Log.v(TAG, "Loader " + loader.getId() + " finished");
@@ -136,18 +180,26 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getSupportMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean drawerOpen = drawerLayout.isDrawerOpen(mainDrawer) || drawerLayout.isDrawerOpen(taskDrawer);
+        menu.findItem(R.id.menu_new_task).setVisible(!drawerOpen);
+        menu.findItem(R.id.menu_new_group).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
+        if(drawerToggle.onOptionsItemSelected(item)) return true;
 
+        Intent intent;
         switch(item.getItemId()) {
             case R.id.menu_new_task:
-                TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(TaskTimerApplication.GROUPS, mainFragment.getPager().getCurrentItem(), null);
+                TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(TaskTimerApplication.GROUPS, tasksFragment.getPager().getCurrentItem(), null);
                 taskEditDialog.show(getSupportFragmentManager(), "fragment_task_edit");
                 return true;
             case R.id.menu_new_group:
@@ -165,36 +217,59 @@ public class MainActivity extends SherlockFragmentActivity implements TaskListIt
 
     @Override
     public void onTaskButtonClick(View view) {
-        mainFragment.onTaskButtonClick(view);
+        tasksFragment.onTaskButtonClick(view);
     }
 
     @Override
     public void onGroupAdd(Group group) {
-        mainFragment.onGroupAdd(group);
+        tasksFragment.onGroupAdd(group);
     }
 
     @Override
     public void onGroupRemove(Group group) {
-        mainFragment.onGroupRemove(group);
+        tasksFragment.onGroupRemove(group);
     }
 
     @Override
     public void onGroupUpdate(Group group, Group oldGroup) {
-        mainFragment.onGroupUpdate(group, oldGroup);
+        tasksFragment.onGroupUpdate(group, oldGroup);
     }
 
     @Override
     public void onTaskAdd(Task task, Group group) {
-        mainFragment.onTaskAdd(task, group);
+        tasksFragment.onTaskAdd(task, group);
     }
 
     @Override
     public void onTaskRemove(Task task, Group group) {
-        mainFragment.onTaskRemove(task, group);
+        tasksFragment.onTaskRemove(task, group);
     }
 
     @Override
     public void onTaskUpdate(Task task, Task oldTask, Group group) {
-        mainFragment.onTaskUpdate(task, oldTask, group);
+        tasksFragment.onTaskUpdate(task, oldTask, group);
+    }
+
+    /**
+     * The list item click listener for the main drawer
+     * @author Schuyler Cebulskie
+     */
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            switch(position) {
+                case 0:
+                    if(tasksFragment == null) tasksFragment = TasksFragment.newInstance();
+                    groupsFragment = null;
+                    getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, tasksFragment).commit();
+                    break;
+                case 1:
+                    if(groupsFragment == null) groupsFragment = GroupsFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, groupsFragment).commit();
+            }
+
+            mainDrawer.setItemChecked(position, true);
+            drawerLayout.closeDrawer(mainDrawer);
+        }
     }
 }

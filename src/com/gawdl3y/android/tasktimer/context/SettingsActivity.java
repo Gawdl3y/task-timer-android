@@ -1,65 +1,52 @@
 package com.gawdl3y.android.tasktimer.context;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.MenuItem;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.layout.SettingsFragment;
-import com.gawdl3y.android.tasktimer.util.Utilities;
 
 import java.util.Map;
 
-public class SettingsActivity extends SherlockPreferenceActivity {
-    @SuppressLint("NewApi")
-    @SuppressWarnings("deprecation")
+public class SettingsActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(TaskTimerApplication.THEME);
         super.onCreate(savedInstanceState);
-
-        // Display the settings
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            // Use the old preference activity methods for devices older than Honeycomb
-            addPreferencesFromResource(R.xml.preferences);
-            TaskTimerApplication.PREFERENCES.registerOnSharedPreferenceChangeListener(changeListener);
-            updateSummaries();
-
-            // Add click listener to the Play Store preference
-            Preference playStorePref = findPreference("pref_playStore");
-            playStorePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                public boolean onPreferenceClick(Preference preference) {
-                    Utilities.openPlayStore(SettingsActivity.this);
-                    return true;
-                }
-            });
-        } else {
-            // Use the fragment for Honeycomb and newer
-            getFragmentManager().beginTransaction().replace(android.R.id.content, SettingsFragment.newInstance()).commit();
-        }
-
-        // Make the action bar use "home as up"
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getFragmentManager().beginTransaction().replace(android.R.id.content, SettingsFragment.newInstance()).commit();
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        TaskTimerApplication.PREFERENCES.unregisterOnSharedPreferenceChangeListener(changeListener);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                // Home pressed, return to main activity
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
@@ -119,60 +106,18 @@ public class SettingsActivity extends SherlockPreferenceActivity {
             // Change the summary to the name of the ringtone
             Uri ringtoneUri = Uri.parse(PreferenceManager.getDefaultSharedPreferences(this).getString(key, "content://settings/system/notification_sound"));
             Ringtone ringtone = RingtoneManager.getRingtone(this, ringtoneUri);
-            pref.setSummary(ringtone.getTitle(this));
-        }
-    }
-
-    /* (non-Javadoc)
-     * A button on the action bar was pressed
-     * @see com.actionbarsherlock.app.SherlockPreferenceActivity#onOptionsItemSelected(android.view.MenuItem)
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case android.R.id.home:
-                // Home pressed, return to main activity
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            pref.setSummary(ringtone != null ? ringtone.getTitle(this) : null);
         }
     }
 
     /**
-     * Updates the summaries of every preference - API < 11
-     */
-    @SuppressWarnings("deprecation")
-    public void updateSummaries() {
-        for(Map.Entry<String, ?> entry : TaskTimerApplication.PREFERENCES.getAll().entrySet()) {
-            Preference pref = findPreference(entry.getKey());
-            if(pref != null) onPreferenceChange(pref);
-        }
-    }
-
-    /**
-     * Updates the summaries of every preference - API >= 11
+     * Updates the summaries of every preference
      * @param fragment the fragment that contains the preferences
      */
-    @TargetApi(11)
     public void updateSummaries(SettingsFragment fragment) {
         for(Map.Entry<String, ?> entry : TaskTimerApplication.PREFERENCES.getAll().entrySet()) {
             Preference pref = fragment.findPreference(entry.getKey());
             if(pref != null) onPreferenceChange(pref);
         }
     }
-
-    /**
-     * The change listener - API < 11
-     */
-    @SuppressWarnings("deprecation")
-    private final SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-            onPreferenceChange(findPreference(key));
-        }
-    };
 }

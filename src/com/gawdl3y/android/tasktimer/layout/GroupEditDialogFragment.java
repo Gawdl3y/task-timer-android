@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import com.actionbarsherlock.app.SherlockDialogFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * The dialog fragment for editing a Group
  * @author Schuyler Cebulskie
  */
-public class GroupEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
+public class GroupEditDialogFragment extends DialogFragment implements OnEditorActionListener {
     private ArrayList<Group> groups;
     private Group group;
     private boolean isNew;
@@ -33,10 +33,6 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
     private EditText nameView;
     private Spinner positionView;
 
-    /* (non-Javadoc)
-     * The fragment is being created
-     * @see android.support.v4.app.DialogFragment#onCreate(android.os.Bundle)
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +50,6 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
         if(group == null) isNew = true;
     }
 
-    /* (non-Javadoc)
-     * The dialog is being created
-     * @see android.support.v4.app.DialogFragment#onCreateDialog(android.os.Bundle)
-     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Define the views
@@ -99,10 +91,6 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
                 }).create();
     }
 
-    /* (non-Javadoc)
-     * An action is triggered by the user
-     * @see android.widget.TextView.OnEditorActionListener#onEditorAction(android.widget.TextView, int, android.view.KeyEvent)
-     */
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if(actionId == EditorInfo.IME_ACTION_DONE) {
@@ -120,10 +108,6 @@ public class GroupEditDialogFragment extends SherlockDialogFragment implements O
         return false;
     }
 
-    /* (non-Javadoc)
-     * The instance is being saved
-     * @see android.support.v4.app.DialogFragment#onSaveInstanceState(android.os.Bundle)
-     */
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);

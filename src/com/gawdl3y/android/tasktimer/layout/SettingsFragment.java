@@ -1,6 +1,5 @@
 package com.gawdl3y.android.tasktimer.layout;
 
-import android.annotation.TargetApi;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -11,17 +10,12 @@ import com.gawdl3y.android.tasktimer.context.SettingsActivity;
 import com.gawdl3y.android.tasktimer.util.Utilities;
 
 /**
- * Fragment used to display the preferences - API >= 11
+ * Fragment used to display the preferences
  * @author Schuyler Cebulskie
  */
-@TargetApi(11)
 public class SettingsFragment extends PreferenceFragment {
     private SettingsActivity activity;
 
-    /* (non-Javadoc)
-     * The fragment is created
-     * @see android.preference.PreferenceFragment#onCreate(android.os.Bundle)
-     */
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

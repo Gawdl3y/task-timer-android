@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +12,13 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TextView.OnEditorActionListener;
-import com.actionbarsherlock.app.SherlockDialogFragment;
+import com.doomonafireball.betterpickers.hmspicker.HmsPickerBuilder;
+import com.doomonafireball.betterpickers.hmspicker.HmsPickerDialogFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
+import com.gawdl3y.android.tasktimer.pojos.TimeAmount;
 
 import java.util.ArrayList;
 
@@ -23,19 +26,20 @@ import java.util.ArrayList;
  * The dialog fragment for editing a Task
  * @author Schuyler Cebulskie
  */
-public class TaskEditDialogFragment extends SherlockDialogFragment implements OnEditorActionListener {
+public class TaskEditDialogFragment extends DialogFragment implements OnEditorActionListener, HmsPickerDialogFragment.HmsPickerDialogHandler {
+    private static final int HMS_REFERENCE_TIME = 1;
+    private static final int HMS_REFERENCE_GOAL = 2;
+
     private ArrayList<Group> groups;
     private Task task;
     private boolean isNew;
+    private TimeAmount editingTime, editingGoal;
 
     private EditText nameView, descriptionView;
     private Spinner groupView, positionView;
     private ArrayAdapter<String> groupAdapter, positionAdapter;
+    private Button timeView, goalView;
 
-    /* (non-Javadoc)
-     * The fragment is being created
-     * @see android.support.v4.app.DialogFragment#onCreate(android.os.Bundle)
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,10 +57,6 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
         if(task == null) isNew = true;
     }
 
-    /* (non-Javadoc)
-     * The dialog is being created
-     * @see android.support.v4.app.DialogFragment#onCreateDialog(android.os.Bundle)
-     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Define the views
@@ -66,6 +66,8 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
         descriptionView = (EditText) view.findViewById(R.id.task_edit_description);
         groupView = (Spinner) view.findViewById(R.id.task_edit_group);
         positionView = (Spinner) view.findViewById(R.id.task_edit_position);
+        timeView = (Button) view.findViewById(R.id.task_edit_time);
+        goalView = (Button) view.findViewById(R.id.task_edit_goal);
 
         // Add the possible groups to the group spinner
         String[] opts = new String[groups.size()];
@@ -101,6 +103,44 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
             }
         });
 
+        // Set the time/goal button listeners
+        timeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HmsPickerBuilder timePicker = new HmsPickerBuilder()
+                        .setFragmentManager(getFragmentManager())
+                        .setStyleResId(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.style.BetterPickersDialogFragment : R.style.BetterPickersDialogFragment_Light)
+                        .addHmsPickerDialogHandler(TaskEditDialogFragment.this)
+                        .setReference(HMS_REFERENCE_TIME);
+                timePicker.show();
+            }
+        });
+        goalView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HmsPickerBuilder timePicker = new HmsPickerBuilder()
+                        .setFragmentManager(getFragmentManager())
+                        .setStyleResId(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.style.BetterPickersDialogFragment : R.style.BetterPickersDialogFragment_Light)
+                        .addHmsPickerDialogHandler(TaskEditDialogFragment.this)
+                        .setReference(HMS_REFERENCE_GOAL);
+                timePicker.show();
+            }
+        });
+
+        // Update the time/goal buttons
+        if(savedInstanceState != null) {
+            editingTime = savedInstanceState.getParcelable("editingTime");
+            editingGoal = savedInstanceState.getParcelable("editingGoal");
+        } else if(task != null) {
+            editingTime = task.getTime();
+            editingGoal = task.getGoal();
+        } else {
+            editingTime = new TimeAmount(0, 0, 0);
+            editingGoal = new TimeAmount(4, 0, 0);
+        }
+        timeView.setText(editingTime.toString());
+        goalView.setText(editingGoal.toString());
+
         // Set view stuff
         if(getArguments() != null) {
             groupView.setSelection(getArguments().getInt("group"));
@@ -126,10 +166,18 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
                 }).create();
     }
 
-    /* (non-Javadoc)
-     * An action is triggered by the user
-     * @see android.widget.TextView.OnEditorActionListener#onEditorAction(android.widget.TextView, int, android.view.KeyEvent)
-     */
+    @Override
+    public void onDialogHmsSet(int reference, int hours, int minutes, int seconds) {
+        TimeAmount time = new TimeAmount(hours, minutes, seconds);
+        if(reference == HMS_REFERENCE_TIME) {
+            timeView.setText(time.toString());
+            editingTime = time;
+        } else if(reference == HMS_REFERENCE_GOAL) {
+            goalView.setText(time.toString());
+            editingGoal = time;
+        }
+    }
+
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         // Finished editing
@@ -140,6 +188,8 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
             task.setDescription(descriptionView.getText().toString());
             task.setPosition(positionView.getSelectedItemPosition());
             int groupPosition = groupView.getSelectedItemPosition();
+            task.setTime(editingTime);
+            task.setGoal(editingGoal);
             // TODO: fix reordering
             if(isNew) TaskTimerApplication.addTask(groupPosition, task); else TaskTimerApplication.updateTask(groupPosition, task);
             dismiss();
@@ -149,17 +199,13 @@ public class TaskEditDialogFragment extends SherlockDialogFragment implements On
         return false;
     }
 
-    /* (non-Javadoc)
-     * The instance is being saved
-     * @see android.support.v4.app.DialogFragment#onSaveInstanceState(android.os.Bundle)
-     */
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-
-        // Save the data to the saved instance state
         savedInstanceState.putParcelableArrayList("groups", groups);
         if(task != null) savedInstanceState.putParcelable("task", task);
+        savedInstanceState.putParcelable("editingTime", editingTime);
+        savedInstanceState.putParcelable("editingGoal", editingGoal);
     }
 
 

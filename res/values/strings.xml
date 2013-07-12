@@ -8,9 +8,19 @@
     
     
     <!-- Menu strings -->
+    <string name="menu_drawer_open">Open Drawer</string>
+    <string name="menu_drawer_close">Close Drawer</string>
     <string name="menu_new_task">New Task</string>
     <string name="menu_new_group">New Group</string>
     <string name="menu_settings">Settings</string>
+
+
+    <!-- Drawer strings -->
+    <string-array name="drawer_main_items">
+        <item>Tasks</item>
+        <item>Groups</item>
+        <item>Statistics</item>
+    </string-array>
     
     
     <!-- Dialog strings -->
@@ -140,6 +150,7 @@
     
     <!-- General strings -->
     <string name="no_tasks">No tasks</string>
+    <string name="no_groups">No groups</string>
     
     
     <!-- Plurals -->

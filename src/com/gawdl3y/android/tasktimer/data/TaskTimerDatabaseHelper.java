@@ -75,8 +75,8 @@ public class TaskTimerDatabaseHelper extends SQLiteOpenHelper {
                 + Task.Columns.GROUP + "`) VALUES ";
 
         db.execSQL(insertGroup + "('A group', 0);");
-        db.execSQL(insertTask + "('A task', '', '{}', '{\"h\":\"2\",\"m\":\"30\"}', 0, 0, '{}', 0, 1);");
-        db.execSQL(insertTask + "('An indefinite task', '', '{}', '{\"h\":\"4\"}', 1, 0, '{}', 1, 1);");
+        db.execSQL(insertTask + "('A task', 'A humble little task.', '{}', '{\"h\":\"2\",\"m\":\"30\"}', 0, 0, '{}', 0, 1);");
+        db.execSQL(insertTask + "('An indefinite task', 'This task has an indefinite goal, which means you may not know how much time you will spend on it.', '{}', '{\"h\":\"4\"}', 1, 0, '{}', 1, 1);");
         db.execSQL(insertTask + "('A short task', 'This task has a really short goal so you can test the notifications.', '{\"s\":\"45\"}', '{\"m\":\"1\"}', 0, 0, '{}', 2, 1);");
     }
 

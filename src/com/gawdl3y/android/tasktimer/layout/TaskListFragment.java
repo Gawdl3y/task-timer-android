@@ -1,6 +1,7 @@
 package com.gawdl3y.android.tasktimer.layout;
 
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.actionbarsherlock.app.SherlockListFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.adapters.TaskListAdapter;
 import com.gawdl3y.android.tasktimer.pojos.Group;
@@ -18,15 +18,11 @@ import com.gawdl3y.android.tasktimer.util.Log;
  * The fragment for displaying a list of Tasks
  * @author Schuyler Cebulskie
  */
-public class TaskListFragment extends SherlockListFragment {
+public class TaskListFragment extends ListFragment {
     private static final String TAG = "TaskListFragment";
 
     private Group group;
 
-    /* (non-Javadoc)
-     * The fragment is being created
-     * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,10 +32,10 @@ public class TaskListFragment extends SherlockListFragment {
 
         // Restore data
         if(savedInstanceState != null) {
-            group = (Group) savedInstanceState.getParcelable("group");
+            group = savedInstanceState.getParcelable("group");
         } else {
             if(getArguments() != null) {
-                group = (Group) getArguments().getParcelable("group");
+                group = getArguments().getParcelable("group");
             } else {
                 group = new Group();
             }
@@ -48,10 +44,6 @@ public class TaskListFragment extends SherlockListFragment {
         Log.v(TAG, "Fragment created");
     }
 
-    /* (non-Javadoc)
-     * The view for the fragment is being created
-     * @see android.support.v4.app.ListFragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
-     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
@@ -63,10 +55,6 @@ public class TaskListFragment extends SherlockListFragment {
         return view;
     }
 
-    /* (non-Javadoc)
-     * The fragment is attached to the activity
-     * @see android.support.v4.app.Fragment#onActivityCreated(android.os.Bundle)
-     */
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -79,10 +67,6 @@ public class TaskListFragment extends SherlockListFragment {
         });
     }
 
-    /* (non-Javadoc)
-     * A list item was clicked
-     * @see android.support.v4.app.ListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
-     */
     @Override
     public void onListItemClick(ListView list, View view, int position, long id) {
         // Toggle the item if we've already toggled others
@@ -112,10 +96,6 @@ public class TaskListFragment extends SherlockListFragment {
         Toast.makeText(getActivity(), Integer.toString(getListView().getCheckedItemCount()), Toast.LENGTH_SHORT).show();
     }
 
-    /* (non-Javadoc)
-     * The instance is being saved
-     * @see android.support.v4.app.Fragment#onSaveInstanceState(android.os.Bundle)
-     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

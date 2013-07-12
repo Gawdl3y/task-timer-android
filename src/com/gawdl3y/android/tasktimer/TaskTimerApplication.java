@@ -111,7 +111,7 @@ public class TaskTimerApplication extends Application {
             // Create the task object
             Task task = new Task(cursor.getInt(Task.Columns.ID_INDEX));
             task.setName(cursor.getString(Task.Columns.NAME_INDEX));
-            task.setDescription(cursor.getString(Task.Columns.NAME_INDEX));
+            task.setDescription(cursor.getString(Task.Columns.DESCRIPTION_INDEX));
             task.setTime(GSON.fromJson(cursor.getString(Task.Columns.TIME_INDEX), TimeAmount.class));
             task.setGoal(GSON.fromJson(cursor.getString(Task.Columns.GOAL_INDEX), TimeAmount.class));
             task.setIndefinite(cursor.getInt(Task.Columns.INDEFINITE_INDEX) == 1);

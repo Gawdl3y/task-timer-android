@@ -2,22 +2,14 @@
 <resources>
     <attr name="tabStrip_text" format="reference" />
     <attr name="tabStrip_background" format="color" />
-    
-    <attr name="timeAmountPickerLayout" format="reference" />
 
-    <declare-styleable name="TimeAmountPicker">
-        <attr name="hours" format="integer" />
-        <attr name="minutes" format="integer" />
-        <attr name="seconds" format="integer" />
-        <attr name="hoursEnabled" format="boolean" />
-        <attr name="secondsEnabled" format="boolean" />
-    </declare-styleable>
-    
+    <attr name="drawer_shadow" format="reference" />
+
+    <attr name="ic_drawer" format="reference" />
     <attr name="ic_new_task" format="reference" />
     <attr name="ic_new_group" format="reference" />
     <attr name="ic_settings" format="reference" />
     <attr name="ic_about" format="reference" />
     <attr name="ic_start" format="reference" />
     <attr name="ic_pause" format="reference" />
-
 </resources>

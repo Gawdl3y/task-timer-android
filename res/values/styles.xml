@@ -21,12 +21,12 @@
     <style name="TabStrip.Text" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">12.0dip</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/abs__holo_blue_light</item>
+        <item name="android:textColor">@android:color/holo_blue_light</item>
     </style>
     <style name="TabStrip.Text.Light" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">12.0dip</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/abs__holo_blue_light</item>
+        <item name="android:textColor">@android:color/holo_blue_light</item>
     </style>
     
     
@@ -62,7 +62,14 @@
         <item name="android:layout_marginLeft">12dip</item>
     </style>
     
-    <style name="TextAppearance.Edit_Spinner" parent="@style/Sherlock.__Widget.Holo.Spinner">
+    <style name="TextAppearance.Edit_Spinner" parent="@android:style/Widget.Holo.Spinner">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#FF333333</item>
+        <item name="android:layout_marginRight">12dp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+    </style>
+
+    <style name="TextAppearance.Edit_Spinner.Light" parent="@android:style/Widget.Holo.Light.Spinner">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#FF333333</item>
         <item name="android:layout_marginRight">12dp</item>

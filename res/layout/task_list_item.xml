@@ -2,22 +2,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:padding="5dp"
+    android:background="@drawable/card_background_light">
 	
     <TextView
         android:id="@+id/task_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/task_name"
-        android:textSize="20sp"
-        android:typeface="sans" />
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/task_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/task_name"
+        android:text="@string/task_description" />
 
     <ProgressBar
         android:id="@+id/task_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/task_name" />
+        android:layout_below="@id/task_description" />
 
     <TextView
         android:id="@+id/task_goal"
@@ -43,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="?attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:src="?attr/ic_start"
         android:contentDescription="@string/task_start"

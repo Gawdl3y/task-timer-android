@@ -1,11 +1,11 @@
 package com.gawdl3y.android.tasktimer.layout;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.adapters.TaskListAdapter;
@@ -18,11 +18,11 @@ import com.gawdl3y.android.tasktimer.util.Log;
 import java.util.ArrayList;
 
 /**
- * The main fragment for Task Timer; contains a {@code TaskListFragmentAdapter}
+ * The list of grouped tasks; contains a {@code TaskListFragmentAdapter}
  * @author Schuyler Cebulskie
  */
-public class MainFragment extends SherlockFragment implements TaskListItem.TaskButtonListener, TaskTimerEvents.GroupListener, TaskTimerEvents.TaskListener {
-    private static final String TAG = "MainFragment";
+public class TasksFragment extends Fragment implements TaskListItem.TaskButtonListener, TaskTimerEvents.GroupListener, TaskTimerEvents.TaskListener {
+    private static final String TAG = "TasksFragment";
 
     // Data
     private ArrayList<Group> groups = TaskTimerApplication.GROUPS;
@@ -40,7 +40,7 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Create the view and pager
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_tasks, container, false);
         pager = (ViewPager) view.findViewById(R.id.pager);
 
         // Set the adapter of the pager
@@ -59,7 +59,8 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
             // Toggle the task
             if(!task.isComplete() || task.getBooleanSetting(Task.Settings.OVERTIME)) {
                 task.toggle();
-                item.invalidate(task);
+                item.setTask(task);
+                item.invalidate();
                 item.buildTimer();
 
                 // Update the running task count and create/cancel a system alarm
@@ -118,7 +119,8 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
         try {
             TaskListFragment fragment = (TaskListFragment) getFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + group.getPosition());
             TaskListItem item = (TaskListItem) fragment.getView().findViewWithTag(task.getPosition());
-            item.invalidate(task);
+            item.setTask(task);
+            item.invalidate();
             item.buildTimer();
             getAdapter().setGroups(groups);
         } catch(Exception e) {
@@ -168,10 +170,10 @@ public class MainFragment extends SherlockFragment implements TaskListItem.TaskB
 
 
     /**
-     * Creates a new instance of MainFragment
-     * @return A new instance of MainFragment
+     * Creates a new instance of TasksFragment
+     * @return A new instance of TasksFragment
      */
-    public static MainFragment newInstance() {
-        return new MainFragment();
+    public static TasksFragment newInstance() {
+        return new TasksFragment();
     }
 }

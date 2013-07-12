@@ -34,11 +34,6 @@ public class TaskTimerProvider extends ContentProvider {
         uriMatcher.addURI(AUTHORITY, "groups/#", GROUPS_ID);
     }
 
-    /**
-     * The content provider has been created
-     * @return Good or not ;)
-     * @see android.content.ContentProvider#onCreate()
-     */
     @Override
     public boolean onCreate() {
         dbHelper = new TaskTimerDatabaseHelper(getContext());
@@ -46,12 +41,6 @@ public class TaskTimerProvider extends ContentProvider {
         return true;
     }
 
-    /**
-     * Get the MIME type of the data for a URI
-     * @param uri The URI to get the MIME type of the data for
-     * @return The MIME type of the data for the URI
-     * @see android.content.ContentProvider#getType(android.net.Uri)
-     */
     @Override
     public String getType(Uri uri) {
         Log.v(TAG, "Getting type for URI " + uri.toString());
@@ -70,16 +59,6 @@ public class TaskTimerProvider extends ContentProvider {
         }
     }
 
-    /**
-     * Perform a query
-     * @param url           The URI of the query
-     * @param projection    The list of columns to put into the cursor, or all columns if null
-     * @param selection     Selection to restrict to, or all rows if null
-     * @param selectionArgs Values to replace placeholders with in selection
-     * @param sortOrder     How the rows should be sorted
-     * @return Cursor for the data
-     * @see android.content.ContentProvider#query(android.net.Uri, String[], String, String[], String)
-     */
     @Override
     public Cursor query(Uri url, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -113,15 +92,6 @@ public class TaskTimerProvider extends ContentProvider {
         return cursor;
     }
 
-    /**
-     * Update row(s)
-     * @param url           The URI for the query
-     * @param values        The values to update
-     * @param selection     The selection to restrict to
-     * @param selectionArgs Values to replace placeholders with in selection
-     * @return The number of rows affected
-     * @see android.content.ContentProvider#update(android.net.Uri, android.content.ContentValues, String, String[])
-     */
     @Override
     public int update(Uri url, ContentValues values, String selection, String[] selectionArgs) {
         int match = uriMatcher.match(url), count;
@@ -143,13 +113,6 @@ public class TaskTimerProvider extends ContentProvider {
         return count;
     }
 
-    /**
-     * Insert a row
-     * @param url    The URI for the query
-     * @param values The values to insert
-     * @return The URI for the inserted items
-     * @see android.content.ContentProvider#insert(android.net.Uri, android.content.ContentValues)
-     */
     @Override
     public Uri insert(Uri url, ContentValues values) {
         int match = uriMatcher.match(url);
@@ -170,14 +133,6 @@ public class TaskTimerProvider extends ContentProvider {
         return newURL;
     }
 
-    /**
-     * Delete row(s)
-     * @param url           The URI for the query
-     * @param selection     The selection to restrict to
-     * @param selectionArgs Values to replace placeholders with in selection
-     * @return The number of rows affected
-     * @see android.content.ContentProvider#delete(android.net.Uri, String, String[])
-     */
     @Override
     public int delete(Uri url, String selection, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
