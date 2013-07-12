@@ -34,7 +34,15 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        TaskTimerEvents.registerListener(this);
         Log.v(TAG, "Created");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        TaskTimerEvents.unregisterListener(this);
+        Log.v(TAG, "Destroyed");
     }
 
     @Override
@@ -65,10 +73,10 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
 
                 // Update the running task count and create/cancel a system alarm
                 if(task.isRunning()) {
-                    TaskTimerApplication.RUNNING_TASKS++;
+                    TaskTimerApplication.RUNNING_TASK_COUNT++;
                     TaskTimerApplication.createTaskGoalReachedAlarm(getActivity(), task);
                 } else {
-                    TaskTimerApplication.RUNNING_TASKS--;
+                    TaskTimerApplication.RUNNING_TASK_COUNT--;
                     TaskTimerApplication.cancelTaskGoalReachedAlarm(getActivity(), task);
                 }
 

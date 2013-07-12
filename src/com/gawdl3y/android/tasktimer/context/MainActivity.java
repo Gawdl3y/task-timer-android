@@ -7,10 +7,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.LoaderManager;
+import android.support.v4.app.*;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
@@ -25,21 +22,23 @@ import com.gawdl3y.android.tasktimer.data.TaskTimerReceiver;
 import com.gawdl3y.android.tasktimer.layout.*;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
-import com.gawdl3y.android.tasktimer.pojos.TaskTimerEvents;
 import com.gawdl3y.android.tasktimer.util.Log;
 
 /**
  * The main activity of Task Timer
  * @author Schuyler Cebulskie
  */
-public class MainActivity extends FragmentActivity implements TaskListItem.TaskButtonListener, TaskTimerEvents.GroupListener, TaskTimerEvents.TaskListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends FragmentActivity implements TaskListItem.TaskButtonListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "MainActivity";
     private static final int GROUPS_LOADER_ID = 1;
     private static final int TASKS_LOADER_ID = 2;
 
-    // Stuff
+    // Fragments
+    private Fragment currentFragment;
     private TasksFragment tasksFragment;
     private GroupsFragment groupsFragment;
+
+    // Drawer stuff
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private ListView mainDrawer;
@@ -87,10 +86,10 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
 
         // Display the main fragment
         tasksFragment = TasksFragment.newInstance();
+        currentFragment = tasksFragment;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.activity_main_content, tasksFragment);
         transaction.commit();
-
         Log.v(TAG, "Created");
     }
 
@@ -113,7 +112,6 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
 
         // Show the loading indicator if we don't have the data, register as the event listener, and show the ongoing notification
         if(TaskTimerApplication.GROUPS == null) setProgressBarIndeterminateVisibility(true);
-        TaskTimerEvents.setListener(this);
         TaskTimerApplication.showOngoingNotification(this);
 
         Log.v(TAG, "Started");
@@ -122,15 +120,14 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
     @Override
     protected void onStop() {
         super.onStop();
-        TaskTimerEvents.setListener(null);
-        if(TaskTimerApplication.RUNNING_TASKS <= 0) TaskTimerApplication.cancelOngoingNotification(this);
+        if(TaskTimerApplication.RUNNING_TASK_COUNT <= 0) TaskTimerApplication.cancelOngoingNotification(this);
         Log.v(TAG, "Stopped");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(TaskTimerApplication.RUNNING_TASKS <= 0) TaskTimerApplication.cancelOngoingNotification(this);
+        if(TaskTimerApplication.RUNNING_TASK_COUNT <= 0) TaskTimerApplication.cancelOngoingNotification(this);
         Log.v(TAG, "Destroyed");
     }
 
@@ -187,8 +184,8 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = drawerLayout.isDrawerOpen(mainDrawer) || drawerLayout.isDrawerOpen(taskDrawer);
-        menu.findItem(R.id.menu_new_task).setVisible(!drawerOpen);
-        menu.findItem(R.id.menu_new_group).setVisible(!drawerOpen);
+        menu.findItem(R.id.menu_new_task).setVisible(!drawerOpen && currentFragment instanceof TasksFragment);
+        menu.findItem(R.id.menu_new_group).setVisible(!drawerOpen && (currentFragment instanceof TasksFragment || currentFragment instanceof GroupsFragment));
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -217,37 +214,7 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
 
     @Override
     public void onTaskButtonClick(View view) {
-        tasksFragment.onTaskButtonClick(view);
-    }
-
-    @Override
-    public void onGroupAdd(Group group) {
-        tasksFragment.onGroupAdd(group);
-    }
-
-    @Override
-    public void onGroupRemove(Group group) {
-        tasksFragment.onGroupRemove(group);
-    }
-
-    @Override
-    public void onGroupUpdate(Group group, Group oldGroup) {
-        tasksFragment.onGroupUpdate(group, oldGroup);
-    }
-
-    @Override
-    public void onTaskAdd(Task task, Group group) {
-        tasksFragment.onTaskAdd(task, group);
-    }
-
-    @Override
-    public void onTaskRemove(Task task, Group group) {
-        tasksFragment.onTaskRemove(task, group);
-    }
-
-    @Override
-    public void onTaskUpdate(Task task, Task oldTask, Group group) {
-        tasksFragment.onTaskUpdate(task, oldTask, group);
+        if(tasksFragment != null) tasksFragment.onTaskButtonClick(view);
     }
 
     /**
@@ -259,16 +226,22 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch(position) {
                 case 0:
-                    if(tasksFragment == null) tasksFragment = TasksFragment.newInstance();
-                    groupsFragment = null;
-                    getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, tasksFragment).commit();
+                    if(!(currentFragment instanceof TasksFragment)) {
+                        groupsFragment = null;
+                        if(tasksFragment == null) tasksFragment = TasksFragment.newInstance();
+                        currentFragment = tasksFragment;
+                        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, tasksFragment).commit();
+                    }
                     break;
                 case 1:
-                    if(groupsFragment == null) groupsFragment = GroupsFragment.newInstance();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, groupsFragment).commit();
+                    if(!(currentFragment instanceof GroupsFragment)) {
+                        tasksFragment = null;
+                        if(groupsFragment == null) groupsFragment = GroupsFragment.newInstance();
+                        currentFragment = groupsFragment;
+                        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, groupsFragment).commit();
+                    }
             }
 
-            mainDrawer.setItemChecked(position, true);
             drawerLayout.closeDrawer(mainDrawer);
         }
     }

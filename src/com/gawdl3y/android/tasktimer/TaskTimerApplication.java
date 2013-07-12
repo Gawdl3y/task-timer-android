@@ -45,7 +45,7 @@ public class TaskTimerApplication extends Application {
     // Data
     public static ArrayList<Group> GROUPS;
     //public static SparseArray<Group> GROUPS_MAP;
-    public static int RUNNING_TASKS;
+    public static int RUNNING_TASK_COUNT;
     public static int CURRENT_GROUP_ID;
     public static int CURRENT_TASK_ID;
 
@@ -143,7 +143,7 @@ public class TaskTimerApplication extends Application {
 
         GROUPS.add(group.getPosition(), group);
         Utilities.reposition(GROUPS);
-        if(TaskTimerEvents.getGroupListener() != null) TaskTimerEvents.getGroupListener().onGroupAdd(group);
+        TaskTimerEvents.fireEvent(TaskTimerEvents.EVENT_GROUP_ADD, group);
     }
 
     /**
@@ -153,7 +153,7 @@ public class TaskTimerApplication extends Application {
     public static void removeGroup(int groupPosition) {
         Group group = GROUPS.remove(groupPosition);
         Utilities.reposition(GROUPS);
-        if(TaskTimerEvents.getGroupListener() != null) TaskTimerEvents.getGroupListener().onGroupRemove(group);
+        TaskTimerEvents.fireEvent(TaskTimerEvents.EVENT_GROUP_REMOVE, group);
     }
 
     /**
@@ -163,7 +163,7 @@ public class TaskTimerApplication extends Application {
      */
     public static void updateGroup(Group group) {
         Group oldGroup = GROUPS.set(group.getPosition(), group);
-        if(TaskTimerEvents.getGroupListener() != null) TaskTimerEvents.getGroupListener().onGroupUpdate(group, oldGroup);
+        TaskTimerEvents.fireEvent(TaskTimerEvents.EVENT_GROUP_UPDATE, group, oldGroup);
     }
 
     /**
@@ -180,7 +180,7 @@ public class TaskTimerApplication extends Application {
 
         group.getTasks().add(task.getPosition(), task);
         Utilities.reposition(group.getTasks());
-        if(TaskTimerEvents.getTaskListener() != null) TaskTimerEvents.getTaskListener().onTaskAdd(task, group);
+        TaskTimerEvents.fireEvent(TaskTimerEvents.EVENT_TASK_ADD, task, group);
     }
 
     /**
@@ -192,7 +192,7 @@ public class TaskTimerApplication extends Application {
         Group group = GROUPS.get(groupPosition);
         Task task = group.getTasks().remove(taskPosition);
         Utilities.reposition(group.getTasks());
-        if(TaskTimerEvents.getTaskListener() != null) TaskTimerEvents.getTaskListener().onTaskRemove(task, group);
+        TaskTimerEvents.fireEvent(TaskTimerEvents.EVENT_TASK_ADD, task, group);
     }
 
     /**
@@ -204,7 +204,7 @@ public class TaskTimerApplication extends Application {
     public static void updateTask(int groupPosition, Task task) {
         Group group = GROUPS.get(groupPosition);
         Task oldTask = group.getTasks().set(task.getPosition(), task);
-        if(TaskTimerEvents.getTaskListener() != null) TaskTimerEvents.getTaskListener().onTaskUpdate(task, oldTask, group);
+        TaskTimerEvents.fireEvent(TaskTimerEvents.EVENT_TASK_ADD, task, oldTask, group);
     }
 
     /**
@@ -261,7 +261,7 @@ public class TaskTimerApplication extends Application {
         // Create the notification
         Notification notification = new NotificationCompat.Builder(context)
                 .setContentTitle(RESOURCES.getString(R.string.app_name))
-                .setContentText(String.format(RESOURCES.getQuantityString(R.plurals.plural_tasks_running, RUNNING_TASKS), RUNNING_TASKS))
+                .setContentText(String.format(RESOURCES.getQuantityString(R.plurals.plural_tasks_running, RUNNING_TASK_COUNT), RUNNING_TASK_COUNT))
                 .setSmallIcon(R.drawable.ic_stat_icon)
                 .setLargeIcon(Utilities.drawableToBitmap(RESOURCES.getDrawable(R.drawable.ic_launcher)))
                 .setWhen(System.currentTimeMillis())

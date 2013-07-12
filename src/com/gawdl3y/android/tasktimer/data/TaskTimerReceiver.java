@@ -48,7 +48,7 @@ public class TaskTimerReceiver extends BroadcastReceiver {
                 if(task.getBooleanSetting(Task.Settings.STOP_AT_GOAL) || !task.getBooleanSetting(Task.Settings.OVERTIME)) {
                     task.setRunning(false);
                     task.setLastTick(-1);
-                    TaskTimerApplication.RUNNING_TASKS--;
+                    TaskTimerApplication.RUNNING_TASK_COUNT--;
                 }
 
                 // Show notifications

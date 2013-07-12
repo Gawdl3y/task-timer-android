@@ -1,12 +1,20 @@
 package com.gawdl3y.android.tasktimer.pojos;
 
+import java.util.ArrayList;
+
 /**
  * Events for listening to changes to tasks and groups
  * @author Schuyler Cebulskie
  */
 public class TaskTimerEvents {
-    private static GroupListener sGroupListener;
-    private static TaskListener sTaskListener;
+    public static final int EVENT_GROUP_ADD = 0;
+    public static final int EVENT_GROUP_REMOVE = 1;
+    public static final int EVENT_GROUP_UPDATE = 2;
+    public static final int EVENT_TASK_ADD = 3;
+    public static final int EVENT_TASK_REMOVE = 4;
+    public static final int EVENT_TASK_UPDATE = 5;
+
+    private static ArrayList<TaskTimerListener> sListeners = new ArrayList<TaskTimerListener>();
 
     /**
      * The base listener class
@@ -68,48 +76,73 @@ public class TaskTimerEvents {
     }
 
     /**
-     * Sets the GroupListener to use
-     * @param listener The GroupListener to use
+     * Registers a TaskTimerListener
+     * @param listener The TaskTimerListener to register
      */
-    public static void setGroupListener(GroupListener listener) {
-        sGroupListener = listener;
+    public static void registerListener(TaskTimerListener listener) {
+        sListeners.add(listener);
     }
 
     /**
-     * Gets the GroupListener to use
-     * @return The GroupListener to use
+     * Unregisters a TaskTimerListener
+     * @param listener The TaskTimerListener to unregister
      */
-    public static GroupListener getGroupListener() {
-        return sGroupListener;
+    public static void unregisterListener(TaskTimerListener listener) {
+        sListeners.remove(listener);
     }
 
     /**
-     * Sets the TaskListener to use
-     * @param listener The TaskListener to use
+     * Unregisters all TaskTimerListeners
      */
-    public static void setTaskListener(TaskListener listener) {
-        sTaskListener = listener;
+    public static void unregisterAllListeners() {
+        sListeners.clear();
     }
 
     /**
-     * Gets the TaskListener to use
-     * @return The TaskListener to use
+     * Tests if a TaskTimerListener is registered or not
+     * @param listener The TaskTimerListener to test for
+     * @return {@code true} if the TaskTimerListener is registered, {@code false} otherwise
      */
-    public static TaskListener getTaskListener() {
-        return sTaskListener;
+    public static boolean isRegistered(TaskTimerListener listener) {
+        return sListeners.contains(listener);
     }
 
     /**
-     * Sets both the GroupListener and TaskListener to use from the same object
-     * <p>The object passed <strong>must</strong> implement both GroupListener and TaskListener, or an IllegalArgumentException will be thrown</p>
-     * @param listener The Group/TaskListener to use
+     * Fires an event to all registered listeners
+     * @param event The type of event to fire
      */
-    public static void setListener(TaskTimerListener listener) {
-        try {
-            sGroupListener = (GroupListener) listener;
-            sTaskListener = (TaskListener) listener;
-        } catch(ClassCastException e) {
-            throw new IllegalArgumentException("Listener does not implement both GroupListener and TaskListener");
+    public static void fireEvent(int event, Object... obj) {
+        switch(event) {
+            case EVENT_GROUP_ADD:
+                for(TaskTimerListener listener : sListeners) {
+                    if(listener instanceof GroupListener) ((GroupListener) listener).onGroupAdd((Group) obj[0]);
+                }
+                break;
+            case EVENT_GROUP_REMOVE:
+                for(TaskTimerListener listener : sListeners) {
+                    if(listener instanceof GroupListener) ((GroupListener) listener).onGroupRemove((Group) obj[0]);
+                }
+                break;
+            case EVENT_GROUP_UPDATE:
+                for(TaskTimerListener listener : sListeners) {
+                    if(listener instanceof GroupListener) ((GroupListener) listener).onGroupUpdate((Group) obj[0], (Group) obj[1]);
+                }
+                break;
+            case EVENT_TASK_ADD:
+                for(TaskTimerListener listener : sListeners) {
+                    if(listener instanceof TaskListener) ((TaskListener) listener).onTaskAdd((Task) obj[0], (Group) obj[1]);
+                }
+                break;
+            case EVENT_TASK_REMOVE:
+                for(TaskTimerListener listener : sListeners) {
+                    if(listener instanceof TaskListener) ((TaskListener) listener).onTaskRemove((Task) obj[0], (Group) obj[1]);
+                }
+                break;
+            case EVENT_TASK_UPDATE:
+                for(TaskTimerListener listener : sListeners) {
+                    if(listener instanceof TaskListener) ((TaskListener) listener).onTaskUpdate((Task) obj[0], (Task) obj[1], (Group) obj[2]);
+                }
+                break;
         }
     }
 }
