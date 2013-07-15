@@ -31,9 +31,9 @@
     
     
     <!-- Preference strings -->
-    <string name="pref_generalSettings">General Settings</string>
-    <string name="pref_taskSettings">Task Settings</string>
-    <string name="pref_notifSettings">Notification Settings</string>
+    <string name="pref_generalSettings">General</string>
+    <string name="pref_taskSettings">Tasks</string>
+    <string name="pref_notifSettings">Notifications</string>
     <string name="pref_about">About</string>
     
     <string name="pref_theme">Theme</string>

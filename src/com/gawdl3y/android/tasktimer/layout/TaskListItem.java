@@ -2,7 +2,6 @@ package com.gawdl3y.android.tasktimer.layout;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -21,7 +20,6 @@ import com.gawdl3y.android.tasktimer.util.Log;
  */
 public class TaskListItem extends LinearLayout implements Checkable, TaskTimerThread.TickListener {
     private static final String TAG = "TaskListItem";
-    private static Typeface ROBOTO_LIGHT;
 
     // Data
     private Task task;
@@ -53,12 +51,6 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
      */
     public TaskListItem(Context context, AttributeSet attrs, Task task) {
         super(context, attrs);
-
-        // Define the typefaces
-        if(ROBOTO_LIGHT == null) {
-            ROBOTO_LIGHT = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Light.ttf");
-        }
-
         this.task = task;
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutInflater.inflate(R.layout.task_list_item, this);
@@ -75,7 +67,7 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
         progress = (ProgressBar) findViewById(R.id.task_progress);
         toggle = (ImageView) findViewById(R.id.task_toggle);
 
-        name.setTypeface(ROBOTO_LIGHT);
+        name.setTypeface(TaskTimerApplication.Typefaces.ROBOTO_LIGHT);
 
         invalidate();
         buildTimer();

@@ -1,7 +1,6 @@
 package com.gawdl3y.android.tasktimer.layout;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
@@ -10,6 +9,7 @@ import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.util.Log;
 
@@ -19,7 +19,6 @@ import com.gawdl3y.android.tasktimer.util.Log;
  */
 public class GroupListItem extends LinearLayout implements Checkable {
     private static final String TAG = "GroupListItem";
-    private static Typeface ROBOTO_LIGHT;
 
     // Data
     private Group group;
@@ -32,16 +31,11 @@ public class GroupListItem extends LinearLayout implements Checkable {
      * Constructor
      * @param context The context that the view is in
      * @param attrs   The AttributeSet
+     * @param group   The Group to display
      */
     public GroupListItem(Context context, AttributeSet attrs, Group group) {
         super(context, attrs);
         this.group = group;
-
-        // Define the typefaces
-        if(ROBOTO_LIGHT == null) {
-            ROBOTO_LIGHT = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Light.ttf");
-        }
-
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutInflater.inflate(R.layout.group_list_item, this);
         if(name == null) onFinishInflate(); // onFinishInflate isn't ever being called by the LayoutInflater for some reason
@@ -53,7 +47,7 @@ public class GroupListItem extends LinearLayout implements Checkable {
         name = (TextView) findViewById(R.id.group_name);
         taskCount = (TextView) findViewById(R.id.group_task_count);
         name.setText(group.getName());
-        name.setTypeface(ROBOTO_LIGHT);
+        name.setTypeface(TaskTimerApplication.Typefaces.ROBOTO_LIGHT);
         Log.v(TAG, "Inflated");
     }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -70,6 +71,9 @@ public class TaskTimerApplication extends Application {
         gsonBuilder.registerTypeAdapter(TimeAmount.class, new TimeAmount.Serializer());
         gsonBuilder.registerTypeAdapter(TimeAmount.class, new TimeAmount.Deserializer());
         GSON = gsonBuilder.create();
+
+        // Create Typefaces
+        Typefaces.ROBOTO_LIGHT = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
 
         Log.v(TAG, "Created");
     }
@@ -327,5 +331,9 @@ public class TaskTimerApplication extends Application {
     public static void cancelTaskGoalReachedNotification(Context context, Task task) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(task.getId());
+    }
+
+    public static class Typefaces {
+        public static Typeface ROBOTO_LIGHT;
     }
 }
