@@ -16,7 +16,7 @@ import com.gawdl3y.android.tasktimer.pojos.TaskTimerThread;
 import com.gawdl3y.android.tasktimer.util.Log;
 
 /**
- * The fragment for list items in a TaskListFragment
+ * The view for task list items
  * @author Schuyler Cebulskie
  */
 public class TaskListItem extends LinearLayout implements Checkable, TaskTimerThread.TickListener {

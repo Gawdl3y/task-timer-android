@@ -5,74 +5,65 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import com.gawdl3y.android.tasktimer.R;
-import com.gawdl3y.android.tasktimer.layout.TaskListItem;
-import com.gawdl3y.android.tasktimer.pojos.Task;
+import com.gawdl3y.android.tasktimer.layout.GroupListItem;
+import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The adapter to display a list of Tasks
+ * The adapter to display a list of Groups
  * @author Schuyler Cebulskie
  */
-public class TaskListAdapter extends BaseAdapter {
-    private static final String TAG = "TaskListAdapter";
+public class GroupListAdapter extends BaseAdapter {
+    private static final String TAG = "GroupListAdapter";
 
     private Context context;
-
-    private List<Task> tasks;
-    private int group;
+    private List<Group> groups;
     private SparseBooleanArray itemsChecked = new SparseBooleanArray();
 
     /**
      * Fill constructor
      * @param context The context of the adapter
-     * @param tasks   The tasks to be displayed
-     * @param group   The position of the group that the list is for
      */
-    public TaskListAdapter(Context context, List<Task> tasks, int group) {
+    public GroupListAdapter(Context context, List<Group> groups) {
         this.context = context;
-        this.tasks = tasks;
-        this.group = group;
+        this.groups = groups;
     }
 
     @Override
     public int getCount() {
-        return tasks.size();
+        return groups.size();
     }
 
     @Override
     public Object getItem(int position) {
         Log.v(TAG, "Getting item #" + position);
-        return tasks.get(position);
+        return groups.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        if(position >= 0 && position < tasks.size()) return tasks.get(position).getId();
+        if(position >= 0 && position < groups.size()) return groups.get(position).getId();
         return 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TaskListItem v;
-        if(convertView != null && convertView instanceof TaskListItem) {
+        GroupListItem v;
+        if(convertView != null && convertView instanceof GroupListItem) {
             Log.v(TAG, "Converting old view");
-            v = (TaskListItem) convertView;
-            v.setTask((Task) getItem(position));
+            v = (GroupListItem) convertView;
+            v.setGroup((Group) getItem(position));
             v.setChecked(itemsChecked.get(position));
             v.invalidate();
-            v.buildTimer();
         } else {
             Log.v(TAG, "Getting new view");
-            v = new TaskListItem(context, null, (Task) getItem(position));
+            v = new GroupListItem(context, null, (Group) getItem(position));
             v.setChecked(itemsChecked.get(position));
         }
 
-        v.setTag(R.id.tag_task, position);
-        v.setTag(R.id.tag_group, group);
         return v;
     }
 
@@ -106,9 +97,9 @@ public class TaskListAdapter extends BaseAdapter {
      * Gets all of the checked items
      * @return An ArrayList of all of the checked items
      */
-    public ArrayList<Task> getCheckedItems() {
-        ArrayList<Task> checkedItems = new ArrayList<Task>();
-        for(int i = 0; i < tasks.size(); i++) if(itemsChecked.get(i)) checkedItems.add(tasks.get(i));
+    public ArrayList<Group> getCheckedItems() {
+        ArrayList<Group> checkedItems = new ArrayList<Group>();
+        for(int i = 0; i < groups.size(); i++) if(itemsChecked.get(i)) checkedItems.add(groups.get(i));
         return checkedItems;
     }
 
@@ -118,7 +109,7 @@ public class TaskListAdapter extends BaseAdapter {
      */
     public Integer[] getCheckedItemPositions() {
         ArrayList<Integer> checkedItems = new ArrayList<Integer>();
-        for(int i = 0; i < tasks.size(); i++) if(itemsChecked.get(i)) checkedItems.add(i);
+        for(int i = 0; i < groups.size(); i++) if(itemsChecked.get(i)) checkedItems.add(i);
         return checkedItems.toArray(new Integer[checkedItems.size()]);
     }
 
