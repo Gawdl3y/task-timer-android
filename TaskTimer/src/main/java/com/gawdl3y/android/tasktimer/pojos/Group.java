@@ -178,7 +178,7 @@ public class Group implements Parcelable {
     /**
      * The Parcel creator used to create new instances of the Group from a parcel
      */
-    public static final Parcelable.Creator<Group> CREATOR = new Parcelable.Creator<Group>() {
+    public static final Creator<Group> CREATOR = new Creator<Group>() {
         public Group createFromParcel(Parcel in) {
             return new Group(in);
         }

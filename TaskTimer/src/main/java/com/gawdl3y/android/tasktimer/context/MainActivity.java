@@ -72,11 +72,16 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, TaskTimerApplication.THEME == R.style.Theme_Light ? R.drawable.ic_drawer_light : R.drawable.ic_drawer_dark, R.string.menu_drawer_open, R.string.menu_drawer_close) {
             @Override
             public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mainDrawerItems[mainDrawer.getCheckedItemPosition()]);
+                setTitle(mainDrawerItems[mainDrawer.getCheckedItemPosition()]);
                 invalidateOptionsMenu();
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
+                TaskTimerApplication.PREFERENCES.edit().putBoolean("drawer_opened", true).commit();
+                getActionBar().setTitle(getResources().getString(R.string.app_name));
+                setTitle(getResources().getString(R.string.app_name));
                 invalidateOptionsMenu();
             }
         };
@@ -87,6 +92,13 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setTitle(mainDrawerItems[mainDrawer.getCheckedItemPosition()]);
         setTitle(mainDrawerItems[mainDrawer.getCheckedItemPosition()]);
+
+        // Open the drawer if the user never has done so themselves
+        if(!TaskTimerApplication.PREFERENCES.getBoolean("drawer_opened", false)) {
+            drawerLayout.openDrawer(mainDrawer);
+            getActionBar().setTitle(getResources().getString(R.string.app_name));
+            setTitle(getResources().getString(R.string.app_name));
+        }
 
         // Display the main fragment
         tasksFragment = TasksFragment.newInstance();
@@ -246,8 +258,6 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
                     }
             }
 
-            setTitle(mainDrawerItems[position]);
-            getActionBar().setTitle(mainDrawerItems[position]);
             drawerLayout.closeDrawer(mainDrawer);
         }
     }

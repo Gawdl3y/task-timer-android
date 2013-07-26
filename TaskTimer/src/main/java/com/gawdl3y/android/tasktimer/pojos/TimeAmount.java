@@ -261,7 +261,7 @@ public class TimeAmount implements Parcelable, Comparable<TimeAmount> {
     /**
      * The Parcel creator used to create new instances of TimeAmount from a parcel
      */
-    public static final Parcelable.Creator<TimeAmount> CREATOR = new Parcelable.Creator<TimeAmount>() {
+    public static final Creator<TimeAmount> CREATOR = new Creator<TimeAmount>() {
         /* (non-Javadoc)
          * Create a Time from a Parcel
          * @see android.os.Parcelable.Creator#createFromParcel(android.os.Parcel)

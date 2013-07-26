@@ -465,7 +465,7 @@ public class Task implements Parcelable {
     /**
      * The Parcel creator used to create new instances of the Task from a parcel
      */
-    public static final Parcelable.Creator<Task> CREATOR = new Parcelable.Creator<Task>() {
+    public static final Creator<Task> CREATOR = new Creator<Task>() {
         public Task createFromParcel(Parcel in) {
             return new Task(in);
         }
