@@ -28,47 +28,27 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
         this.groups = groups;
     }
 
-    /* (non-Javadoc)
-     * Gets the count of fragments
-     * @see android.support.v4.view.PagerAdapter#getCount()
-     */
     @Override
     public int getCount() {
         return groups != null ? groups.size() : 0;
     }
 
-    /* (non-Javadoc)
-     * Gets the title of a fragment
-     * @see android.support.v4.view.PagerAdapter#getPageTitle(int)
-     */
     @Override
     public CharSequence getPageTitle(int position) {
         return groups.get(position).getName();
     }
 
-    /* (non-Javadoc)
-     * Gets the fragment at position
-     * @see android.support.v4.app.FragmentPagerAdapter#getItem(int)
-     */
     @Override
     public TaskListFragment getItem(int position) {
         Log.v(TAG, "Getting item #" + position);
         return TaskListFragment.newInstance(groups.get(position));
     }
 
-    /* (non-Javadoc)
-     * Gets a unique ID for a fragment
-     * @see com.gawdl3y.android.tasktimer.adapters.NewFragmentStatePagerAdapter#getItemId(int)
-     */
     @Override
     public int getItemId(int position) {
         return groups.get(position).getId();
     }
 
-    /* (non-Javadoc)
-     * Gets the position of a fragment
-     * @see android.support.v4.view.PagerAdapter#getItemPosition(java.lang.Object)
-     */
     @Override
     public int getItemPosition(Object o) {
         TaskListFragment item = (TaskListFragment) o;
@@ -83,10 +63,6 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
         }
     }
 
-    /* (non-Javadoc)
-     * Saves the state
-     * @see com.gawdl3y.android.tasktimer.adapters.NewFragmentStatePagerAdapter#saveState()
-     */
     @Override
     public Parcelable saveState() {
         Bundle bundle = new Bundle();
@@ -95,10 +71,6 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
         return bundle;
     }
 
-    /* (non-Javadoc)
-     * Restores the state
-     * @see com.gawdl3y.android.tasktimer.adapters.NewFragmentStatePagerAdapter#restoreState(android.os.Parcelable, java.lang.ClassLoader)
-     */
     @Override
     public void restoreState(Parcelable state, ClassLoader loader) {
         Bundle bundle = (Bundle) state;
