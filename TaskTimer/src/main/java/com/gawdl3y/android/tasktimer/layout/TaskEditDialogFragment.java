@@ -47,11 +47,11 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
         if(savedInstanceState != null) {
             // Load from saved instance
             groups = savedInstanceState.getParcelableArrayList("groups");
-            task = (Task) savedInstanceState.getParcelable("task");
+            task = savedInstanceState.getParcelable("task");
         } else if(getArguments() != null) {
             // Load from arguments
             groups = getArguments().getParcelableArrayList("groups");
-            task = (Task) getArguments().getParcelable("task");
+            task = getArguments().getParcelable("task");
         }
 
         if(task == null) isNew = true;
@@ -83,12 +83,13 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
                 ArrayList<Task> tasks = groups.get(position).getTasks();
                 String[] opts = new String[tasks.size() + 1];
 
-                // Set the final item
-                opts[tasks.size()] = TaskTimerApplication.RESOURCES.getString(R.string.position_end);
+                // Set the first and final items
+                opts[0] = TaskTimerApplication.RESOURCES.getString(R.string.position_first);
+                if(tasks.size() > 0) opts[tasks.size()] = TaskTimerApplication.RESOURCES.getString(R.string.position_last);
 
                 // Add an item for each task
-                for(int i = 0; i < tasks.size(); i++)
-                    opts[i] = String.format(TaskTimerApplication.RESOURCES.getString(R.string.position_before), tasks.get(i).getName());
+                for(int i = 1; i < tasks.size(); i++)
+                    opts[i] = String.format(TaskTimerApplication.RESOURCES.getString(R.string.position_after), tasks.get(i - 1).getName());
 
                 // Set the adapter and stuff
                 positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);

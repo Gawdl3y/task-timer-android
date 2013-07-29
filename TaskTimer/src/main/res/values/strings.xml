@@ -136,7 +136,9 @@
     <!-- Position strings -->
     <string name="position_before">Before \"%1$s\"</string>
     <string name="position_after">After \"%1$s\"</string>
-    <string name="position_end">End of the list</string>
+    <string name="position_between">Between \"%1$s\" and \"%2$s\"</string>
+    <string name="position_first">First</string>
+    <string name="position_last">Last</string>
     
     
     <!-- Error strings -->

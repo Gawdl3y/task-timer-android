@@ -40,11 +40,11 @@ public class GroupEditDialogFragment extends DialogFragment implements OnEditorA
         if(savedInstanceState != null) {
             // Load from saved instance
             groups = savedInstanceState.getParcelableArrayList("groups");
-            group = (Group) savedInstanceState.getParcelable("group");
+            group = savedInstanceState.getParcelable("group");
         } else if(getArguments() != null) {
             // Load from arguments
             groups = getArguments().getParcelableArrayList("groups");
-            group = (Group) getArguments().getParcelable("group");
+            group = getArguments().getParcelable("group");
         }
 
         if(group == null) isNew = true;
@@ -60,9 +60,10 @@ public class GroupEditDialogFragment extends DialogFragment implements OnEditorA
 
         // Add the possible positions to the spinner
         String[] opts = new String[groups.size() + 1];
-        opts[groups.size()] = TaskTimerApplication.RESOURCES.getString(R.string.position_end);
-        for(int i = 0; i < groups.size(); i++)
-            opts[i] = String.format(TaskTimerApplication.RESOURCES.getString(R.string.position_before), groups.get(i).getName());
+        opts[0] = TaskTimerApplication.RESOURCES.getString(R.string.position_first);
+        if(groups.size() > 0) opts[groups.size()] = TaskTimerApplication.RESOURCES.getString(R.string.position_last);
+        for(int i = 1; i < groups.size(); i++)
+            opts[i] = String.format(TaskTimerApplication.RESOURCES.getString(R.string.position_after), groups.get(i - 1).getName());
         ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
         positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         positionView.setAdapter(positionAdapter);
