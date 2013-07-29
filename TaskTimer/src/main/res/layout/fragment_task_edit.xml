@@ -1,129 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    
-    <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dp"
+    android:scrollbarStyle="outsideOverlay">
+
+    <TableLayout
         android:id="@+id/task_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
-        
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            
+        android:stretchColumns="1">
+
+        <TableRow>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/task_name"
-                style="TextAppearance.Edit_LabelSmall" />
+                android:text="@string/task_name" />
+
             <EditText
-	            android:id="@+id/task_edit_name"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:hint="@string/task_name"
-	            android:inputType="text">
-	
-	            <requestFocus />
-        	</EditText>
-        </LinearLayout>
+                android:id="@+id/task_edit_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="@string/task_name">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/task_description"
-                style="TextAppearance.Edit_LabelSmall" />
-	        <EditText
-	            android:id="@+id/task_edit_description"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:hint="@string/task_description"
-	            android:inputType="textMultiLine" />
-	    </LinearLayout>
+                <requestFocus />
+            </EditText>
+        </TableRow>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            
+        <TableRow>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/task_group"
-                style="TextAppearance.Edit_LabelSmall" />
-	        <Spinner
-	            android:id="@+id/task_edit_group"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:prompt="@string/task_group"
-	            android:spinnerMode="dialog" />
-	    </LinearLayout>
+                android:text="@string/task_description" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            
+            <EditText
+                android:id="@+id/task_edit_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:hint="@string/task_description" />
+        </TableRow>
+
+        <TableRow>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/task_position"
-                style="TextAppearance.Edit_LabelSmall" />
-	        <Spinner
-	            android:id="@+id/task_edit_position"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:prompt="@string/task_position"
-	            android:spinnerMode="dialog" />
-	    </LinearLayout>
-	    
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            
+                android:text="@string/task_group" />
+
+            <Spinner
+                android:id="@+id/task_edit_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog"
+                android:prompt="@string/task_group" />
+        </TableRow>
+
+        <TableRow>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/task_time"
-                style="TextAppearance.Edit_LabelSmall" />
-	        <Button
-	            android:id="@+id/task_edit_time"
-	            android:layout_width="0px"
+                android:text="@string/task_position" />
+
+            <Spinner
+                android:id="@+id/task_edit_position"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:layout_marginLeft="0dip"
+                android:spinnerMode="dialog"
+                android:prompt="@string/task_position" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/task_time" />
+
+            <Button
+                android:id="@+id/task_edit_time"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
                 android:contentDescription="@string/task_time"
-                style="@style/TextAppearance.Edit_SpinnerButton" />
-	    </LinearLayout>
-	    
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            
+                style="?android:spinnerStyle" />
+        </TableRow>
+
+        <TableRow>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/task_goal"
-                style="TextAppearance.Edit_LabelSmall" />
-	        <Button
-	            android:id="@+id/task_edit_goal"
-	            android:layout_width="0px"
+                android:text="@string/task_goal" />
+
+            <Button
+                android:id="@+id/task_edit_goal"
+                android:layout_width="0px"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:layout_marginLeft="0dip"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
                 android:contentDescription="@string/task_goal"
-                style="@style/TextAppearance.Edit_SpinnerButton" />
-	    </LinearLayout>
-        
-	</LinearLayout>
+                style="?android:spinnerStyle" />
+        </TableRow>
+    </TableLayout>
 </ScrollView>
