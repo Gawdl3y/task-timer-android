@@ -53,7 +53,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:src="?attr/ic_start"
-        android:contentDescription="@string/task_start"
+        android:contentDescription="@string/task_action_start"
         android:onClick="onTaskButtonClick" />
     
 </RelativeLayout>

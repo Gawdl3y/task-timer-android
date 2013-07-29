@@ -3,8 +3,6 @@
 
     <!-- App strings -->
     <string name="app_name">Task Timer</string>
-    <string name="service_label">Main Service</string>
-    <string name="service_description">Controls storing and retrieving task data, and the timer.</string>
     
     
     <!-- Menu strings -->
@@ -28,75 +26,8 @@
     <string name="dialog_restart_message">A complete restart of Task Timer is required for this change to fully take effect.</string>
     <string name="dialog_restart_button_now">Restart Now</string>
     <string name="dialog_restart_button_later">Restart Later</string>
-    
-    
-    <!-- Preference strings -->
-    <string name="pref_generalSettings">General</string>
-    <string name="pref_taskSettings">Tasks</string>
-    <string name="pref_notifSettings">Notifications</string>
-    <string name="pref_about">About</string>
-    
-    <string name="pref_theme">Theme</string>
-    <string name="pref_theme_default">2</string>
-    <string-array name="pref_theme_entries">
-        <item>Dark</item>
-        <item>Light</item>
-        <item>Light with dark action bar</item>
-    </string-array>
-    <string-array name="pref_theme_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-    
-    <string name="pref_timeFormat">Time Format</string>
-    <string name="pref_timeFormat_default">0</string>
-    <string-array name="pref_timeFormat_entries">
-        <item>System Default</item>
-        <item>12-hour</item>
-        <item>24-hour</item>
-    </string-array>
-    <string-array name="pref_timeFormat_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-    
-    <string name="pref_history_title">History tracking</string>
-    <string name="pref_history_default">true</string>
-    <string name="pref_history_summary_on">Task history will be tracked</string>
-    <string name="pref_history_summary_off">Task history won\'t be tracked</string>
-    
-    <string name="pref_overtime_title">Overtime</string>
-    <string name="pref_overtime_default">false</string>
-    <string name="pref_overtime_summary_on">Tasks will be able to go over their goals</string>
-    <string name="pref_overtime_summary_off">Tasks won\'t be able to go over their goals</string>
-    
-    <string name="pref_autoPause_title">Automatic pausing at goal</string>
-    <string name="pref_autoPause_default">true</string>
-    <string name="pref_autoPause_summary_on">Tasks will be paused when their goals are reached</string>
-    <string name="pref_autoPause_summary_off">Tasks won\'t be paused when their goals are reached</string>
-    
-    <string name="pref_multipleRunning_title">Multiple tasks running</string>
-    <string name="pref_multipleRunning_default">true</string>
-    <string name="pref_multipleRunning_summary_on">More than one task can be running at a time</string>
-    <string name="pref_multipleRunning_summary_off">Only one task can be running at a time</string>
-    
-    <string name="pref_goalNotification">Goal reached notifications</string>
-    <string name="pref_goalNotification_default">true</string>
-    <string name="pref_goalNotification_summary_on">A notification will be made when a task reaches its goal</string>
-    <string name="pref_goalNotification_summary_off">A notification will not be made when a task reaches its goal</string>
 
-    <string name="pref_notificationSound">Notification sound</string>
 
-    <string name="pref_aboutApp">About Task Timer</string>
-
-    <string name="pref_playStore">Play Store item</string>
-    <string name="pref_playStore_summary">View the app in the Google Play Store</string>
-
-    <string name="pref_allApps">Other apps</string>
-    <string name="pref_allApps_summary">View the other apps made by the author</string>
-    
     <!--  Task strings -->
     <string name="task_name">Name</string>
     <string name="task_time">Current Time</string>
@@ -107,23 +38,34 @@
     <string name="task_position">Position</string>
     <string name="task_description">Description</string>
     
-    <string name="task_start">Start</string>
-    <string name="task_pause">Pause</string>
+    <string name="task_action_start">Start</string>
+    <string name="task_action_pause">Pause</string>
+    <string name="task_action_edit">Edit</string>
+    <string name="task_action_archive">Archive</string>
+    <string name="task_action_delete">Delete</string>
     
     <string name="task_new">New Task</string>
     <string name="task_add">Add Task</string>
     <string name="task_edit">Edit Task</string>
     <string name="task_save">Save Task</string>
+
+    <string name="task_empty">No tasks</string>
     
     
     <!-- Group strings -->
     <string name="group_name">Name</string>
     <string name="group_position">Position</string>
+
+    <string name="group_action_edit">Edit</string>
+    <string name="group_action_archive">Archive</string>
+    <string name="group_action_delete">Delete</string>
     
     <string name="group_new">New Group</string>
     <string name="group_add">Add Group</string>
     <string name="group_edit">Edit Group</string>
     <string name="group_save">Save Group</string>
+
+    <string name="group_empty">No groups</string>
     
     
     <!-- Time strings -->
@@ -142,17 +84,12 @@
     
     
     <!-- Error strings -->
-    <string name="error_serviceNotBound">The service could not be bound</string>
+    <!-- Nothing to see here at the moment -->
 
 
     <!-- Notification strings -->
     <string name="notif_task_completed">Task goal reached</string>
     <string name="notif_task_completed_long">Task \"%s\" has reached its goal</string>
-    
-    
-    <!-- General strings -->
-    <string name="no_tasks">No tasks</string>
-    <string name="no_groups">No groups</string>
     
     
     <!-- Plurals -->
@@ -161,6 +98,74 @@
         <item quantity="one">One task running</item>
         <item quantity="other">%d tasks running</item>
     </plurals>
+
+
+    <!-- Preference strings -->
+    <string name="pref_generalSettings">General</string>
+    <string name="pref_taskSettings">Tasks</string>
+    <string name="pref_notifSettings">Notifications</string>
+    <string name="pref_about">About</string>
+
+    <string name="pref_theme">Theme</string>
+    <string name="pref_theme_default">2</string>
+    <string-array name="pref_theme_entries">
+        <item>Dark</item>
+        <item>Light</item>
+        <item>Light with dark action bar</item>
+    </string-array>
+    <string-array name="pref_theme_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string name="pref_timeFormat">Time Format</string>
+    <string name="pref_timeFormat_default">0</string>
+    <string-array name="pref_timeFormat_entries">
+        <item>System Default</item>
+        <item>12-hour</item>
+        <item>24-hour</item>
+    </string-array>
+    <string-array name="pref_timeFormat_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string name="pref_history_title">History tracking</string>
+    <string name="pref_history_default">true</string>
+    <string name="pref_history_summary_on">Task history will be tracked</string>
+    <string name="pref_history_summary_off">Task history won\'t be tracked</string>
+
+    <string name="pref_overtime_title">Overtime</string>
+    <string name="pref_overtime_default">false</string>
+    <string name="pref_overtime_summary_on">Tasks will be able to go over their goals</string>
+    <string name="pref_overtime_summary_off">Tasks won\'t be able to go over their goals</string>
+
+    <string name="pref_autoPause_title">Automatic pausing at goal</string>
+    <string name="pref_autoPause_default">true</string>
+    <string name="pref_autoPause_summary_on">Tasks will be paused when their goals are reached</string>
+    <string name="pref_autoPause_summary_off">Tasks won\'t be paused when their goals are reached</string>
+
+    <string name="pref_multipleRunning_title">Multiple tasks running</string>
+    <string name="pref_multipleRunning_default">true</string>
+    <string name="pref_multipleRunning_summary_on">More than one task can be running at a time</string>
+    <string name="pref_multipleRunning_summary_off">Only one task can be running at a time</string>
+
+    <string name="pref_goalNotification">Goal reached notifications</string>
+    <string name="pref_goalNotification_default">true</string>
+    <string name="pref_goalNotification_summary_on">A notification will be made when a task reaches its goal</string>
+    <string name="pref_goalNotification_summary_off">A notification will not be made when a task reaches its goal</string>
+
+    <string name="pref_notificationSound">Notification sound</string>
+
+    <string name="pref_aboutApp">About Task Timer</string>
+
+    <string name="pref_playStore">Play Store item</string>
+    <string name="pref_playStore_summary">View the app in the Google Play Store</string>
+
+    <string name="pref_allApps">Other apps</string>
+    <string name="pref_allApps_summary">View the other apps made by the author</string>
 
 
     <!--  View tag IDs -->
