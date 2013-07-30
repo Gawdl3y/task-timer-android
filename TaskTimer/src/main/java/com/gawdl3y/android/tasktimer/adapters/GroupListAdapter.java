@@ -5,6 +5,7 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.layout.GroupListItem;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.util.Log;
@@ -55,16 +56,23 @@ public class GroupListAdapter extends BaseAdapter {
         if(convertView != null && convertView instanceof GroupListItem) {
             Log.v(TAG, "Converting old view");
             v = (GroupListItem) convertView;
+            v.setTag(position);
             v.setGroup((Group) getItem(position));
             v.setChecked(itemsChecked.get(position));
             v.invalidate();
         } else {
             Log.v(TAG, "Getting new view");
             v = new GroupListItem(context, null, (Group) getItem(position));
+            v.setTag(position);
             v.setChecked(itemsChecked.get(position));
         }
 
         return v;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return true;
     }
 
     /**

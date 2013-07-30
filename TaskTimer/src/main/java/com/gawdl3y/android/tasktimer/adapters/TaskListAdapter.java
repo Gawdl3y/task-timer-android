@@ -76,6 +76,11 @@ public class TaskListAdapter extends BaseAdapter {
         return v;
     }
 
+    @Override
+    public boolean hasStableIds() {
+        return true;
+    }
+
     /**
      * Sets whether or not an item is checked
      * @param position The position of the item
