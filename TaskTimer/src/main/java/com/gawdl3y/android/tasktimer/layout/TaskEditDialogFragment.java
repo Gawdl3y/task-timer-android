@@ -170,6 +170,7 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
     @Override
     public void onDialogHmsSet(int reference, int hours, int minutes, int seconds) {
         TimeAmount time = new TimeAmount(hours, minutes, seconds);
+        time.distribute();
         if(reference == HMS_REFERENCE_TIME) {
             timeView.setText(time.toString());
             editingTime = time;
