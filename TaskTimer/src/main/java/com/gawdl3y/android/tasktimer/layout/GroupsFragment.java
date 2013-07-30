@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.adapters.GroupListAdapter;
-import com.gawdl3y.android.tasktimer.context.MainActivity;
+import com.gawdl3y.android.tasktimer.activities.MainActivity;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.pojos.TaskTimerEvents;

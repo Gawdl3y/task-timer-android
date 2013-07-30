@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer.context;
+package com.gawdl3y.android.tasktimer.activities;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

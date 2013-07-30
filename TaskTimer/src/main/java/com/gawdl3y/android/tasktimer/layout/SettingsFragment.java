@@ -6,7 +6,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import com.gawdl3y.android.tasktimer.R;
-import com.gawdl3y.android.tasktimer.context.SettingsActivity;
+import com.gawdl3y.android.tasktimer.activities.SettingsActivity;
 import com.gawdl3y.android.tasktimer.util.Utilities;
 
 /**

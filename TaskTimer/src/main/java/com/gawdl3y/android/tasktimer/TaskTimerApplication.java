@@ -14,7 +14,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.SparseArray;
-import com.gawdl3y.android.tasktimer.context.MainActivity;
+import com.gawdl3y.android.tasktimer.activities.MainActivity;
 import com.gawdl3y.android.tasktimer.data.TaskTimerReceiver;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
