@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
     private static final String TAG = "TaskListFragmentAdapter";
 
-    private ArrayList<Group> groups;
+    private ArrayList<Group> mGroups;
 
     /**
      * Fill constructor
@@ -25,34 +25,34 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
      */
     public TaskListFragmentAdapter(FragmentManager fm, ArrayList<Group> groups) {
         super(fm);
-        this.groups = groups;
+        mGroups = groups;
     }
 
     @Override
     public int getCount() {
-        return groups != null ? groups.size() : 0;
+        return mGroups != null ? mGroups.size() : 0;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return groups.get(position).getName();
+        return mGroups.get(position).getName();
     }
 
     @Override
     public TaskListFragment getItem(int position) {
         Log.v(TAG, "Getting item #" + position);
-        return TaskListFragment.newInstance(groups.get(position));
+        return TaskListFragment.newInstance(mGroups.get(position));
     }
 
     @Override
     public int getItemId(int position) {
-        return groups.get(position).getId();
+        return mGroups.get(position).getId();
     }
 
     @Override
     public int getItemPosition(Object o) {
         TaskListFragment item = (TaskListFragment) o;
-        int position = groups.indexOf(item.getGroup());
+        int position = mGroups.indexOf(item.getGroup());
 
         if(position >= 0) {
             Log.v(TAG, "Item found at index " + position + ": " + item.getGroup().toString());
@@ -67,7 +67,7 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
     public Parcelable saveState() {
         Bundle bundle = new Bundle();
         bundle.putParcelable("super", super.saveState());
-        bundle.putParcelableArrayList("groups", groups);
+        bundle.putParcelableArrayList("groups", mGroups);
         return bundle;
     }
 
@@ -75,7 +75,7 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
     public void restoreState(Parcelable state, ClassLoader loader) {
         Bundle bundle = (Bundle) state;
         super.restoreState(bundle.getParcelable("super"), loader);
-        groups = bundle.getParcelableArrayList("groups");
+        mGroups = bundle.getParcelableArrayList("groups");
     }
 
     /**
@@ -83,7 +83,7 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
      * @return The groups
      */
     public ArrayList<Group> getGroups() {
-        return groups;
+        return mGroups;
     }
 
     /**
@@ -91,6 +91,6 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
      * @param groups The groups
      */
     public void setGroups(ArrayList<Group> groups) {
-        this.groups = groups;
+        mGroups = groups;
     }
 }
