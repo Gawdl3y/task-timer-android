@@ -81,8 +81,6 @@ public class TaskListFragment extends ListFragment {
         } else {
             Toast.makeText(getActivity(), getListView().getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
         }
-
-        Log.d(TAG, Integer.toString(list.getCheckedItemCount()));
     }
 
     /**

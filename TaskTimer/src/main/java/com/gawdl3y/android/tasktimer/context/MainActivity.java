@@ -45,6 +45,9 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
     private String[] mainDrawerItems;
     private LinearLayout taskDrawer;
 
+    // Other stuff
+    private ActionMode actionMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Switch theme (we do this before calling the super method so that the theme properly applies)
@@ -82,6 +85,7 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
                 TaskTimerApplication.PREFERENCES.edit().putBoolean("drawer_opened", true).commit();
                 getActionBar().setTitle(getResources().getString(R.string.app_name));
                 setTitle(getResources().getString(R.string.app_name));
+                if(actionMode != null) actionMode.finish();
                 invalidateOptionsMenu();
             }
         };
@@ -157,6 +161,12 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback) {
+        actionMode = super.startActionMode(callback);
+        return actionMode;
     }
 
     @Override
@@ -260,5 +270,21 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
 
             drawerLayout.closeDrawer(mainDrawer);
         }
+    }
+
+
+    /**
+     * Gets the current ActionMode
+     * @return The current ActionMode
+     */
+    public ActionMode getActionMode() {
+        return actionMode;
+    }
+
+    /**
+     * Stops the current ActionMode
+     */
+    public void clearActionMode() {
+        actionMode = null;
     }
 }
