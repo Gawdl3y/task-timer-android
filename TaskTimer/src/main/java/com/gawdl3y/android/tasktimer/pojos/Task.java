@@ -400,48 +400,6 @@ public class Task implements Parcelable {
         }
     }
 
-
-    /**
-     * Tests to see if the provided object is the same Task as this one (using IDs)
-     * @param obj The object to compare to
-     * @return Whether or not the object is the same
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == null) return false;
-        if(obj.getClass() != getClass()) return false;
-        return id == ((Task) obj).getId();
-    }
-
-
-    /* (non-Javadoc)
-     * Describe the contents for the parcel
-     * @see android.os.Parcelable#describeContents()
-     */
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    /* (non-Javadoc)
-     * Write the Task to a parcel
-     * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
-     */
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(description);
-        dest.writeParcelable(time, flags);
-        dest.writeParcelable(goal, flags);
-        dest.writeByte((byte) (indefinite ? 1 : 0));
-        dest.writeByte((byte) (complete ? 1 : 0));
-        dest.writeByte((byte) (running ? 1 : 0));
-        dest.writeInt(id);
-        dest.writeInt(position);
-        dest.writeInt(group);
-        dest.writeMap(settings);
-    }
-
     /**
      * Fills the Task from a parcel
      * @param in The parcel to read from
@@ -461,29 +419,58 @@ public class Task implements Parcelable {
         settings = in.readHashMap(Task.class.getClassLoader());
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeParcelable(time, flags);
+        dest.writeParcelable(goal, flags);
+        dest.writeByte((byte) (indefinite ? 1 : 0));
+        dest.writeByte((byte) (complete ? 1 : 0));
+        dest.writeByte((byte) (running ? 1 : 0));
+        dest.writeInt(id);
+        dest.writeInt(position);
+        dest.writeInt(group);
+        dest.writeMap(settings);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) return true;
+        if(obj == null || obj.getClass() != getClass()) return false;
+        return id == ((Task) obj).getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Task { name=\"" + name + "\" id=" + id + " position=" + position + " group=" + group + " }";
+    }
+
 
     /**
      * The Parcel creator used to create new instances of the Task from a parcel
      */
     public static final Creator<Task> CREATOR = new Creator<Task>() {
+        @Override
         public Task createFromParcel(Parcel in) {
             return new Task(in);
         }
 
+        @Override
         public Task[] newArray(int size) {
             return new Task[size];
         }
     };
-
-
-    /* (non-Javadoc)
-     * Gets a string representation of the object
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "Task { name=\"" + name + "\" id=" + id + " position=" + position + " group=" + group + " }";
-    }
 
 
     /**

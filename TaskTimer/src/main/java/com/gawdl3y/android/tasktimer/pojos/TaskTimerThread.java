@@ -4,8 +4,7 @@ import java.util.Comparator;
 
 
 /**
- * Thread that increments the time of a task
- * <p>For use in the UI
+ * Thread that increments the time of a task; for use in the UI
  * @author Schuyler Cebulskie
  */
 public class TaskTimerThread extends Thread {
@@ -44,10 +43,6 @@ public class TaskTimerThread extends Thread {
             this.tickListener = tickListener;
         }
 
-        /* (non-Javadoc)
-         * The actual timer
-         * @see java.lang.Runnable#run()
-         */
         @Override
         public void run() {
             while(task.isRunning() && running) {
@@ -75,6 +70,16 @@ public class TaskTimerThread extends Thread {
 
 
     /**
+     * Comparator for comparing tasks
+     */
+    public static final Comparator<TaskTimerThread> TASK_COMPARATOR = new Comparator<TaskTimerThread>() {
+        @Override
+        public int compare(TaskTimerThread lhs, TaskTimerThread rhs) {
+            return Task.ID_COMPARATOR.compare(lhs.task, rhs.task);
+        }
+    };
+
+    /**
      * The interface for listening to ticks of the timer
      * @author Schuyler Cebulskie
      */
@@ -84,14 +89,4 @@ public class TaskTimerThread extends Thread {
          */
         void onTick();
     }
-
-    /**
-     * Comparator for comparing tasks
-     */
-    public static final Comparator<TaskTimerThread> TaskComparator = new Comparator<TaskTimerThread>() {
-        @Override
-        public int compare(TaskTimerThread lhs, TaskTimerThread rhs) {
-            return Task.ID_COMPARATOR.compare(lhs.task, rhs.task);
-        }
-    };
 }

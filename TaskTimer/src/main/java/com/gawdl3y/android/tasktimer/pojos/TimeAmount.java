@@ -105,7 +105,7 @@ public class TimeAmount implements Parcelable, Comparable<TimeAmount> {
     }
 
     /**
-     * Sets the hours, minutes, and seconds of the Time
+     * Sets the hours, minutes, and seconds of the TimeAmount
      * @param hours hours
      * @param mins  minutes
      * @param secs  seconds
@@ -116,16 +116,15 @@ public class TimeAmount implements Parcelable, Comparable<TimeAmount> {
         this.secs = (short) secs;
     }
 
-
     /**
-     * Increments the Time by 1 second
+     * Increments the TimeAmount by 1 second
      */
     public synchronized void increment() {
         increment(1);
     }
 
     /**
-     * Increments the Time
+     * Increments the TimeAmount
      * @param secs the number of seconds to increment by
      */
     public synchronized void increment(int secs) {
@@ -151,20 +150,23 @@ public class TimeAmount implements Parcelable, Comparable<TimeAmount> {
         }
     }
 
-
-    /* (non-Javadoc)
-     * Describes the contents for the parcel
-     * @see android.os.Parcelable#describeContents()
+    /**
+     * Converts the time to a double
+     * @return Double form of TimeAmount
      */
-    @Override
-    public int describeContents() {
-        return 0;
+    public double toDouble() {
+        return hours + (mins / 60.0) + (secs / 3600.0);
     }
 
-    /* (non-Javadoc)
-     * Writes the time to a parcel
-     * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
+    /**
+     * Converts the time to a String, using a specific separator
+     * @param separator The separator to use
+     * @return String form of TimeAmount
      */
+    public String toString(String separator) {
+        return hours + separator + (mins < 10 ? "0" : "") + mins + separator + (secs < 10 ? "0" : "") + secs;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(hours);
@@ -172,33 +174,78 @@ public class TimeAmount implements Parcelable, Comparable<TimeAmount> {
         dest.writeInt(secs);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-    /* (non-Javadoc)
-     * Compares the time to another time
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
     @Override
     public int compareTo(TimeAmount another) {
         return compare(this, another);
     }
 
-    /* (non-Javadoc)
-     * Returns a string representation of the time (H:MM:SS)
-     * @see java.lang.Object#toString()
-     */
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) return true;
+        if(obj == null || obj.getClass() != getClass()) return false;
+
+        TimeAmount that = (TimeAmount) obj;
+        if(hours != that.hours) return false;
+        if(mins != that.mins) return false;
+        if(secs != that.secs) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = hours;
+        result = 31 * result + (int) mins;
+        result = 31 * result + (int) secs;
+        return result;
+    }
+
     @Override
     public String toString() {
         return hours + ":" + (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
     }
 
+
     /**
-     * Converts the time to a double
-     * @return Double form of Time
+     * Returns a new TimeAmount object from the double form
+     * @param d The double to convert to a TimeAmount
+     * @return A new TimeAmount
      */
-    public double toDouble() {
-        return hours + (mins / 60.0) + (secs / 3600.0);
+    public static TimeAmount fromDouble(double d) {
+        TimeAmount time = new TimeAmount();
+        time.setHours((int) d);
+        time.setMins((int) ((d - time.getHours()) * 60.0));
+        time.setSecs((int) Math.round((d - time.getHours() - time.getMins() / 60.0) * 3600.0));
+        return time;
     }
 
+    /**
+     * Returns a new TimeAmount object from the string form
+     * @param string    The String to parse a TimeAmount from
+     * @param separator The separator used in the string
+     * @return A new TimeAmount
+     */
+    public static TimeAmount fromString(String string, String separator) {
+        String[] parts = string.split(separator);
+        TimeAmount time = new TimeAmount();
+        time.setHours(Integer.parseInt(parts[0]));
+        time.setMins(Integer.parseInt(parts[1]));
+        time.setSecs(Integer.parseInt(parts[2]));
+        return time;
+    }
+
+    /**
+     * Returns a new TimeAmount object from the string form
+     * @param string The String to parse a TimeAmount from
+     * @return A new TimeAmount
+     */
+    public static TimeAmount fromString(String string) {
+        return fromString(string, ":");
+    }
 
     /**
      * Compares two times
@@ -213,18 +260,21 @@ public class TimeAmount implements Parcelable, Comparable<TimeAmount> {
         return 0;
     }
 
+
     /**
-     * Returns a new Time object from the double-form time
-     * @param d The double to convert to a Time
-     * @return A new Time
+     * The Parcel creator used to create new instances of TimeAmount from a parcel
      */
-    public static TimeAmount fromDouble(double d) {
-        TimeAmount time = new TimeAmount();
-        time.setHours((int) d);
-        time.setMins((int) ((d - time.getHours()) * 60.0));
-        time.setSecs((int) Math.round((d - time.getHours() - time.getMins() / 60.0) * 3600.0));
-        return time;
-    }
+    public static final Creator<TimeAmount> CREATOR = new Creator<TimeAmount>() {
+        @Override
+        public TimeAmount createFromParcel(Parcel in) {
+            return new TimeAmount(in);
+        }
+
+        @Override
+        public TimeAmount[] newArray(int size) {
+            return new TimeAmount[size];
+        }
+    };
 
 
     /**
@@ -257,25 +307,4 @@ public class TimeAmount implements Parcelable, Comparable<TimeAmount> {
             return timeAmount;
         }
     }
-
-    /**
-     * The Parcel creator used to create new instances of TimeAmount from a parcel
-     */
-    public static final Creator<TimeAmount> CREATOR = new Creator<TimeAmount>() {
-        /* (non-Javadoc)
-         * Create a Time from a Parcel
-         * @see android.os.Parcelable.Creator#createFromParcel(android.os.Parcel)
-         */
-        public TimeAmount createFromParcel(Parcel in) {
-            return new TimeAmount(in);
-        }
-
-        /* (non-Javadoc)
-         * Create a new Time array from a Parcel
-         * @see android.os.Parcelable.Creator#newArray(int)
-         */
-        public TimeAmount[] newArray(int size) {
-            return new TimeAmount[size];
-        }
-    };
 }

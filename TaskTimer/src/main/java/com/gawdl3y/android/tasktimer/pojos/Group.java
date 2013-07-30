@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
- * A category for Task objcts; contains an array of Tasks if necessary
+ * A category for Task objects; contains an array of Tasks if necessary
  * @author Schuyler Cebulskie
  */
 public class Group implements Parcelable {
@@ -127,42 +127,6 @@ public class Group implements Parcelable {
         this.tasks = tasks;
     }
 
-
-    /**
-     * Tests to see if the provided object is the same Group as this one (using IDs)
-     * @param obj The object to compare to
-     * @return Whether or not the object is the same
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if(obj == null) return false;
-        if(obj.getClass() != getClass()) return false;
-        return id == ((Group) obj).getId();
-    }
-
-
-    /* (non-Javadoc)
-     * Describes the contents for the parcel
-     * @see android.os.Parcelable#describeContents()
-     */
-    @Override
-    public int describeContents() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    /* (non-Javadoc)
-     * Writes the group to a parcel
-     * @see android.os.Parcelable#writeToParcel(android.os.Parcel, int)
-     */
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeTypedList(tasks);
-        dest.writeInt(position);
-        dest.writeInt(id);
-    }
-
     /**
      * Fills the Group from a parcel
      * @param in The parcel to read from
@@ -174,29 +138,51 @@ public class Group implements Parcelable {
         id = in.readInt();
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeTypedList(tasks);
+        dest.writeInt(position);
+        dest.writeInt(id);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) return true;
+        if(obj == null || obj.getClass() != getClass()) return false;
+        return id == ((Group) obj).getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Group { name=\"" + name + "\" id=" + id + " }";
+    }
+
 
     /**
      * The Parcel creator used to create new instances of the Group from a parcel
      */
     public static final Creator<Group> CREATOR = new Creator<Group>() {
+        @Override
         public Group createFromParcel(Parcel in) {
             return new Group(in);
         }
 
+        @Override
         public Group[] newArray(int size) {
             return new Group[size];
         }
     };
-
-
-    /* (non-Javadoc)
-     * Gets a string representation of the object
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "Group { name=\"" + name + "\" id=" + id + " }";
-    }
 
 
     /**
