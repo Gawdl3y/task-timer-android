@@ -30,8 +30,20 @@ public abstract class CheckableAdapter extends BaseAdapter {
      */
     public void setItemChecked(int position, boolean checked) {
         if(checked && !mCheckedItems.get(position)) mNumCheckedItems++;
-        if(!checked && mCheckedItems.get(position)) mNumCheckedItems--;
+        else if(!checked && mCheckedItems.get(position)) mNumCheckedItems--;
         mCheckedItems.put(position, checked);
+    }
+
+    /**
+     * Sets the checked state of all of the items
+     * @param checked Whether or not the items are checked
+     */
+    public void setallItemsChecked(boolean checked) {
+        for(int i = 0; i < getCount(); i++) {
+            if(checked && !mCheckedItems.get(i)) mNumCheckedItems++;
+            else if(!checked && mCheckedItems.get(i)) mNumCheckedItems--;
+            mCheckedItems.put(i, checked);
+        }
     }
 
     /**
@@ -62,5 +74,27 @@ public abstract class CheckableAdapter extends BaseAdapter {
             }
         }
         return positions;
+    }
+
+    /**
+     * @return An array of IDs of all of the checked items
+     */
+    public long[] getCheckedItemIds() {
+        long[] ids = new long[mNumCheckedItems];
+        int p = 0;
+        for(int i = 0; i < mCheckedItems.size(); i++) {
+            if(mCheckedItems.valueAt(i)) {
+                ids[p] = getItemId(mCheckedItems.keyAt(i));
+                p++;
+            }
+        }
+        return ids;
+    }
+
+    /**
+     * @return The checked item states
+     */
+    public SparseBooleanArray getCheckedItems() {
+        return mCheckedItems;
     }
 }
