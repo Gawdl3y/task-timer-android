@@ -101,8 +101,10 @@ public abstract class CheckableAdapter extends BaseAdapter {
     /**
      * Sets the checked item states
      * @param states The checked item states
+     * @throws NullPointerException If {@code states == null}
      */
     public void setCheckStates(SparseBooleanArray states) {
+        if(states == null) throw new NullPointerException();
         mCheckStates = states;
     }
 }
