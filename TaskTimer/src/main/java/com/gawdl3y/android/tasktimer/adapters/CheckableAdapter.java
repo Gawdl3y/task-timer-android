@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
  * @author Schuyler Cebulskie
  */
 public abstract class CheckableAdapter extends BaseAdapter {
-    private SparseBooleanArray mCheckedItems = new SparseBooleanArray();
+    private SparseBooleanArray mCheckStates = new SparseBooleanArray();
     private int mNumCheckedItems = 0;
 
     /**
@@ -19,8 +19,8 @@ public abstract class CheckableAdapter extends BaseAdapter {
      * @param position The position of the item to toggle
      */
     public void toggleItem(int position) {
-        mCheckedItems.put(position, !mCheckedItems.get(position));
-        if(mCheckedItems.get(position)) mNumCheckedItems++; else mNumCheckedItems--;
+        mCheckStates.put(position, !mCheckStates.get(position));
+        if(mCheckStates.get(position)) mNumCheckedItems++; else mNumCheckedItems--;
     }
 
     /**
@@ -29,9 +29,9 @@ public abstract class CheckableAdapter extends BaseAdapter {
      * @param checked  Whether or not the item is checked
      */
     public void setItemChecked(int position, boolean checked) {
-        if(checked && !mCheckedItems.get(position)) mNumCheckedItems++;
-        else if(!checked && mCheckedItems.get(position)) mNumCheckedItems--;
-        mCheckedItems.put(position, checked);
+        if(checked && !mCheckStates.get(position)) mNumCheckedItems++;
+        else if(!checked && mCheckStates.get(position)) mNumCheckedItems--;
+        mCheckStates.put(position, checked);
     }
 
     /**
@@ -40,9 +40,9 @@ public abstract class CheckableAdapter extends BaseAdapter {
      */
     public void setallItemsChecked(boolean checked) {
         for(int i = 0; i < getCount(); i++) {
-            if(checked && !mCheckedItems.get(i)) mNumCheckedItems++;
-            else if(!checked && mCheckedItems.get(i)) mNumCheckedItems--;
-            mCheckedItems.put(i, checked);
+            if(checked && !mCheckStates.get(i)) mNumCheckedItems++;
+            else if(!checked && mCheckStates.get(i)) mNumCheckedItems--;
+            mCheckStates.put(i, checked);
         }
     }
 
@@ -51,7 +51,7 @@ public abstract class CheckableAdapter extends BaseAdapter {
      * @return {@code true} if the item at {@code position} is checked, {@code false} if not
      */
     public boolean isItemChecked(int position) {
-        return mCheckedItems.get(position);
+        return mCheckStates.get(position);
     }
 
     /**
@@ -67,9 +67,9 @@ public abstract class CheckableAdapter extends BaseAdapter {
     public int[] getCheckedItemPositions() {
         int[] positions = new int[mNumCheckedItems];
         int p = 0;
-        for(int i = 0; i < mCheckedItems.size(); i++) {
-            if(mCheckedItems.valueAt(i)) {
-                positions[p] = mCheckedItems.keyAt(i);
+        for(int i = 0; i < mCheckStates.size(); i++) {
+            if(mCheckStates.valueAt(i)) {
+                positions[p] = mCheckStates.keyAt(i);
                 p++;
             }
         }
@@ -82,9 +82,9 @@ public abstract class CheckableAdapter extends BaseAdapter {
     public long[] getCheckedItemIds() {
         long[] ids = new long[mNumCheckedItems];
         int p = 0;
-        for(int i = 0; i < mCheckedItems.size(); i++) {
-            if(mCheckedItems.valueAt(i)) {
-                ids[p] = getItemId(mCheckedItems.keyAt(i));
+        for(int i = 0; i < mCheckStates.size(); i++) {
+            if(mCheckStates.valueAt(i)) {
+                ids[p] = getItemId(mCheckStates.keyAt(i));
                 p++;
             }
         }
@@ -94,7 +94,15 @@ public abstract class CheckableAdapter extends BaseAdapter {
     /**
      * @return The checked item states
      */
-    public SparseBooleanArray getCheckedItems() {
-        return mCheckedItems;
+    public SparseBooleanArray getCheckStates() {
+        return mCheckStates;
+    }
+
+    /**
+     * Sets the checked item states
+     * @param states The checked item states
+     */
+    public void setCheckStates(SparseBooleanArray states) {
+        mCheckStates = states;
     }
 }
