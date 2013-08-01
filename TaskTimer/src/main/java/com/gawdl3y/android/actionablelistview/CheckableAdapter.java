@@ -1,4 +1,4 @@
-package com.gawdl3y.android.tasktimer.adapters;
+package com.gawdl3y.android.actionablelistview;
 
 import android.util.SparseBooleanArray;
 import android.widget.BaseAdapter;
@@ -38,7 +38,7 @@ public abstract class CheckableAdapter extends BaseAdapter {
      * Sets the checked state of all of the items
      * @param checked Whether or not the items are checked
      */
-    public void setallItemsChecked(boolean checked) {
+    public void setAllItemsChecked(boolean checked) {
         for(int i = 0; i < getCount(); i++) {
             if(checked && !mCheckStates.get(i)) mNumCheckedItems++;
             else if(!checked && mCheckStates.get(i)) mNumCheckedItems--;

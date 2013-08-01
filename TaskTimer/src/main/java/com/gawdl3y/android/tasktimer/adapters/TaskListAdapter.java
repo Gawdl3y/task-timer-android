@@ -3,6 +3,7 @@ package com.gawdl3y.android.tasktimer.adapters;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import com.gawdl3y.android.actionablelistview.CheckableAdapter;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.layout.TaskListItem;
 import com.gawdl3y.android.tasktimer.pojos.Task;
