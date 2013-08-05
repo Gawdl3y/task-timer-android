@@ -98,6 +98,9 @@
         <item quantity="one">One task running</item>
         <item quantity="other">%d tasks running</item>
     </plurals>
+    <plurals name="plural_selected_count">
+        <item quantity="other">%d selected</item>
+    </plurals>
 
 
     <!-- Preference strings -->

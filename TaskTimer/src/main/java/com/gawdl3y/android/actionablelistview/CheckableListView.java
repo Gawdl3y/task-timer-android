@@ -9,12 +9,13 @@ import android.widget.ListView;
 /**
  * A {@code ListView} that:
  * <ul>
- *     <li>will keep check states in sync with a {@code CheckableAdapter} as long as any setItemChecked calls are made through the {@code CheckableListView}, and not the adapter</li>
- *     <li>contains a listener class for item check/uncheck events</li>
+ *     <li>will keep check states in sync with a {@link CheckableAdapter} as long as any {@code setItemChecked} calls are made through the {@link CheckableListView}, and not the adapter</li>
+ *     <li>will check/uncheck its views that implement the {@link Checkable} interface</li>
+ *     <li>fires {@link OnListItemCheckStateChangeListener} events</li>
  * </ul>
  * @author Schuyler Cebulskie
  */
-public class CheckableListView extends ListView {
+public class CheckableListView extends ListView implements OnListItemCheckStateChangeListener {
     private OnListItemCheckStateChangeListener mOnItemCheckStateChangeListener;
 
     public CheckableListView(Context context) {
@@ -33,25 +34,16 @@ public class CheckableListView extends ListView {
     public boolean performItemClick(View view, int position, long id) {
         boolean sooper = super.performItemClick(view, position, id);
 
-        // Fire event to listener
+        // Fire check state change event
         if(getChoiceMode() == CHOICE_MODE_MULTIPLE) {
             if(isItemChecked(position)) {
-                if(mOnItemCheckStateChangeListener != null) mOnItemCheckStateChangeListener.onListItemChecked(view, position, id);
+                onListItemChecked(view, position, id);
             } else {
-                if(mOnItemCheckStateChangeListener != null) mOnItemCheckStateChangeListener.onListItemUnchecked(view, position, id);
+                onListItemUnchecked(view, position, id);
             }
         }
 
         return sooper;
-    }
-
-    @Override
-    public void setChoiceMode(int choiceMode) {
-        super.setChoiceMode(choiceMode);
-        if(getChoiceMode() == CHOICE_MODE_NONE) {
-            if(getAdapter() != null && getAdapter() instanceof CheckableAdapter) ((CheckableAdapter) getAdapter()).getCheckStates().clear();
-            if(getCheckedItemPositions() != null) getCheckedItemPositions().clear();
-        }
     }
 
     @Override
@@ -71,21 +63,30 @@ public class CheckableListView extends ListView {
         }
     }
 
+    @Override
+    public void clearChoices() {
+        super.clearChoices();
+        if(getAdapter() != null && getAdapter() instanceof CheckableAdapter) ((CheckableAdapter) getAdapter()).getCheckStates().clear();
+        invalidateViews();
+    }
+
+    @Override
+    public void onListItemChecked(View view, int position, long id) {
+        if(view instanceof Checkable) ((Checkable) view).setChecked(true);
+        if(mOnItemCheckStateChangeListener != null) mOnItemCheckStateChangeListener.onListItemChecked(view, position, id);
+    }
+
+    @Override
+    public void onListItemUnchecked(View view, int position, long id) {
+        if(view instanceof Checkable) ((Checkable) view).setChecked(false);
+        if(mOnItemCheckStateChangeListener != null) mOnItemCheckStateChangeListener.onListItemUnchecked(view, position, id);
+    }
+
     /**
      * Sets the listener for listening to item check/uncheck events
      * @param listener The listener
      */
     public void setOnItemCheckStateChangeListener(OnListItemCheckStateChangeListener listener) {
         mOnItemCheckStateChangeListener = listener;
-    }
-
-
-    /**
-     * The interface for listening to item check/uncheck events
-     * @author Schuyler Cebulskie
-     */
-    public interface OnListItemCheckStateChangeListener {
-        public boolean onListItemChecked(View view, int position, long id);
-        public boolean onListItemUnchecked(View view, int position, long id);
     }
 }

@@ -5,7 +5,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <ListView
+    <com.gawdl3y.android.actionablelistview.ActionableListView
         android:id="@id/android:list"
         android:layout_width="match_parent"
         android:layout_height="0dp"

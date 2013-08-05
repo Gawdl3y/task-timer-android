@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import com.gawdl3y.android.tasktimer.R;
 
 /**
  * A {@code ListView} that automatically handles {@code ActionMode}s for checked items
@@ -18,6 +19,7 @@ import android.widget.ListView;
 public class ActionableListView extends CheckableListView implements AdapterView.OnItemLongClickListener, ActionMode.Callback {
     private SparseArray<ActionItem> mActions = new SparseArray<ActionItem>();
     private ActionMode mActionMode;
+    private ActionMode.Callback mActionModeCallback;
 
     public ActionableListView(Context context) {
         super(context);
@@ -36,15 +38,21 @@ public class ActionableListView extends CheckableListView implements AdapterView
 
     @Override
     public void setAdapter(ListAdapter adapter) {
-        if(!(adapter instanceof ActionableAdapter)) throw new IllegalArgumentException("Adapter must be instance of ActionableAdapter");
+        if(!(adapter instanceof ActionableAdapter)) throw new IllegalArgumentException("Adapter must implement ActionableAdapter");
         super.setAdapter(adapter);
     }
 
     @Override
-    public boolean performItemClick(View view, int position, long id) {
-        boolean sooper = super.performItemClick(view, position, id);
+    public void onListItemChecked(View view, int position, long id) {
+        super.onListItemChecked(view, position, id);
+        mActionMode.setTitle(String.format(getResources().getQuantityString(R.plurals.plural_selected_count, getCheckedItemCount()), getCheckedItemCount()));
+    }
+
+    @Override
+    public void onListItemUnchecked(View view, int position, long id) {
+        super.onListItemUnchecked(view, position, id);
+        mActionMode.setTitle(String.format(getResources().getQuantityString(R.plurals.plural_selected_count, getCheckedItemCount()), getCheckedItemCount()));
         if(getChoiceMode() == CHOICE_MODE_MULTIPLE && getCheckedItemCount() == 0) mActionMode.finish();
-        return sooper;
     }
 
     @Override
@@ -57,6 +65,7 @@ public class ActionableListView extends CheckableListView implements AdapterView
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         setChoiceMode(CHOICE_MODE_MULTIPLE);
+        if(mActionModeCallback != null) mActionModeCallback.onCreateActionMode(mode, menu);
         return true;
     }
 
@@ -67,6 +76,7 @@ public class ActionableListView extends CheckableListView implements AdapterView
             ActionItem item = mActions.valueAt(i);
             menu.add(0, item.getActionType(),item.getPosition(), item.getTitleResource()).setIcon(item.getIconResource());
         }
+        if(mActionModeCallback != null) mActionModeCallback.onPrepareActionMode(mode, menu);
         return true;
     }
 
@@ -81,13 +91,16 @@ public class ActionableListView extends CheckableListView implements AdapterView
 
             if(dataOrderAffected) mode.finish();
         }
+        if(mActionModeCallback != null) mActionModeCallback.onActionItemClicked(mode, item);
         return true;
     }
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         mActionMode = null;
+        clearChoices();
         setChoiceMode(CHOICE_MODE_NONE);
+        if(mActionModeCallback != null) mActionModeCallback.onDestroyActionMode(mode);
     }
 
     /**
@@ -120,5 +133,13 @@ public class ActionableListView extends CheckableListView implements AdapterView
      */
     public ActionMode getActionMode() {
         return mActionMode;
+    }
+
+    /**
+     * Sets the {@link ActionMode.Callback}
+     * @param callback The callback to use
+     */
+    public void setActionModeCallback(ActionMode.Callback callback) {
+        mActionModeCallback = callback;
     }
 }
