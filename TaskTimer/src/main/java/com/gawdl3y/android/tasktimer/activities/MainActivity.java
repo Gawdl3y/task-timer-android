@@ -28,7 +28,7 @@ import com.gawdl3y.android.tasktimer.util.Log;
  * The main activity of Task Timer
  * @author Schuyler Cebulskie
  */
-public class MainActivity extends FragmentActivity implements TaskListItem.TaskButtonListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends FragmentActivity implements TaskListItem.TaskButtonListener, LoaderManager.LoaderCallbacks<Cursor>, ActionMode.Callback {
     private static final String TAG = "MainActivity";
     private static final int GROUPS_LOADER_ID = 1;
     private static final int TASKS_LOADER_ID = 2;
@@ -85,7 +85,6 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
                 TaskTimerApplication.PREFERENCES.edit().putBoolean("drawer_opened", true).commit();
                 getActionBar().setTitle(getResources().getString(R.string.app_name));
                 setTitle(getResources().getString(R.string.app_name));
-                if(actionMode != null) actionMode.finish();
                 invalidateOptionsMenu();
             }
         };
@@ -243,6 +242,43 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
         if(tasksFragment != null) tasksFragment.onTaskButtonClick(view);
     }
 
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        if(actionMode != null) actionMode.finish();
+        actionMode = mode;
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return true;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        if(actionMode == mode) actionMode = null;
+    }
+
+    /**
+     * Gets the current ActionMode
+     * @return The current ActionMode
+     */
+    public ActionMode getActionMode() {
+        return actionMode;
+    }
+
+    /**
+     * Clears the current ActionMode (does not call {@code finish})
+     */
+    public void clearActionMode() {
+        actionMode = null;
+    }
+
     /**
      * The list item click listener for the main drawer
      * @author Schuyler Cebulskie
@@ -254,6 +290,7 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
                 case 0:
                     if(!(currentFragment instanceof TasksFragment)) {
                         groupsFragment = null;
+                        if(actionMode != null) actionMode.finish();
                         if(tasksFragment == null) tasksFragment = TasksFragment.newInstance();
                         currentFragment = tasksFragment;
                         getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, tasksFragment).commit();
@@ -262,6 +299,7 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
                 case 1:
                     if(!(currentFragment instanceof GroupsFragment)) {
                         tasksFragment = null;
+                        if(actionMode != null) actionMode.finish();
                         if(groupsFragment == null) groupsFragment = GroupsFragment.newInstance();
                         currentFragment = groupsFragment;
                         getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, groupsFragment).commit();
@@ -270,21 +308,5 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
 
             drawerLayout.closeDrawer(mainDrawer);
         }
-    }
-
-
-    /**
-     * Gets the current ActionMode
-     * @return The current ActionMode
-     */
-    public ActionMode getActionMode() {
-        return actionMode;
-    }
-
-    /**
-     * Stops the current ActionMode
-     */
-    public void clearActionMode() {
-        actionMode = null;
     }
 }
