@@ -76,6 +76,7 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
 
     @Override
     protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
         if(timer != null) timer.interrupt();
         Log.v(TAG, "Detached");
     }
