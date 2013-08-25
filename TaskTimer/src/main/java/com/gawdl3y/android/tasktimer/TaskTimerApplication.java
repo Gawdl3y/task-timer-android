@@ -37,6 +37,7 @@ public class TaskTimerApplication extends Application {
 
     // Useful stuff
     public static final boolean DEBUG = true;
+    public static TaskTimerApplication INSTANCE;
     public static String PACKAGE;
     public static Resources RESOURCES;
     public static SharedPreferences PREFERENCES;
@@ -55,6 +56,7 @@ public class TaskTimerApplication extends Application {
         super.onCreate();
 
         // Set static properties
+        INSTANCE = this;
         PACKAGE = getPackageName();
         RESOURCES = getResources();
 
