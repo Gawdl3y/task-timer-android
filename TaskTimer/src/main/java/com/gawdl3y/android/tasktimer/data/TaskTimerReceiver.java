@@ -19,10 +19,6 @@ public class TaskTimerReceiver extends BroadcastReceiver {
     public static final String ACTION_START_APP = "start_app";
     public static final String ACTION_TASK_GOAL_REACHED = "task_goal_reached";
 
-    /* (non-Javadoc)
-     * A broadcast has been received
-     * @see android.content.BroadcastReceiver#onReceive(android.content.Context, android.content.Intent)
-     */
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.v(TAG, "Received broadcast: " + intent);

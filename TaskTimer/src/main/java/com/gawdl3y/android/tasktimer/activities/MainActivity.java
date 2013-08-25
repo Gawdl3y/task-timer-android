@@ -34,19 +34,19 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
     private static final int TASKS_LOADER_ID = 2;
 
     // Fragments
-    private Fragment currentFragment;
-    private TasksFragment tasksFragment;
-    private GroupsFragment groupsFragment;
+    private Fragment mCurrentFragment;
+    private TasksFragment mTasksFragment;
+    private GroupsFragment mGroupsFragment;
 
     // Drawer stuff
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle drawerToggle;
-    private ListView mainDrawer;
-    private String[] mainDrawerItems;
-    private LinearLayout taskDrawer;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private ListView mMainDrawer;
+    private String[] mMainDrawerItems;
+    private LinearLayout mTaskDrawer;
 
     // Other stuff
-    private ActionMode actionMode;
+    private ActionMode mActionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,21 +62,21 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
         setContentView(R.layout.activity_main);
 
         // Do drawer stuff
-        drawerLayout = (DrawerLayout) findViewById(R.id.activity_main);
-        drawerLayout.setDrawerShadow(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.drawable.drawer_shadow_dark : R.drawable.drawer_shadow_light, Gravity.START);
-        //drawerLayout.setDrawerShadow(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.drawable.drawer_shadow_dark : R.drawable.drawer_shadow_light, Gravity.END);
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
-        mainDrawer = (ListView) findViewById(R.id.activity_main_drawer_left);
-        mainDrawerItems = getResources().getStringArray(R.array.drawer_main_items);
-        mainDrawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mainDrawerItems));
-        mainDrawer.setItemChecked(0, true);
-        mainDrawer.setOnItemClickListener(new DrawerItemClickListener());
-        taskDrawer = (LinearLayout) findViewById(R.id.activity_main_drawer_right);
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, TaskTimerApplication.THEME == R.style.Theme_Light ? R.drawable.ic_drawer_light : R.drawable.ic_drawer_dark, R.string.menu_drawer_open, R.string.menu_drawer_close) {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_main);
+        mDrawerLayout.setDrawerShadow(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.drawable.drawer_shadow_dark : R.drawable.drawer_shadow_light, Gravity.START);
+        //mDrawerLayout.setDrawerShadow(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.drawable.drawer_shadow_dark : R.drawable.drawer_shadow_light, Gravity.END);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
+        mMainDrawer = (ListView) findViewById(R.id.activity_main_drawer_left);
+        mMainDrawerItems = getResources().getStringArray(R.array.drawer_main_items);
+        mMainDrawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mMainDrawerItems));
+        mMainDrawer.setItemChecked(0, true);
+        mMainDrawer.setOnItemClickListener(new DrawerItemClickListener());
+        mTaskDrawer = (LinearLayout) findViewById(R.id.activity_main_drawer_right);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, TaskTimerApplication.THEME == R.style.Theme_Light ? R.drawable.ic_drawer_light : R.drawable.ic_drawer_dark, R.string.menu_drawer_open, R.string.menu_drawer_close) {
             @Override
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mainDrawerItems[mainDrawer.getCheckedItemPosition()]);
-                setTitle(mainDrawerItems[mainDrawer.getCheckedItemPosition()]);
+                getActionBar().setTitle(mMainDrawerItems[mMainDrawer.getCheckedItemPosition()]);
+                setTitle(mMainDrawerItems[mMainDrawer.getCheckedItemPosition()]);
                 invalidateOptionsMenu();
             }
 
@@ -88,26 +88,26 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
                 invalidateOptionsMenu();
             }
         };
-        drawerLayout.setDrawerListener(drawerToggle);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         // Do action bar stuff
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setTitle(mainDrawerItems[mainDrawer.getCheckedItemPosition()]);
-        setTitle(mainDrawerItems[mainDrawer.getCheckedItemPosition()]);
+        getActionBar().setTitle(mMainDrawerItems[mMainDrawer.getCheckedItemPosition()]);
+        setTitle(mMainDrawerItems[mMainDrawer.getCheckedItemPosition()]);
 
         // Open the drawer if the user never has done so themselves
         if(!TaskTimerApplication.PREFERENCES.getBoolean("drawer_opened", false)) {
-            drawerLayout.openDrawer(mainDrawer);
+            mDrawerLayout.openDrawer(mMainDrawer);
             getActionBar().setTitle(getResources().getString(R.string.app_name));
             setTitle(getResources().getString(R.string.app_name));
         }
 
         // Display the main fragment
-        tasksFragment = TasksFragment.newInstance();
-        currentFragment = tasksFragment;
+        mTasksFragment = TasksFragment.newInstance();
+        mCurrentFragment = mTasksFragment;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_main_content, tasksFragment);
+        transaction.replace(R.id.activity_main_content, mTasksFragment);
         transaction.commit();
         Log.v(TAG, "Created");
     }
@@ -153,19 +153,19 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        drawerToggle.syncState();
+        mDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        drawerToggle.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback) {
-        actionMode = super.startActionMode(callback);
-        return actionMode;
+        mActionMode = super.startActionMode(callback);
+        return mActionMode;
     }
 
     @Override
@@ -188,7 +188,7 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
             getSupportLoaderManager().initLoader(TASKS_LOADER_ID, null, this);
         } else if(loader.getId() == TASKS_LOADER_ID) {
             TaskTimerApplication.loadTasks(cursor);
-            tasksFragment.setGroups(TaskTimerApplication.GROUPS);
+            mTasksFragment.setGroups(TaskTimerApplication.GROUPS);
             setProgressBarIndeterminateVisibility(false);
         }
 
@@ -208,20 +208,20 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        boolean drawerOpen = drawerLayout.isDrawerOpen(mainDrawer) || drawerLayout.isDrawerOpen(taskDrawer);
-        menu.findItem(R.id.menu_new_task).setVisible(!drawerOpen && currentFragment instanceof TasksFragment);
-        menu.findItem(R.id.menu_new_group).setVisible(!drawerOpen && (currentFragment instanceof TasksFragment || currentFragment instanceof GroupsFragment));
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mMainDrawer) || mDrawerLayout.isDrawerOpen(mTaskDrawer);
+        menu.findItem(R.id.menu_new_task).setVisible(!drawerOpen && mCurrentFragment instanceof TasksFragment);
+        menu.findItem(R.id.menu_new_group).setVisible(!drawerOpen && (mCurrentFragment instanceof TasksFragment || mCurrentFragment instanceof GroupsFragment));
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(drawerToggle.onOptionsItemSelected(item)) return true;
+        if(mDrawerToggle.onOptionsItemSelected(item)) return true;
 
         Intent intent;
         switch(item.getItemId()) {
             case R.id.menu_new_task:
-                TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(TaskTimerApplication.GROUPS, tasksFragment.getPager().getCurrentItem(), null);
+                TaskEditDialogFragment taskEditDialog = TaskEditDialogFragment.newInstance(TaskTimerApplication.GROUPS, mTasksFragment.getPager().getCurrentItem(), null);
                 taskEditDialog.show(getSupportFragmentManager(), "fragment_task_edit");
                 return true;
             case R.id.menu_new_group:
@@ -239,13 +239,13 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
 
     @Override
     public void onTaskButtonClick(View view) {
-        if(tasksFragment != null) tasksFragment.onTaskButtonClick(view);
+        if(mTasksFragment != null) mTasksFragment.onTaskButtonClick(view);
     }
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        if(actionMode != null) actionMode.finish();
-        actionMode = mode;
+        if(mActionMode != null) mActionMode.finish();
+        mActionMode = mode;
         return true;
     }
 
@@ -261,7 +261,7 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        if(actionMode == mode) actionMode = null;
+        if(mActionMode == mode) mActionMode = null;
     }
 
     /**
@@ -269,14 +269,14 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
      * @return The current ActionMode
      */
     public ActionMode getActionMode() {
-        return actionMode;
+        return mActionMode;
     }
 
     /**
      * Clears the current ActionMode (does not call {@code finish})
      */
     public void clearActionMode() {
-        actionMode = null;
+        mActionMode = null;
     }
 
     /**
@@ -288,25 +288,25 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             switch(position) {
                 case 0:
-                    if(!(currentFragment instanceof TasksFragment)) {
-                        groupsFragment = null;
-                        if(actionMode != null) actionMode.finish();
-                        if(tasksFragment == null) tasksFragment = TasksFragment.newInstance();
-                        currentFragment = tasksFragment;
-                        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, tasksFragment).commit();
+                    if(!(mCurrentFragment instanceof TasksFragment)) {
+                        mGroupsFragment = null;
+                        if(mActionMode != null) mActionMode.finish();
+                        if(mTasksFragment == null) mTasksFragment = TasksFragment.newInstance();
+                        mCurrentFragment = mTasksFragment;
+                        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, mTasksFragment).commit();
                     }
                     break;
                 case 1:
-                    if(!(currentFragment instanceof GroupsFragment)) {
-                        tasksFragment = null;
-                        if(actionMode != null) actionMode.finish();
-                        if(groupsFragment == null) groupsFragment = GroupsFragment.newInstance();
-                        currentFragment = groupsFragment;
-                        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, groupsFragment).commit();
+                    if(!(mCurrentFragment instanceof GroupsFragment)) {
+                        mTasksFragment = null;
+                        if(mActionMode != null) mActionMode.finish();
+                        if(mGroupsFragment == null) mGroupsFragment = GroupsFragment.newInstance();
+                        mCurrentFragment = mGroupsFragment;
+                        getSupportFragmentManager().beginTransaction().replace(R.id.activity_main_content, mGroupsFragment).commit();
                     }
             }
 
-            drawerLayout.closeDrawer(mainDrawer);
+            mDrawerLayout.closeDrawer(mMainDrawer);
         }
     }
 }

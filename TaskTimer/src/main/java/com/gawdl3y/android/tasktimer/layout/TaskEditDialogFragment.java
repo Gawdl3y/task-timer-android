@@ -30,15 +30,15 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
     private static final int HMS_REFERENCE_TIME = 1;
     private static final int HMS_REFERENCE_GOAL = 2;
 
-    private ArrayList<Group> groups;
-    private Task task;
-    private boolean isNew;
-    private TimeAmount editingTime, editingGoal;
+    private ArrayList<Group> mGroups;
+    private Task mTask;
+    private boolean mTaskIsNew;
+    private TimeAmount mEditingTime, mEditingGoal;
 
-    private EditText nameView, descriptionView;
-    private Spinner groupView, positionView;
-    private ArrayAdapter<String> groupAdapter, positionAdapter;
-    private Button timeView, goalView;
+    private EditText mNameView, mDescriptionView;
+    private Spinner mGroupView, mPositionView;
+    private ArrayAdapter<String> mGroupAdapter, mPositionAdapter;
+    private Button mTimeView, mGoalView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,15 +46,15 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
 
         if(savedInstanceState != null) {
             // Load from saved instance
-            groups = savedInstanceState.getParcelableArrayList("groups");
-            task = savedInstanceState.getParcelable("task");
+            mGroups = savedInstanceState.getParcelableArrayList("groups");
+            mTask = savedInstanceState.getParcelable("task");
         } else if(getArguments() != null) {
             // Load from arguments
-            groups = getArguments().getParcelableArrayList("groups");
-            task = getArguments().getParcelable("task");
+            mGroups = getArguments().getParcelableArrayList("groups");
+            mTask = getArguments().getParcelable("task");
         }
 
-        if(task == null) isNew = true;
+        if(mTask == null) mTaskIsNew = true;
     }
 
     @Override
@@ -62,40 +62,41 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
         // Define the views
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View view = inflater.inflate(R.layout.fragment_task_edit, null);
-        nameView = (EditText) view.findViewById(R.id.task_edit_name);
-        descriptionView = (EditText) view.findViewById(R.id.task_edit_description);
-        groupView = (Spinner) view.findViewById(R.id.task_edit_group);
-        positionView = (Spinner) view.findViewById(R.id.task_edit_position);
-        timeView = (Button) view.findViewById(R.id.task_edit_time);
-        goalView = (Button) view.findViewById(R.id.task_edit_goal);
+        mNameView = (EditText) view.findViewById(R.id.task_edit_name);
+        mDescriptionView = (EditText) view.findViewById(R.id.task_edit_description);
+        mGroupView = (Spinner) view.findViewById(R.id.task_edit_group);
+        mPositionView = (Spinner) view.findViewById(R.id.task_edit_position);
+        mTimeView = (Button) view.findViewById(R.id.task_edit_time);
+        mGoalView = (Button) view.findViewById(R.id.task_edit_goal);
 
         // Add the possible groups to the group spinner
-        String[] opts = new String[groups.size()];
-        for(int i = 0; i < groups.size(); i++) opts[i] = groups.get(i).getName();
-        groupAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
-        groupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        groupView.setAdapter(groupAdapter);
+        String[] opts = new String[mGroups.size()];
+        for(int i = 0; i < mGroups.size(); i++) opts[i] = mGroups.get(i).getName();
+        mGroupAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
+        mGroupAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mGroupView.setAdapter(mGroupAdapter);
 
         // Add a listener for the group spinner being changed
-        groupView.setOnItemSelectedListener(new OnItemSelectedListener() {
+        mGroupView.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                ArrayList<Task> tasks = groups.get(position).getTasks();
+                ArrayList<Task> tasks = mGroups.get(position).getTasks();
                 String[] opts = new String[tasks.size() + 1];
 
                 // Set the first and final items
                 opts[0] = TaskTimerApplication.RESOURCES.getString(R.string.position_first);
-                if(tasks.size() > 0) opts[tasks.size()] = TaskTimerApplication.RESOURCES.getString(R.string.position_last);
+                if(tasks.size() > 0)
+                    opts[tasks.size()] = TaskTimerApplication.RESOURCES.getString(R.string.position_last);
 
                 // Add an item for each task
                 for(int i = 1; i < tasks.size(); i++)
                     opts[i] = String.format(TaskTimerApplication.RESOURCES.getString(R.string.position_after), tasks.get(i - 1).getName());
 
                 // Set the adapter and stuff
-                positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
-                positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                positionView.setAdapter(positionAdapter);
-                positionView.setSelection(opts.length - 1);
+                mPositionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
+                mPositionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mPositionView.setAdapter(mPositionAdapter);
+                mPositionView.setSelection(opts.length - 1);
             }
 
             @Override
@@ -105,55 +106,55 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
         });
 
         // Set the time/goal button listeners
-        timeView.setOnClickListener(new View.OnClickListener() {
+        mTimeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HmsPickerBuilder timePicker = new HmsPickerBuilder()
-                        .setFragmentManager(getFragmentManager())
-                        .setStyleResId(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.style.BetterPickersDialogFragment : R.style.BetterPickersDialogFragment_Light)
-                        .addHmsPickerDialogHandler(TaskEditDialogFragment.this)
-                        .setReference(HMS_REFERENCE_TIME);
+                    .setFragmentManager(getFragmentManager())
+                    .setStyleResId(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.style.BetterPickersDialogFragment : R.style.BetterPickersDialogFragment_Light)
+                    .addHmsPickerDialogHandler(TaskEditDialogFragment.this)
+                    .setReference(HMS_REFERENCE_TIME);
                 timePicker.show();
             }
         });
-        goalView.setOnClickListener(new View.OnClickListener() {
+        mGoalView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 HmsPickerBuilder timePicker = new HmsPickerBuilder()
-                        .setFragmentManager(getFragmentManager())
-                        .setStyleResId(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.style.BetterPickersDialogFragment : R.style.BetterPickersDialogFragment_Light)
-                        .addHmsPickerDialogHandler(TaskEditDialogFragment.this)
-                        .setReference(HMS_REFERENCE_GOAL);
+                    .setFragmentManager(getFragmentManager())
+                    .setStyleResId(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.style.BetterPickersDialogFragment : R.style.BetterPickersDialogFragment_Light)
+                    .addHmsPickerDialogHandler(TaskEditDialogFragment.this)
+                    .setReference(HMS_REFERENCE_GOAL);
                 timePicker.show();
             }
         });
 
         // Update the time/goal buttons
         if(savedInstanceState != null) {
-            editingTime = savedInstanceState.getParcelable("editingTime");
-            editingGoal = savedInstanceState.getParcelable("editingGoal");
-        } else if(task != null) {
-            editingTime = task.getTime();
-            editingGoal = task.getGoal();
+            mEditingTime = savedInstanceState.getParcelable("editingTime");
+            mEditingGoal = savedInstanceState.getParcelable("mEditingGoal");
+        } else if(mTask != null) {
+            mEditingTime = mTask.getTime();
+            mEditingGoal = mTask.getGoal();
         } else {
-            editingTime = new TimeAmount(0, 0, 0);
-            editingGoal = new TimeAmount(4, 0, 0);
+            mEditingTime = new TimeAmount(0, 0, 0);
+            mEditingGoal = new TimeAmount(4, 0, 0);
         }
-        timeView.setText(editingTime.toString());
-        goalView.setText(editingGoal.toString());
+        mTimeView.setText(mEditingTime.toString());
+        mGoalView.setText(mEditingGoal.toString());
 
         // Set view stuff
         if(getArguments() != null) {
-            groupView.setSelection(getArguments().getInt("group"));
-            positionView.setSelection(getArguments().getInt("position"));
+            mGroupView.setSelection(getArguments().getInt("group"));
+            mPositionView.setSelection(getArguments().getInt("position"));
         }
 
         // Create the dialog
         return new AlertDialog.Builder(getActivity())
-                .setTitle(task == null ? R.string.task_new : R.string.task_edit)
+                .setTitle(mTask == null ? R.string.task_new : R.string.task_edit)
                 .setView(view)
                 .setCancelable(true)
-                .setPositiveButton(task == null ? R.string.task_add : R.string.task_save, new DialogInterface.OnClickListener() {
+                .setPositiveButton(mTask == null ? R.string.task_add : R.string.task_save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         onEditorAction(null, EditorInfo.IME_ACTION_DONE, null);
@@ -172,11 +173,11 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
         TimeAmount time = new TimeAmount(hours, minutes, seconds);
         time.distribute();
         if(reference == HMS_REFERENCE_TIME) {
-            timeView.setText(time.toString());
-            editingTime = time;
+            mTimeView.setText(time.toString());
+            mEditingTime = time;
         } else if(reference == HMS_REFERENCE_GOAL) {
-            goalView.setText(time.toString());
-            editingGoal = time;
+            mGoalView.setText(time.toString());
+            mEditingGoal = time;
         }
     }
 
@@ -185,15 +186,15 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
         // Finished editing
         if(actionId == EditorInfo.IME_ACTION_DONE) {
             // Create the task
-            if(task == null) task = new Task();
-            task.setName(nameView.getText().toString());
-            task.setDescription(descriptionView.getText().toString());
-            task.setPosition(positionView.getSelectedItemPosition());
-            int groupPosition = groupView.getSelectedItemPosition();
-            task.setTime(editingTime);
-            task.setGoal(editingGoal);
+            if(mTask == null) mTask = new Task();
+            mTask.setName(mNameView.getText().toString());
+            mTask.setDescription(mDescriptionView.getText().toString());
+            mTask.setPosition(mPositionView.getSelectedItemPosition());
+            int groupPosition = mGroupView.getSelectedItemPosition();
+            mTask.setTime(mEditingTime);
+            mTask.setGoal(mEditingGoal);
             // TODO: fix reordering
-            if(isNew) TaskTimerApplication.addTask(groupPosition, task); else TaskTimerApplication.updateTask(groupPosition, task);
+            if(mTaskIsNew) TaskTimerApplication.addTask(groupPosition, mTask); else TaskTimerApplication.updateTask(groupPosition, mTask);
             dismiss();
             return true;
         }
@@ -204,10 +205,10 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putParcelableArrayList("groups", groups);
-        if(task != null) savedInstanceState.putParcelable("task", task);
-        savedInstanceState.putParcelable("editingTime", editingTime);
-        savedInstanceState.putParcelable("editingGoal", editingGoal);
+        savedInstanceState.putParcelableArrayList("groups", mGroups);
+        if(mTask != null) savedInstanceState.putParcelable("task", mTask);
+        savedInstanceState.putParcelable("editingTime", mEditingTime);
+        savedInstanceState.putParcelable("mEditingGoal", mEditingGoal);
     }
 
 

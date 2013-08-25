@@ -26,12 +26,12 @@ import java.util.ArrayList;
  * @author Schuyler Cebulskie
  */
 public class GroupEditDialogFragment extends DialogFragment implements OnEditorActionListener {
-    private ArrayList<Group> groups;
-    private Group group;
-    private boolean isNew;
+    private ArrayList<Group> mGroups;
+    private Group mGroup;
+    private boolean mGroupIsNew;
 
-    private EditText nameView;
-    private Spinner positionView;
+    private EditText mNameView;
+    private Spinner mPositionView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,15 +39,15 @@ public class GroupEditDialogFragment extends DialogFragment implements OnEditorA
 
         if(savedInstanceState != null) {
             // Load from saved instance
-            groups = savedInstanceState.getParcelableArrayList("groups");
-            group = savedInstanceState.getParcelable("group");
+            mGroups = savedInstanceState.getParcelableArrayList("groups");
+            mGroup = savedInstanceState.getParcelable("group");
         } else if(getArguments() != null) {
             // Load from arguments
-            groups = getArguments().getParcelableArrayList("groups");
-            group = getArguments().getParcelable("group");
+            mGroups = getArguments().getParcelableArrayList("groups");
+            mGroup = getArguments().getParcelable("group");
         }
 
-        if(group == null) isNew = true;
+        if(mGroup == null) mGroupIsNew = true;
     }
 
     @Override
@@ -55,30 +55,30 @@ public class GroupEditDialogFragment extends DialogFragment implements OnEditorA
         // Define the views
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View view = inflater.inflate(R.layout.fragment_group_edit, null);
-        nameView = (EditText) view.findViewById(R.id.group_edit_name);
-        positionView = (Spinner) view.findViewById(R.id.group_edit_position);
+        mNameView = (EditText) view.findViewById(R.id.group_edit_name);
+        mPositionView = (Spinner) view.findViewById(R.id.group_edit_position);
 
         // Add the possible positions to the spinner
-        String[] opts = new String[groups.size() + 1];
+        String[] opts = new String[mGroups.size() + 1];
         opts[0] = TaskTimerApplication.RESOURCES.getString(R.string.position_first);
-        if(groups.size() > 0) opts[groups.size()] = TaskTimerApplication.RESOURCES.getString(R.string.position_last);
-        for(int i = 1; i < groups.size(); i++)
-            opts[i] = String.format(TaskTimerApplication.RESOURCES.getString(R.string.position_after), groups.get(i - 1).getName());
+        if(mGroups.size() > 0) opts[mGroups.size()] = TaskTimerApplication.RESOURCES.getString(R.string.position_last);
+        for(int i = 1; i < mGroups.size(); i++)
+            opts[i] = String.format(TaskTimerApplication.RESOURCES.getString(R.string.position_after), mGroups.get(i - 1).getName());
         ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, opts);
         positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        positionView.setAdapter(positionAdapter);
+        mPositionView.setAdapter(positionAdapter);
 
         // Set view stuff
         if(getArguments() != null) {
-            positionView.setSelection(getArguments().getInt("position") == -1 ? 0 : getArguments().getInt("position"));
+            mPositionView.setSelection(getArguments().getInt("position") == -1 ? 0 : getArguments().getInt("position"));
         }
 
         // Create the dialog
         return new AlertDialog.Builder(getActivity())
-                .setTitle(group == null ? R.string.group_new : R.string.group_edit)
+                .setTitle(mGroup == null ? R.string.group_new : R.string.group_edit)
                 .setView(view)
                 .setCancelable(true)
-                .setPositiveButton(group == null ? R.string.group_add : R.string.group_save, new DialogInterface.OnClickListener() {
+                .setPositiveButton(mGroup == null ? R.string.group_add : R.string.group_save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         onEditorAction(null, EditorInfo.IME_ACTION_DONE, null);
@@ -96,12 +96,12 @@ public class GroupEditDialogFragment extends DialogFragment implements OnEditorA
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if(actionId == EditorInfo.IME_ACTION_DONE) {
             // Create/modify the Group
-            if(group == null) group = new Group();
-            if(group.getTasks() == null) group.setTasks(new ArrayList<Task>());
-            group.setName(nameView.getText().toString());
-            group.setPosition(positionView.getSelectedItemPosition());
+            if(mGroup == null) mGroup = new Group();
+            if(mGroup.getTasks() == null) mGroup.setTasks(new ArrayList<Task>());
+            mGroup.setName(mNameView.getText().toString());
+            mGroup.setPosition(mPositionView.getSelectedItemPosition());
             // TODO: fix reordering
-            if(isNew) TaskTimerApplication.addGroup(group); else TaskTimerApplication.updateGroup(group);
+            if(mGroupIsNew) TaskTimerApplication.addGroup(mGroup); else TaskTimerApplication.updateGroup(mGroup);
             dismiss();
             return true;
         }
@@ -114,8 +114,8 @@ public class GroupEditDialogFragment extends DialogFragment implements OnEditorA
         super.onSaveInstanceState(savedInstanceState);
 
         // Save the data to the saved instance state
-        savedInstanceState.putParcelableArrayList("groups", groups);
-        if(group != null) savedInstanceState.putParcelable("group", group);
+        savedInstanceState.putParcelableArrayList("groups", mGroups);
+        if(mGroup != null) savedInstanceState.putParcelable("group", mGroup);
     }
 
 

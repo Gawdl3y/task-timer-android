@@ -25,10 +25,10 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
     private static final String TAG = "TasksFragment";
 
     // Data
-    private ArrayList<Group> groups = TaskTimerApplication.GROUPS;
+    private ArrayList<Group> mGroups = TaskTimerApplication.GROUPS;
 
     // Stuff
-    private ViewPager pager;
+    private ViewPager mPager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,18 +49,18 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Create the view and pager
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
-        pager = (ViewPager) view.findViewById(R.id.pager);
+        mPager = (ViewPager) view.findViewById(R.id.pager);
 
         // Set the adapter and page change listener of the pager
-        pager.setAdapter(new TaskListFragmentAdapter(getFragmentManager(), groups));
-        pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+        mPager.setAdapter(new TaskListFragmentAdapter(getFragmentManager(), mGroups));
+        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             public void onPageSelected(int position) {
                 TaskTimerApplication.PREFERENCES.edit().putInt("currentTasksPage", position).apply();
             }
         });
 
         // Switch to the previously selected page
-        pager.setCurrentItem(TaskTimerApplication.PREFERENCES.getInt("currentTasksPage", 0));
+        mPager.setCurrentItem(TaskTimerApplication.PREFERENCES.getInt("currentTasksPage", 0));
 
         Log.v(TAG, "View created");
         return view;
@@ -69,7 +69,7 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
     @Override
     public void onTaskButtonClick(View view) {
         TaskListItem item = (TaskListItem) view.getParent().getParent();
-        Task task = groups.get((Integer) item.getTag(R.id.tag_group)).getTasks().get((Integer) item.getTag(R.id.tag_task));
+        Task task = mGroups.get((Integer) item.getTag(R.id.tag_group)).getTasks().get((Integer) item.getTag(R.id.tag_task));
 
         if(view.getId() == R.id.task_toggle) {
             // Toggle the task
@@ -97,7 +97,7 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
     @Override
     public void onGroupAdd(Group group) {
         buildList();
-        pager.setCurrentItem(group.getPosition(), true);
+        mPager.setCurrentItem(group.getPosition(), true);
     }
 
     @Override
@@ -120,8 +120,8 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
         }
 
         // Update the adapter's groups and scroll to the group that the task was added to
-        getAdapter().setGroups(groups);
-        pager.setCurrentItem(group.getPosition(), true);
+        getAdapter().setGroups(mGroups);
+        mPager.setCurrentItem(group.getPosition(), true);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
             item.setTask(task);
             item.invalidate();
             item.buildTimer();
-            getAdapter().setGroups(groups);
+            getAdapter().setGroups(mGroups);
         } catch(Exception e) {
             Log.v(TAG, "Couldn't update view of task " + task.getId());
         }
@@ -149,39 +149,37 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
      * Builds/rebuilds the list of groups and tasks
      */
     public void buildList() {
-        if(groups == null) {
-            pager.setVisibility(View.GONE);
+        if(mGroups == null) {
+            mPager.setVisibility(View.GONE);
         } else {
-            getAdapter().setGroups(groups);
+            getAdapter().setGroups(mGroups);
             getAdapter().notifyDataSetChanged();
-            pager.setVisibility(View.VISIBLE);
-            pager.invalidate();
+            mPager.setVisibility(View.VISIBLE);
+            mPager.invalidate();
         }
     }
 
 
     /**
-     * Sets the Groups
+     * @param groups The groups
      */
     public void setGroups(ArrayList<Group> groups) {
-        this.groups = groups;
+        this.mGroups = groups;
         buildList();
     }
 
     /**
-     * Gets the ViewPager
      * @return The ViewPager
      */
     public ViewPager getPager() {
-        return pager;
+        return mPager;
     }
 
     /**
-     * Gets the adapter of the ViewPager
      * @return The adapter of the ViewPager
      */
     public TaskListFragmentAdapter getAdapter() {
-        return (TaskListFragmentAdapter) pager.getAdapter();
+        return (TaskListFragmentAdapter) mPager.getAdapter();
     }
 
 

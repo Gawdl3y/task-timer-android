@@ -1,12 +1,7 @@
 package com.gawdl3y.android.tasktimer.layout;
 
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.*;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
 import com.gawdl3y.android.actionablelistview.ActionItem;
 import com.gawdl3y.android.actionablelistview.ActionableListFragment;
 import com.gawdl3y.android.actionablelistview.ActionableListView;
@@ -29,13 +24,13 @@ public class GroupsFragment extends ActionableListFragment implements TaskTimerE
     private static final String TAG = "GroupsFragment";
 
     // Data
-    private ArrayList<Group> groups = TaskTimerApplication.GROUPS;
+    private ArrayList<Group> mGroups = TaskTimerApplication.GROUPS;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setListAdapter(new GroupListAdapter(getActivity(), groups));
+        setListAdapter(new GroupListAdapter(getActivity(), mGroups));
         TaskTimerEvents.registerListener(this);
         Log.v(TAG, "Created");
     }

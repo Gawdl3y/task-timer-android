@@ -22,14 +22,14 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
     private static final String TAG = "TaskListItem";
 
     // Data
-    private Task task;
-    private TaskTimerThread timer;
-    private boolean checked = false;
+    private Task mTask;
+    private TaskTimerThread mTimer;
+    private boolean mChecked = false;
 
     // Views
-    private TextView name, description, time, goal;
-    private ProgressBar progress;
-    private ImageView toggle;
+    private TextView mNameView, mDescriptionView, mTimeView, mGoalView;
+    private ProgressBar mProgressView;
+    private ImageView mToggleView;
 
     /**
      * The interface for listening to task button interactions
@@ -51,23 +51,23 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
      */
     public TaskListItem(Context context, AttributeSet attrs, Task task) {
         super(context, attrs);
-        this.task = task;
+        this.mTask = task;
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutInflater.inflate(R.layout.task_list_item, this);
-        if(name == null) onFinishInflate(); // onFinishInflate isn't ever being called by the LayoutInflater for some reason
+        if(mNameView == null) onFinishInflate(); // onFinishInflate isn't ever being called by the LayoutInflater for some reason
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        name = (TextView) findViewById(R.id.task_name);
-        description = (TextView) findViewById(R.id.task_description);
-        time = (TextView) findViewById(R.id.task_time);
-        goal = (TextView) findViewById(R.id.task_goal);
-        progress = (ProgressBar) findViewById(R.id.task_progress);
-        toggle = (ImageView) findViewById(R.id.task_toggle);
+        mNameView = (TextView) findViewById(R.id.task_name);
+        mDescriptionView = (TextView) findViewById(R.id.task_description);
+        mTimeView = (TextView) findViewById(R.id.task_time);
+        mGoalView = (TextView) findViewById(R.id.task_goal);
+        mProgressView = (ProgressBar) findViewById(R.id.task_progress);
+        mToggleView = (ImageView) findViewById(R.id.task_toggle);
 
-        name.setTypeface(TaskTimerApplication.Typefaces.ROBOTO_LIGHT);
+        mNameView.setTypeface(TaskTimerApplication.Typefaces.ROBOTO_LIGHT);
 
         invalidate();
         buildTimer();
@@ -77,21 +77,21 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if(timer != null) timer.interrupt();
+        if(mTimer != null) mTimer.interrupt();
         Log.v(TAG, "Detached");
     }
 
     @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = (Bundle) super.onSaveInstanceState();
-        bundle.putParcelable("task", task);
+        bundle.putParcelable("task", mTask);
         return bundle;
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(state);
-        task = ((Bundle) state).getParcelable("task");
+        mTask = ((Bundle) state).getParcelable("task");
         invalidate();
         buildTimer();
     }
@@ -101,16 +101,16 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
         super.invalidate();
 
         // Set the view values
-        name.setText(task.getName());
-        description.setText(task.getDescription());
-        time.setText(task.getTime().toString());
-        goal.setText(task.isIndefinite() ? TaskTimerApplication.RESOURCES.getString(R.string.task_indefinite) : task.getGoal().toString());
-        progress.setProgress(task.getProgress());
-        progress.setIndeterminate(task.isIndefinite() && task.isRunning());
+        mNameView.setText(mTask.getName());
+        mDescriptionView.setText(mTask.getDescription());
+        mTimeView.setText(mTask.getTime().toString());
+        mGoalView.setText(mTask.isIndefinite() ? TaskTimerApplication.RESOURCES.getString(R.string.task_indefinite) : mTask.getGoal().toString());
+        mProgressView.setProgress(mTask.getProgress());
+        mProgressView.setIndeterminate(mTask.isIndefinite() && mTask.isRunning());
 
         // Change the toggle button to the proper image
-        TypedArray ta = getContext().obtainStyledAttributes(new int[]{task.isRunning() ? R.attr.ic_pause : R.attr.ic_start});
-        toggle.setImageDrawable(ta.getDrawable(0));
+        TypedArray ta = getContext().obtainStyledAttributes(new int[]{mTask.isRunning() ? R.attr.ic_pause : R.attr.ic_start});
+        mToggleView.setImageDrawable(ta.getDrawable(0));
         ta.recycle();
     }
 
@@ -119,110 +119,109 @@ public class TaskListItem extends LinearLayout implements Checkable, TaskTimerTh
      * <p>Stops the timer if the task isn't running
      */
     public void buildTimer() {
-        if(task.isRunning()) {
+        if(mTask.isRunning()) {
             // Update the time from when the timer was last running
-            if(task.getLastTick() > 0) {
-                task.incrementTime((int) ((System.currentTimeMillis() - task.getLastTick()) / 1000));
-                task.setLastTick(-1);
+            if(mTask.getLastTick() > 0) {
+                mTask.incrementTime((int) ((System.currentTimeMillis() - mTask.getLastTick()) / 1000));
+                mTask.setLastTick(-1);
                 invalidate();
             }
 
             // Create and start the timer
-            if(timer != null) timer.interrupt();
-            timer = new TaskTimerThread(task, 1, this);
-            timer.start();
+            if(mTimer != null) mTimer.interrupt();
+            mTimer = new TaskTimerThread(mTask, 1, this);
+            mTimer.start();
             Log.v(TAG, "Started timer");
         } else {
             // Stop the timer and clear the last tick
-            if(timer != null) timer.interrupt();
-            task.setLastTick(-1);
+            if(mTimer != null) mTimer.interrupt();
+            mTask.setLastTick(-1);
             Log.v(TAG, "Stopped timer");
         }
     }
 
     @Override
     public void setChecked(boolean checked) {
-        this.checked = checked;
+        this.mChecked = checked;
     }
 
     @Override
     public boolean isChecked() {
-        return checked;
+        return mChecked;
     }
 
     @Override
     public void toggle() {
-        checked = !checked;
+        mChecked = !mChecked;
     }
 
     @Override
     public void onTick() {
-        task.setLastTick(System.currentTimeMillis());
+        mTask.setLastTick(System.currentTimeMillis());
         postInvalidate();
     }
 
 
     /**
-     * Gets the task
      * @return The task
      */
     public Task getTask() {
-        return task;
+        return mTask;
     }
 
     /**
-     * Sets the task
      * @param task The task
      */
     public void setTask(Task task) {
-        this.task = task;
+        this.mTask = task;
     }
 
     /**
-     * Gets the timer thread
      * @return The timer thread
      */
     public TaskTimerThread getTimer() {
-        return timer;
+        return mTimer;
     }
 
     /**
-     * Gets the name view
      * @return The name view
      */
     public TextView getNameView() {
-        return name;
+        return mNameView;
     }
 
     /**
-     * Gets the time view
+     * @return The description view
+     */
+    public TextView getDescriptionView() {
+        return mDescriptionView;
+    }
+
+    /**
      * @return The time view
      */
     public TextView getTimeView() {
-        return time;
+        return mTimeView;
     }
 
     /**
-     * Gets the goal view
      * @return The goal view
      */
     public TextView getGoalView() {
-        return goal;
+        return mGoalView;
     }
 
     /**
-     * Gets the progress bar
      * @return The progress bar
      */
     public ProgressBar getProgressBar() {
-        return progress;
+        return mProgressView;
     }
 
     /**
-     * Gets the toggle button
      * @return The toggle button
      */
     public ImageView getToggleButton() {
-        return toggle;
+        return mToggleView;
     }
 }

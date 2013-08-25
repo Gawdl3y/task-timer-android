@@ -21,11 +21,11 @@ public class GroupListItem extends LinearLayout implements Checkable {
     private static final String TAG = "GroupListItem";
 
     // Data
-    private Group group;
-    private boolean checked = false;
+    private Group mGroup;
+    private boolean mChecked = false;
 
     // Views
-    private TextView name, taskCount;
+    private TextView mNameView, mTaskCountView;
 
     /**
      * Constructor
@@ -35,55 +35,55 @@ public class GroupListItem extends LinearLayout implements Checkable {
      */
     public GroupListItem(Context context, AttributeSet attrs, Group group) {
         super(context, attrs);
-        this.group = group;
+        this.mGroup = group;
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutInflater.inflate(R.layout.group_list_item, this);
-        if(name == null) onFinishInflate(); // onFinishInflate isn't ever being called by the LayoutInflater for some reason
+        if(mNameView == null) onFinishInflate(); // onFinishInflate isn't ever being called by the LayoutInflater for some reason
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        name = (TextView) findViewById(R.id.group_name);
-        taskCount = (TextView) findViewById(R.id.group_task_count);
-        name.setText(group.getName());
-        name.setTypeface(TaskTimerApplication.Typefaces.ROBOTO_LIGHT);
+        mNameView = (TextView) findViewById(R.id.group_name);
+        mTaskCountView = (TextView) findViewById(R.id.group_task_count);
+        mNameView.setText(mGroup.getName());
+        mNameView.setTypeface(TaskTimerApplication.Typefaces.ROBOTO_LIGHT);
         Log.v(TAG, "Inflated");
     }
 
     @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = (Bundle) super.onSaveInstanceState();
-        bundle.putParcelable("group", group);
+        bundle.putParcelable("group", mGroup);
         return bundle;
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(state);
-        group = ((Bundle) state).getParcelable("group");
+        mGroup = ((Bundle) state).getParcelable("group");
         invalidate();
     }
 
     @Override
     public void invalidate() {
         super.invalidate();
-        name.setText(group.getName());
+        mNameView.setText(mGroup.getName());
     }
 
     @Override
     public void setChecked(boolean checked) {
-        this.checked = checked;
+        this.mChecked = checked;
     }
 
     @Override
     public boolean isChecked() {
-        return checked;
+        return mChecked;
     }
 
     @Override
     public void toggle() {
-        checked = !checked;
+        mChecked = !mChecked;
     }
 
 
@@ -92,7 +92,7 @@ public class GroupListItem extends LinearLayout implements Checkable {
      * @param group The Group this list item is for
      */
     public void setGroup(Group group) {
-        this.group = group;
+        mGroup = group;
     }
 
     /**
@@ -100,6 +100,6 @@ public class GroupListItem extends LinearLayout implements Checkable {
      * @return The Group this list item is for
      */
     public Group getGroup() {
-        return group;
+        return mGroup;
     }
 }

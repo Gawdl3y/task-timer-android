@@ -11,32 +11,31 @@ import android.text.TextUtils;
 import com.gawdl3y.android.tasktimer.util.Log;
 
 /**
- * The ContentProvider for Task Timer
- * <p>Handles Task/Group data
+ * The ContentProvider of Tasks and Groups for Task Timer
  * @author Schuyler Cebulskie
  */
 public class TaskTimerProvider extends ContentProvider {
     private static final String TAG = "Provider";
     private static final String AUTHORITY = "com.gawdl3y.android.tasktimer.provider";
-    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     private static final int TASKS = 1;
     private static final int TASKS_ID = 2;
     private static final int GROUPS = 3;
     private static final int GROUPS_ID = 4;
 
-    private TaskTimerDatabaseHelper dbHelper;
+    private TaskTimerDatabaseHelper mDbHelper;
 
     static {
-        uriMatcher.addURI(AUTHORITY, "tasks", TASKS);
-        uriMatcher.addURI(AUTHORITY, "tasks/#", TASKS_ID);
-        uriMatcher.addURI(AUTHORITY, "groups", GROUPS);
-        uriMatcher.addURI(AUTHORITY, "groups/#", GROUPS_ID);
+        sUriMatcher.addURI(AUTHORITY, "tasks", TASKS);
+        sUriMatcher.addURI(AUTHORITY, "tasks/#", TASKS_ID);
+        sUriMatcher.addURI(AUTHORITY, "groups", GROUPS);
+        sUriMatcher.addURI(AUTHORITY, "groups/#", GROUPS_ID);
     }
 
     @Override
     public boolean onCreate() {
-        dbHelper = new TaskTimerDatabaseHelper(getContext());
+        mDbHelper = new TaskTimerDatabaseHelper(getContext());
         Log.v(TAG, "Created");
         return true;
     }
@@ -44,7 +43,7 @@ public class TaskTimerProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         Log.v(TAG, "Getting type for URI " + uri.toString());
-        int match = uriMatcher.match(uri);
+        int match = sUriMatcher.match(uri);
         switch(match) {
             case TASKS:
                 return "vnd.android.cursor.dir/vnd." + AUTHORITY + ".tasks";
@@ -63,7 +62,7 @@ public class TaskTimerProvider extends ContentProvider {
     public Cursor query(Uri url, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-        int match = uriMatcher.match(url);
+        int match = sUriMatcher.match(url);
         switch(match) {
             case TASKS:
                 qb.setTables("tasks");
@@ -85,7 +84,7 @@ public class TaskTimerProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URL " + url);
         }
 
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor = qb.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 
         if(cursor == null) Log.v(TAG, "Query failed"); else cursor.setNotificationUri(getContext().getContentResolver(), url);
@@ -94,9 +93,9 @@ public class TaskTimerProvider extends ContentProvider {
 
     @Override
     public int update(Uri url, ContentValues values, String selection, String[] selectionArgs) {
-        int match = uriMatcher.match(url), count;
+        int match = sUriMatcher.match(url), count;
         long rowID;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         switch(match) {
             case TASKS_ID:
@@ -115,15 +114,15 @@ public class TaskTimerProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri url, ContentValues values) {
-        int match = uriMatcher.match(url);
+        int match = sUriMatcher.match(url);
         Uri newURL;
 
         switch(match) {
             case TASKS:
-                newURL = dbHelper.taskInsert(values);
+                newURL = mDbHelper.taskInsert(values);
                 break;
             case GROUPS:
-                newURL = dbHelper.groupInsert(values);
+                newURL = mDbHelper.groupInsert(values);
                 break;
             default:
                 throw new IllegalArgumentException("Cannot insert into URL: " + url);
@@ -135,12 +134,12 @@ public class TaskTimerProvider extends ContentProvider {
 
     @Override
     public int delete(Uri url, String selection, String[] selectionArgs) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
         int count;
         long rowID = 0;
         String segment;
 
-        switch(uriMatcher.match(url)) {
+        switch(sUriMatcher.match(url)) {
             case TASKS:
                 count = db.delete("tasks", selection, selectionArgs);
                 break;

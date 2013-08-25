@@ -22,7 +22,7 @@ import com.gawdl3y.android.tasktimer.util.Log;
 public class TaskListFragment extends ListFragment {
     private static final String TAG = "TaskListFragment";
 
-    private Group group;
+    private Group mGroup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,12 +33,12 @@ public class TaskListFragment extends ListFragment {
 
         // Restore data
         if(savedInstanceState != null) {
-            group = savedInstanceState.getParcelable("group");
+            mGroup = savedInstanceState.getParcelable("group");
         } else {
             if(getArguments() != null) {
-                group = getArguments().getParcelable("group");
+                mGroup = getArguments().getParcelable("group");
             } else {
-                group = new Group();
+                mGroup = new Group();
             }
         }
 
@@ -48,8 +48,8 @@ public class TaskListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
-        view.setTag(group.getPosition());
-        setListAdapter(new TaskListAdapter(inflater.getContext(), group.getTasks(), group.getPosition()));
+        view.setTag(mGroup.getPosition());
+        setListAdapter(new TaskListAdapter(inflater.getContext(), mGroup.getTasks(), mGroup.getPosition()));
         Log.v(TAG, "View created");
         return view;
     }
@@ -103,7 +103,7 @@ public class TaskListFragment extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("group", group);
+        outState.putParcelable("group", mGroup);
     }
 
 
@@ -112,7 +112,7 @@ public class TaskListFragment extends ListFragment {
      * @param group The Group
      */
     public void setGroup(Group group) {
-        this.group = group;
+        mGroup = group;
     }
 
     /**
@@ -120,7 +120,7 @@ public class TaskListFragment extends ListFragment {
      * @return The Group
      */
     public Group getGroup() {
-        return group;
+        return mGroup;
     }
 
 

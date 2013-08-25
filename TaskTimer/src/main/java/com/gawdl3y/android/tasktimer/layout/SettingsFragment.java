@@ -14,30 +14,30 @@ import com.gawdl3y.android.tasktimer.util.Utilities;
  * @author Schuyler Cebulskie
  */
 public class SettingsFragment extends PreferenceFragment {
-    private SettingsActivity activity;
+    private SettingsActivity mActivity;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Initialize some stuff
-        activity = (SettingsActivity) getActivity();
+        mActivity = (SettingsActivity) getActivity();
 
         // Add the preferences and the change listener
         addPreferencesFromResource(R.xml.preferences);
-        PreferenceManager.getDefaultSharedPreferences(activity).registerOnSharedPreferenceChangeListener(changeListener);
+        PreferenceManager.getDefaultSharedPreferences(mActivity).registerOnSharedPreferenceChangeListener(changeListener);
 
         // Add click listener to the Play Store preference
         Preference playStorePref = findPreference("pref_playStore");
         playStorePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                Utilities.openPlayStore(activity);
+                Utilities.openPlayStore(mActivity);
                 return true;
             }
         });
 
         // Update the summaries of all of the preferences
-        activity.updateSummaries(this);
+        mActivity.updateSummaries(this);
     }
 
     /**
@@ -46,7 +46,7 @@ public class SettingsFragment extends PreferenceFragment {
     private final SharedPreferences.OnSharedPreferenceChangeListener changeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-            activity.onPreferenceChange(findPreference(key));
+            mActivity.onPreferenceChange(findPreference(key));
         }
     };
 
