@@ -190,11 +190,10 @@ public class TaskEditDialogFragment extends DialogFragment implements OnEditorAc
             mTask.setName(mNameView.getText().toString());
             mTask.setDescription(mDescriptionView.getText().toString());
             mTask.setPosition(mPositionView.getSelectedItemPosition());
-            int groupPosition = mGroupView.getSelectedItemPosition();
             mTask.setTime(mEditingTime);
             mTask.setGoal(mEditingGoal);
             // TODO: fix reordering
-            if(mTaskIsNew) TaskTimerApplication.addTask(groupPosition, mTask); else TaskTimerApplication.updateTask(groupPosition, mTask);
+            if(mTaskIsNew) TaskTimerApplication.addTask(mGroups.get(mGroupView.getSelectedItemPosition()).getId(), mTask); else TaskTimerApplication.updateTask(mGroupView.getSelectedItemPosition(), mTask);
             dismiss();
             return true;
         }

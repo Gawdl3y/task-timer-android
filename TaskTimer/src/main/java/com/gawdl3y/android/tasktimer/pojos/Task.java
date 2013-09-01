@@ -1,9 +1,12 @@
 package com.gawdl3y.android.tasktimer.pojos;
 
+import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
+
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -456,6 +459,24 @@ public class Task implements Parcelable {
         return "Task { name=\"" + name + "\" id=" + id + " position=" + position + " group=" + group + " }";
     }
 
+    /**
+     * Creates a ContentValues object from this Task to use for the database
+     * @return The ContentValues for this Task
+     */
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(Columns._ID, id);
+        values.put(Columns.NAME, name);
+        values.put(Columns.DESCRIPTION, description);
+        values.put(Columns.TIME, TaskTimerApplication.GSON.toJson(time));
+        values.put(Columns.GOAL, TaskTimerApplication.GSON.toJson(goal));
+        values.put(Columns.INDEFINITE, indefinite);
+        values.put(Columns.COMPLETE, complete);
+        values.put(Columns.POSITION, position);
+        values.put(Columns.GROUP, group);
+        return values;
+    }
+
 
     /**
      * The Parcel creator used to create new instances of the Task from a parcel
@@ -577,7 +598,7 @@ public class Task implements Parcelable {
         /**
          * The ID of the Group that the Task is in (Type: INTEGER)
          */
-        public static final String GROUP = "group";
+        public static final String GROUP = "\"group\"";
 
         /*
          * These save calls to cursor.getColumnIndexOrThrow()

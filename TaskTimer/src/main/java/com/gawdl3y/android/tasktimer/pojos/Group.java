@@ -1,5 +1,6 @@
 package com.gawdl3y.android.tasktimer.pojos;
 
+import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -165,7 +166,19 @@ public class Group implements Parcelable {
 
     @Override
     public String toString() {
-        return "Group { name=\"" + name + "\" id=" + id + " }";
+        return "Group { name=\"" + name + "\" id=" + id + " position=" + position + "}";
+    }
+
+    /**
+     * Creates a ContentValues object from this Group to use for the database
+     * @return The ContentValues for this Group
+     */
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(Columns._ID, id);
+        values.put(Columns.NAME, name);
+        values.put(Columns.POSITION, position);
+        return values;
     }
 
 

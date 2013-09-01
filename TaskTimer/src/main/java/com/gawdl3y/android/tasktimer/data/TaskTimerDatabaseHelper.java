@@ -31,8 +31,8 @@ public class TaskTimerDatabaseHelper extends SQLiteOpenHelper {
             + Task.Columns.INDEFINITE + " INTEGER, "
             + Task.Columns.COMPLETE + " INTEGER, "
             + Task.Columns.SETTINGS + " TEXT, "
-            + Task.Columns.POSITION + " INTEGER, `"
-            + Task.Columns.GROUP + "` INTEGER);";
+            + Task.Columns.POSITION + " INTEGER, "
+            + Task.Columns.GROUP + " INTEGER);";
 
     // Group table
     private static final String GROUPS_TABLE_NAME = "groups";
@@ -71,8 +71,8 @@ public class TaskTimerDatabaseHelper extends SQLiteOpenHelper {
                 + Task.Columns.INDEFINITE + ", "
                 + Task.Columns.COMPLETE + ", "
                 + Task.Columns.SETTINGS + ", "
-                + Task.Columns.POSITION + ", `"
-                + Task.Columns.GROUP + "`) VALUES ";
+                + Task.Columns.POSITION + ", "
+                + Task.Columns.GROUP + ") VALUES ";
 
         db.execSQL(insertGroup + "('A group', 0);");
         db.execSQL(insertTask + "('A task', 'A humble little task.', '{}', '{\"h\":\"2\",\"m\":\"30\"}', 0, 0, '{}', 0, 1);");

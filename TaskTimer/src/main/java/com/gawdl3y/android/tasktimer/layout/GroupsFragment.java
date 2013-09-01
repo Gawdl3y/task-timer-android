@@ -89,6 +89,15 @@ public class GroupsFragment extends ActionableListFragment implements TaskTimerE
 
 
     /**
+     * @param groups The groups
+     */
+    public void setGroups(ArrayList<Group> groups) {
+        mGroups = groups;
+        getListView().invalidate();
+    }
+
+
+    /**
      * Creates a new instance of GroupsFragment
      * @return A new instance of GroupsFragment
      */

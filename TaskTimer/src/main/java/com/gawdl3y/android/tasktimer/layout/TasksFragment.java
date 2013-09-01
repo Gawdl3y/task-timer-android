@@ -164,7 +164,7 @@ public class TasksFragment extends Fragment implements TaskListItem.TaskButtonLi
      * @param groups The groups
      */
     public void setGroups(ArrayList<Group> groups) {
-        this.mGroups = groups;
+        mGroups = groups;
         buildList();
     }
 

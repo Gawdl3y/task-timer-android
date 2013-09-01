@@ -188,7 +188,8 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
             getSupportLoaderManager().initLoader(TASKS_LOADER_ID, null, this);
         } else if(loader.getId() == TASKS_LOADER_ID) {
             TaskTimerApplication.loadTasks(cursor);
-            mTasksFragment.setGroups(TaskTimerApplication.GROUPS);
+            if(mTasksFragment != null) mTasksFragment.setGroups(TaskTimerApplication.GROUPS);
+            if(mGroupsFragment != null) mGroupsFragment.setGroups(TaskTimerApplication.GROUPS);
             setProgressBarIndeterminateVisibility(false);
         }
 
