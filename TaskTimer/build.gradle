@@ -19,21 +19,27 @@ dependencies {
     compile 'com.android.support:support-v4:18.0.+'
     compile 'com.google.code.gson:gson:2.2.+'
     compile 'com.doomonafireball.betterpickers:android-betterpickers:1.3.+'
+    //compile 'com.jakewharton:butterknife:2.0.+'
 }
 
 android {
     compileSdkVersion 18
-    buildToolsVersion "18.0.0"
+    buildToolsVersion "18.0.1"
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 18
     }
 
+    signingConfigs {
+
+    }
+
     buildTypes {
         release {
             runProguard true
             proguardFile getDefaultProguardFile('proguard-android-optimize.txt')
+            signingConfig signingConfigs.debug
         }
     }
 }
