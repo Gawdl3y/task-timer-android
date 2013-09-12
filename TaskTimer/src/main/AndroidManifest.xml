@@ -10,6 +10,9 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
 
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <!-- The application -->
     <application
         android:name=".TaskTimerApplication"
@@ -53,4 +56,5 @@
         </receiver>
 
     </application>
+
 </manifest>
