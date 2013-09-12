@@ -1,15 +1,12 @@
 package com.gawdl3y.android.tasktimer;
 
 import android.app.*;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Typeface;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -358,6 +355,8 @@ public class TaskTimerApplication extends Application {
                     .setLargeIcon(Utilities.drawableToBitmap(RESOURCES.getDrawable(R.drawable.ic_launcher)))
                     .setPriority(Notification.PRIORITY_HIGH)
                     .setAutoCancel(true)
+                    .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS)
+                    .setSound(Uri.parse(PREFERENCES.getString("pref_notificationSound", "content://settings/system/notification_sound")))
                     .setWhen(System.currentTimeMillis())
                     .setContentIntent(stackBuilder.getPendingIntent(task.getId(), PendingIntent.FLAG_UPDATE_CURRENT))
                     .build();
@@ -365,10 +364,6 @@ public class TaskTimerApplication extends Application {
             // Show the notification
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(task.getId(), notification);
-
-            // Play the notification tone
-            Ringtone notificationSound = RingtoneManager.getRingtone(context, Uri.parse(PREFERENCES.getString("pref_notificationSound", "content://settings/system/notification_sound")));
-            notificationSound.play();
         }
     }
 
@@ -382,6 +377,9 @@ public class TaskTimerApplication extends Application {
         notificationManager.cancel(task.getId());
     }
 
+    /**
+     * Typefaces that will be used throughout the app
+     */
     public static class Typefaces {
         public static Typeface ROBOTO_LIGHT;
     }
