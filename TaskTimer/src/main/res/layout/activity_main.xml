@@ -15,7 +15,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#111"
-        android:choiceMode="singleChoice" />
+        android:choiceMode="singleChoice"
+        android:divider="@null"
+        android:dividerHeight="0dp" />
 
     <LinearLayout
         android:id="@+id/activity_main_drawer_right"
