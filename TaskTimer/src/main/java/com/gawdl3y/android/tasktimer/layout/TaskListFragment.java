@@ -29,7 +29,7 @@ public class TaskListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         // Tell the fragment to retain its instance across configuration changes
-        setRetainInstance(true);
+        //setRetainInstance(true);
 
         // Restore data
         if(savedInstanceState != null) {

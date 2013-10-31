@@ -61,6 +61,10 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_main);
 
+        // Do action bar stuff
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
         // Do drawer stuff
         mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_main);
         mDrawerLayout.setDrawerShadow(TaskTimerApplication.THEME == R.style.Theme_Dark ? R.drawable.drawer_shadow_dark : R.drawable.drawer_shadow_light, Gravity.START);
@@ -69,7 +73,6 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
         mMainDrawer = (ListView) findViewById(R.id.activity_main_drawer_left);
         mMainDrawerItems = getResources().getStringArray(R.array.drawer_main_items);
         mMainDrawer.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mMainDrawerItems));
-        mMainDrawer.setItemChecked(0, true);
         mMainDrawer.setOnItemClickListener(new DrawerItemClickListener());
         mTaskDrawer = (LinearLayout) findViewById(R.id.activity_main_drawer_right);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, TaskTimerApplication.THEME == R.style.Theme_Light ? R.drawable.ic_drawer_light : R.drawable.ic_drawer_dark, R.string.menu_drawer_open, R.string.menu_drawer_close) {
@@ -90,11 +93,20 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        // Do action bar stuff
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setTitle(mMainDrawerItems[mMainDrawer.getCheckedItemPosition()]);
-        setTitle(mMainDrawerItems[mMainDrawer.getCheckedItemPosition()]);
+        // Only run once
+        if(getSupportFragmentManager().getFragments() == null || getSupportFragmentManager().getFragments().isEmpty()) {
+            // Display fragment
+            mTasksFragment = TasksFragment.newInstance();
+            mCurrentFragment = mTasksFragment;
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.activity_main_content, mTasksFragment);
+            transaction.commit();
+
+            // Select the corresponding drawer item
+            mMainDrawer.setItemChecked(0, true);
+            getActionBar().setTitle(mMainDrawerItems[mMainDrawer.getCheckedItemPosition()]);
+            setTitle(mMainDrawerItems[mMainDrawer.getCheckedItemPosition()]);
+        }
 
         // Open the drawer if the user never has done so themselves
         if(!TaskTimerApplication.PREFERENCES.getBoolean("drawer_opened", false)) {
@@ -103,12 +115,6 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
             setTitle(getResources().getString(R.string.app_name));
         }
 
-        // Display the main fragment
-        mTasksFragment = TasksFragment.newInstance();
-        mCurrentFragment = mTasksFragment;
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.activity_main_content, mTasksFragment);
-        transaction.commit();
         Log.v(TAG, "Created");
     }
 
