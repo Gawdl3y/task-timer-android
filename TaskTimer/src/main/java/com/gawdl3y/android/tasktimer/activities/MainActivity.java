@@ -108,7 +108,7 @@ public class MainActivity extends FragmentActivity implements TaskListItem.TaskB
             setTitle(mMainDrawerItems[mMainDrawer.getCheckedItemPosition()]);
         }
 
-        // Open the drawer if the user never has done so themselves
+        // Open the drawer if the user has never done so themselves
         if(!TaskTimerApplication.PREFERENCES.getBoolean("drawer_opened", false)) {
             mDrawerLayout.openDrawer(mMainDrawer);
             getActionBar().setTitle(getResources().getString(R.string.app_name));

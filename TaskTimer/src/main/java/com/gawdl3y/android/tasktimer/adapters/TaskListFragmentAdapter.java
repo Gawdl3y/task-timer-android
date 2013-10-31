@@ -74,6 +74,7 @@ public class TaskListFragmentAdapter extends NewFragmentStatePagerAdapter {
     @Override
     public void restoreState(Parcelable state, ClassLoader loader) {
         Bundle bundle = (Bundle) state;
+        bundle.setClassLoader(loader);
         super.restoreState(bundle.getParcelable("super"), loader);
         mGroups = bundle.getParcelableArrayList("groups");
     }
