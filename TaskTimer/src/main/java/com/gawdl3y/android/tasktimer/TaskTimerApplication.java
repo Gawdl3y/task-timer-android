@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -275,7 +276,7 @@ public class TaskTimerApplication extends Application {
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, task.getId(), alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             // Set the alarm
-            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent); else alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, pendingIntent);
             Log.v(TAG, "Set alarm for task " + task.getId() + " in " + (alarmTime - System.currentTimeMillis()) / 1000.0 + " seconds");
         }
     }

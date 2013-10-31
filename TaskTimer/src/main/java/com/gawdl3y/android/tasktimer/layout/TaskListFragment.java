@@ -28,9 +28,6 @@ public class TaskListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Tell the fragment to retain its instance across configuration changes
-        //setRetainInstance(true);
-
         // Restore data
         if(savedInstanceState != null) {
             mGroup = savedInstanceState.getParcelable("group");
