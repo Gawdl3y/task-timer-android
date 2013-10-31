@@ -6,6 +6,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import com.gawdl3y.android.tasktimer.R;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.activities.SettingsActivity;
 import com.gawdl3y.android.tasktimer.util.Utilities;
 
@@ -25,7 +26,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Add the preferences and the change listener
         addPreferencesFromResource(R.xml.preferences);
-        PreferenceManager.getDefaultSharedPreferences(mActivity).registerOnSharedPreferenceChangeListener(changeListener);
+        TaskTimerApplication.PREFERENCES.registerOnSharedPreferenceChangeListener(changeListener);
 
         // Add click listener to the Play Store preference
         Preference playStorePref = findPreference("pref_playStore");
@@ -38,6 +39,12 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Update the summaries of all of the preferences
         mActivity.updateSummaries(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        TaskTimerApplication.PREFERENCES.unregisterOnSharedPreferenceChangeListener(changeListener);
     }
 
     /**

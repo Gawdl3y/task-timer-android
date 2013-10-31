@@ -49,6 +49,7 @@ public class SettingsActivity extends Activity {
      * @param pref the preference that was changed
      */
     public void onPreferenceChange(Preference pref) {
+        if(pref == null) return;
         String key = pref.getKey();
 
         // List preference changed
