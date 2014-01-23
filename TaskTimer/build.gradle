@@ -1,24 +1,7 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
-    }
-}
 apply plugin: 'android'
 
 repositories {
     mavenCentral()
-}
-
-dependencies {
-    compile 'com.android.support:support-v4:19.0.+'
-    compile 'com.google.code.gson:gson:2.2.+'
-    //compile 'com.jakewharton:butterknife:2.0.+'
-    compile('com.doomonafireball.betterpickers:library:1.5.2') {
-        exclude group: 'com.android.support', module: 'support-v4'
-    }
 }
 
 android {
@@ -42,5 +25,14 @@ android {
             proguardFile getDefaultProguardFile('proguard-android-optimize.txt')
             signingConfig signingConfigs.debug
         }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:19.0.+'
+    compile 'com.google.code.gson:gson:2.2.+'
+    //compile 'com.jakewharton:butterknife:2.0.+'
+    compile('com.doomonafireball.betterpickers:library:1.5.2') {
+        exclude group: 'com.android.support', module: 'support-v4'
     }
 }
