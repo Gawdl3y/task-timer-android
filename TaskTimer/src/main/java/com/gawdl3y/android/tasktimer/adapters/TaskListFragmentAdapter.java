@@ -3,6 +3,7 @@ package com.gawdl3y.android.tasktimer.adapters;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
+
 import com.gawdl3y.android.tasktimer.layout.TaskListFragment;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.util.Log;

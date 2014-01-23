@@ -1,6 +1,10 @@
 package com.gawdl3y.android.tasktimer;
 
-import android.app.*;
+import android.app.AlarmManager;
+import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.SparseArray;
+
 import com.gawdl3y.android.tasktimer.activities.MainActivity;
 import com.gawdl3y.android.tasktimer.data.TaskTimerReceiver;
 import com.gawdl3y.android.tasktimer.pojos.Group;

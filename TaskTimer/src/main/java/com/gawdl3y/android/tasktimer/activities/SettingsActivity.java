@@ -13,6 +13,7 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.view.MenuItem;
+
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.layout.SettingsFragment;

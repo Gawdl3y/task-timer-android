@@ -1,7 +1,7 @@
 package com.gawdl3y.android.actionablelistview;
 
 import android.support.v4.app.ListFragment;
-import android.widget.*;
+import android.widget.ListAdapter;
 
 public class ActionableListFragment extends ListFragment {
     @Override

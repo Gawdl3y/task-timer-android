@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.pojos.Group;

@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
+
 import com.gawdl3y.android.tasktimer.R;
 
 /**

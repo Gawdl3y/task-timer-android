@@ -1,14 +1,17 @@
 package com.gawdl3y.android.tasktimer.layout;
 
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import com.gawdl3y.android.actionablelistview.ActionItem;
 import com.gawdl3y.android.actionablelistview.ActionableListFragment;
 import com.gawdl3y.android.actionablelistview.ActionableListView;
 import com.gawdl3y.android.tasktimer.R;
 import com.gawdl3y.android.tasktimer.TaskTimerApplication;
-import com.gawdl3y.android.tasktimer.adapters.GroupListAdapter;
 import com.gawdl3y.android.tasktimer.activities.MainActivity;
+import com.gawdl3y.android.tasktimer.adapters.GroupListAdapter;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.pojos.Task;
 import com.gawdl3y.android.tasktimer.pojos.TaskTimerEvents;
