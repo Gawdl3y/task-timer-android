@@ -1,18 +1,5 @@
-# Built stuff
-*.apk
-*.ap_
-*.dex
-*.class
-TaskTimer/build/
-
-# Local configuration file
-local.properties
-
-# IntelliJ/Android Studio project files
-.idea
-*.iml
-*.ipr
-*.iws
-
-# Gradle files
 .gradle
+/local.properties
+/.idea/workspace.xml
+.DS_Store
+/build

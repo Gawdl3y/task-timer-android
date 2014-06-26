@@ -5,6 +5,9 @@ package com.gawdl3y.android.actionablelistview;
  * @author Schuyler Cebulskie
  */
 public class ActionItem {
+    public static final int ACTION_TYPE_DELETE = 0;
+    public static final int ACTION_TYPE_ARCHIVE = 1;
+
     private int mActionType = -1;
     private int mPosition;
     private int mIconResource;

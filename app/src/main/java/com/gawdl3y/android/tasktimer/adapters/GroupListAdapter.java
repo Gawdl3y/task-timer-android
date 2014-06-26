@@ -5,7 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.gawdl3y.android.actionablelistview.ActionItem;
 import com.gawdl3y.android.actionablelistview.ActionableAdapter;
+import com.gawdl3y.android.tasktimer.TaskTimerApplication;
 import com.gawdl3y.android.tasktimer.layout.GroupListItem;
 import com.gawdl3y.android.tasktimer.pojos.Group;
 import com.gawdl3y.android.tasktimer.util.Log;
@@ -73,6 +75,7 @@ public class GroupListAdapter extends ActionableAdapter {
     @Override
     public boolean performActionOnItem(int actionType, int position) {
         Toast.makeText(mContext, actionType + " " + position, Toast.LENGTH_SHORT).show();
+        if(actionType == ActionItem.ACTION_TYPE_DELETE) TaskTimerApplication.removeGroup(mGroups.get(position).getId());
         return true;
     }
 

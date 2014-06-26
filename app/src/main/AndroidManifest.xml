@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.gawdl3y.android.tasktimer"
-          android:versionCode="1"
-          android:versionName="1.0"
           android:installLocation="auto">
-
-    <!-- Minimum Android version 4.0 -->
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="19" />
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.VIBRATE" />

@@ -57,7 +57,7 @@ public class GroupsFragment extends ActionableListFragment implements TaskTimerE
         super.onActivityCreated(savedInstanceState);
         ActionableListView list = (ActionableListView) getListView();
         list.setActionModeCallback((MainActivity) getActivity());
-        list.addAction(new ActionItem(0, 0, android.R.drawable.ic_menu_delete, R.string.group_action_delete));
+        list.addAction(new ActionItem(ActionItem.ACTION_TYPE_DELETE, 0, android.R.drawable.ic_menu_delete, R.string.group_action_delete));
     }
 
     @Override

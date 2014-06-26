@@ -1,0 +1,47 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion '20.0.0'
+
+    defaultConfig {
+        applicationId "com.gawdl3y.android.tasktimer"
+        minSdkVersion 14
+        targetSdkVersion 20
+        versionCode 1
+        versionName '0.1.0'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    signingConfigs {
+        release {
+            //storeFile file(System.console().readLine("\n\$ Enter keystore path: "))
+            //storePassword System.console().readLine("\$ Enter keystore password: ")
+            //keyAlias System.console().readLine("\$ Enter key alias: ")
+            //keyPassword System.console().readLine("\$ Enter key password: ")
+        }
+    }
+
+    buildTypes {
+        release {
+            runProguard true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    dexOptions {
+        incremental true
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:21.0.+'
+    compile 'com.google.code.gson:gson:2.2.+'
+    compile 'com.doomonafireball.betterpickers:library:1.5.2'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
